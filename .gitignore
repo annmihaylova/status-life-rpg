@@ -1,13 +1,34 @@
+# dependencies
 node_modules/
+.pnp
+.pnp.*
+
+# build
 .next/
 out/
+build/
 dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# tests
 coverage/
+playwright-report/
+test-results/
+
+# env (только .env.example в git)
 .env
 .env.*
 !.env.example
+
+# supabase local
+supabase/.branches/
+supabase/.temp/
+
+# misc
 .vercel/
 .DS_Store
+*.pem
 *.log
 __pycache__/
 .venv/

@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+node_modules
+.next
+SPEC.md
+docs
+supabase/migrations
+lib/db/migrations

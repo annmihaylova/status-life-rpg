@@ -1,0 +1,108 @@
+{
+  "general": [
+    { "key": "body", "name_ru": "Тело", "name_en": "Body", "sort_order": 1 },
+    { "key": "mind", "name_ru": "Разум", "name_en": "Mind", "sort_order": 2 },
+    { "key": "spirit", "name_ru": "Дух", "name_en": "Spirit", "sort_order": 3 }
+  ],
+  "parts": [
+    {
+      "key": "strength",
+      "parent": "body",
+      "name_ru": "Сила",
+      "name_en": "Strength",
+      "short_ru": "Сил",
+      "short_en": "Str",
+      "description_ru": "Атлетика, тяжёлый физический труд, силовой спорт",
+      "description_en": "Athletics, heavy physical work, strength sports",
+      "sort_order": 1
+    },
+    {
+      "key": "dexterity",
+      "parent": "body",
+      "name_ru": "Ловкость",
+      "name_en": "Dexterity",
+      "short_ru": "Лов",
+      "short_en": "Dex",
+      "description_ru": "Спорт с техникой, танцы, инструменты, ремонт руками, кулинария, лабораторная техника",
+      "description_en": "Technical sports, dance, instruments, manual repair, cooking, lab technique",
+      "sort_order": 2
+    },
+    {
+      "key": "endurance",
+      "parent": "body",
+      "name_ru": "Выносливость",
+      "name_en": "Endurance",
+      "short_ru": "Вын",
+      "short_en": "End",
+      "description_ru": "Смены на ногах, кардио, долгие нагрузки. Увеличивает максимум HP",
+      "description_en": "Long shifts on your feet, cardio, sustained effort. Raises max HP",
+      "sort_order": 3
+    },
+    {
+      "key": "intellect",
+      "parent": "mind",
+      "name_ru": "Интеллект",
+      "name_en": "Intellect",
+      "short_ru": "Инт",
+      "short_en": "Int",
+      "description_ru": "Учёба, наука, программирование, языки, анализ",
+      "description_en": "Study, science, programming, languages, analysis",
+      "sort_order": 4
+    },
+    {
+      "key": "perception",
+      "parent": "mind",
+      "name_ru": "Восприятие",
+      "name_en": "Perception",
+      "short_ru": "Вос",
+      "short_en": "Per",
+      "description_ru": "Вождение, диагностика, наблюдения, контроль качества, рисование с натуры",
+      "description_en": "Driving, diagnostics, observation, quality control, drawing from life",
+      "sort_order": 5
+    },
+    {
+      "key": "will",
+      "parent": "mind",
+      "name_ru": "Воля",
+      "name_en": "Will",
+      "short_ru": "Вол",
+      "short_en": "Wil",
+      "description_ru": "Дисциплина и фокус: длинные сессии, тяжёлые задачи, регулярность",
+      "description_en": "Discipline and focus: long sessions, hard tasks, consistency",
+      "sort_order": 6
+    },
+    {
+      "key": "charisma",
+      "parent": "spirit",
+      "name_ru": "Харизма",
+      "name_en": "Charisma",
+      "short_ru": "Хар",
+      "short_en": "Cha",
+      "description_ru": "Преподавание, выступления, переговоры, торговля, лидерство",
+      "description_en": "Teaching, public speaking, negotiation, sales, leadership",
+      "sort_order": 7
+    },
+    {
+      "key": "empathy",
+      "parent": "spirit",
+      "name_ru": "Эмпатия",
+      "name_en": "Empathy",
+      "short_ru": "Эмп",
+      "short_en": "Emp",
+      "description_ru": "Психология, медицинский уход, воспитание, поддержка людей",
+      "description_en": "Psychology, care work, parenting, supporting people",
+      "sort_order": 8
+    },
+    {
+      "key": "creativity",
+      "parent": "spirit",
+      "name_ru": "Творчество",
+      "name_en": "Creativity",
+      "short_ru": "Тво",
+      "short_en": "Cre",
+      "description_ru": "Искусство, музыка, тексты, дизайн, изобретательство",
+      "description_en": "Art, music, writing, design, invention",
+      "sort_order": 9
+    }
+  ]
+}

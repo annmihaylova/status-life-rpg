@@ -1,0 +1,7 @@
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
+  esbuild: true
+  supabase: true
+  "@swc/core": false
+  "@parcel/watcher": false
