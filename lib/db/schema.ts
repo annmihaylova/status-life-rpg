@@ -433,6 +433,8 @@ export const entrySkillAllocations = pgTable(
     skillId: uuid("skill_id").references(() => skills.id, { onDelete: "set null" }),
     activityCluster: text("activity_cluster"),
     share: real("share").notNull(),
+    /** запись подходит под специализацию навыка (+10% XP), ставит классификатор */
+    matchesSpecialization: boolean("matches_specialization").notNull().default(false),
   },
   (t) => [
     index("entry_skill_allocations_entry_idx").on(t.entryId),
@@ -491,6 +493,8 @@ export const hpDays = pgTable(
     sick: boolean("sick").notNull().default(false),
     /** «сегодня отдыхала» — засчитывается в любом варианте эксперимента */
     manualRest: boolean("manual_rest").notNull().default(false),
+    /** эксперимент «день отдыха», вариант C: решение LLM по вечернему отчёту */
+    llmRestDay: boolean("llm_rest_day"),
     effects: text("effects").array().notNull().default(sql`'{}'::text[]`),
   },
   (t) => [primaryKey({ columns: [t.userId, t.date] }), ...ownRows("hp_days", t.userId)],

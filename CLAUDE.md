@@ -30,7 +30,8 @@
 | `pnpm build` | прод-сборка |
 | `pnpm lint` / `pnpm typecheck` | ESLint / `next typegen` + tsc |
 | `pnpm test` | юнит-тесты (vitest), в т.ч. игровая математика |
-| `pnpm test:db` | тест RLS по всем таблицам, нужен запущенный локальный Supabase |
+| `pnpm test:db` | тест RLS по всем таблицам и пересчёта, нужен запущенный локальный Supabase |
+| `pnpm game:recompute [--user <id>] [--verify]` | пересчитать всё из сырых данных (`DATABASE_URL` из окружения или `.env.local`) |
 | `pnpm db:start` / `pnpm db:stop` | локальный Supabase в Docker |
 | `pnpm db:reset` | пересоздать локальную БД из `supabase/migrations` |
 | `pnpm db:generate` | сгенерировать миграцию из `lib/db/schema.ts` |
@@ -38,6 +39,14 @@
 
 ## Архитектура
 - `lib/game/` — чистые функции: `config.ts` (все константы, `FORMULA_VERSION`, эксперименты), `formulas.ts` (уровни, навыки, характеристики, раскрытие, калибровка, слоты), `hp.ts` (HP, статусы, день отдыха, «Второе дыхание»), `attributes.ts` + `data/attributes.json`.
+- `lib/game/engine/` — движок: `replay(input) → result`, чистая функция. Вход: подтверждённые записи, журнал решений (`game_decisions`), определения навыков, самочувствие по дням, эксперименты. Выход: персонаж, навыки, кандидаты, характеристики (+ скрытые пометки для раскрытия), HP по дням, леджер, события. Проходит дни от регистрации до сегодня: решения дня → записи дня (по `started_at`/`created_at`) → закрытие дня (звёзды/очки, уровень, предложения навыков, готовность к раскрытию, HP).
+  - Решения пользователя (взять навык, калибровка, раскрытие, специализация…) влияют на пересчёт только через `game_decisions` — пиши решение туда, а не правь кэши.
+  - Кластер → навык известен заранее из `take_skill.clusterKey`: опыт кандидата засчитывается навыку задним числом.
+  - В характеристики идёт XP навыка без бонусов и без ×5 спящего навыка.
+  - Теги навыков и эксперименты применяются ко всей истории (текущее значение).
+- `lib/game/messages.ts` — события движка → ключи `system.*` в `messages/*.json` (+ тон: normal / rare / epic).
+- `lib/server/game/` — `loadEngineInput` (БД → вход движка, часовой пояс из профиля), `persistEngineResult` (кэши + леджер), `recomputeUser(db, userId)` — всё в одной транзакции с advisory lock. После любого изменения записей или решений пользователя вызывай `recomputeUser`.
+- `lib/db/client.ts` — подключение без `server-only` (для скриптов и тестов); `lib/db/index.ts` — серверные `adminDb()` и `withUser()`.
 - `lib/db/schema.ts` — Drizzle-схема и RLS-политики (попадают в миграции). Миграции — `supabase/migrations/` (drizzle-kit с префиксом supabase); ручные SQL — через `drizzle-kit generate --custom`.
 - Доступ к данным:
   - `withUser(userId, fn)` из `lib/db` — запросы от имени пользователя, RLS действует;
@@ -61,4 +70,5 @@
 ## Сделано
 - Подготовка: SPEC, план (`docs/PLAN.md`), эталон баланса.
 - Фаза 0 (закрыта 2026-11-26, вход на проде проверен владелицей): Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами, RLS и явными GRANT, тест RLS (95), auth, i18n, CI. Прод: https://status-life-rpg.vercel.app (Supabase Auth: Site URL и redirect URLs для прода, localhost и превью Vercel настроены).
-- Следующее: фаза 1a (игровой движок, `replay()`, леджер, `pnpm game:recompute`).
+- Фаза 1a: игровой движок `replay()` (24 сценарных теста), системные сообщения ru/en, загрузка/запись в БД, `pnpm game:recompute` с `--verify`, интеграционный тест пересчёта (повтор и порядок строк не меняют результат).
+- Следующее: фаза 1b (онбординг, Status, Skills, Journal, ручной лог, системные сообщения в UI).
