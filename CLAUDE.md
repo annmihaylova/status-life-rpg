@@ -60,5 +60,5 @@
 
 ## Сделано
 - Подготовка: SPEC, план (`docs/PLAN.md`), эталон баланса.
-- Фаза 0: Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами, RLS и явными GRANT, тест RLS (95), auth, i18n, CI. Прод: https://status-life-rpg.vercel.app (Supabase Auth: Site URL и redirect URLs для прода, localhost и превью Vercel настроены).
+- Фаза 0 (закрыта 2026-11-26, вход на проде проверен владелицей): Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами, RLS и явными GRANT, тест RLS (95), auth, i18n, CI. Прод: https://status-life-rpg.vercel.app (Supabase Auth: Site URL и redirect URLs для прода, localhost и превью Vercel настроены).
 - Следующее: фаза 1a (игровой движок, `replay()`, леджер, `pnpm game:recompute`).
