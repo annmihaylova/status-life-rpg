@@ -56,4 +56,5 @@
 
 ## Сделано
 - Подготовка: SPEC, план (`docs/PLAN.md`), эталон баланса.
-- Фаза 0 (в работе): Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами и RLS, тест RLS, auth, i18n, CI. Локально проверено: RLS-тест (76) и вход по magic link. Осталось: облачный Supabase и деплой на Vercel (нужны аккаунты владелицы).
+- Фаза 0: Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами, RLS и явными GRANT, тест RLS (95), auth, i18n, CI. Прод: https://status-life-rpg.vercel.app (Supabase Auth: Site URL и redirect URLs для прода, localhost и превью Vercel настроены).
+- Следующее: фаза 1a (игровой движок, `replay()`, леджер, `pnpm game:recompute`).

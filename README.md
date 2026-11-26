@@ -7,4 +7,4 @@
 - Инструкции для Claude Code: [`CLAUDE.md`](CLAUDE.md)
 - Эталон баланса: `python scripts/balance.py`
 
-Статус: план готов, ждёт одобрения. Код фазы 0 ещё не начат.
+Статус: фаза 0 готова. Прод: https://status-life-rpg.vercel.app
