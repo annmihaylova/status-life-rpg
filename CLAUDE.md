@@ -44,7 +44,11 @@
   - `adminDb()` — только игровой движок и системные задачи (леджер `xp_events`, `user_titles`, `api_tokens` пользователю доступны только на чтение);
   - `lib/supabase/server.ts` / `client.ts` — auth и простые чтения через supabase-js с JWT пользователя.
 - Новый пользователь: триггер `handle_new_user` создаёт profile, settings, character, notification_settings и 3 общие характеристики.
-- Auth: magic link + Google (Supabase, PKCE), возврат на `/auth/callback`. `proxy.ts` обновляет сессию и пускает без входа только `/login`, `/auth/*`, `/api/*`.
+- Auth: вход по письму + Google. `proxy.ts` обновляет сессию и пускает без входа только `/login`, `/auth/*`, `/api/*`.
+  - Письмо отправляется implicit-клиентом → ссылка возвращает на `/auth/finish#access_token=…`, страница ставит сессию в браузере. Так ссылка работает в любом браузере/на телефоне (PKCE ломался, если письмо открыто не там, где запрошено).
+  - В облаке шаблоны писем стандартные (менять можно только со своим SMTP): в письме только ссылка. Локально шаблон `supabase/templates/sign-in.html` с кодом и ссылкой на `/auth/confirm` (token_hash); поле кода включается `NEXT_PUBLIC_AUTH_EMAIL_CODE=true`.
+  - Встроенная почта Supabase шлёт письма только на адреса участников организации и с жёстким лимитом в час. Для других людей нужен свой SMTP (Resend, фаза 3/5).
+  - Google: кнопка скрыта, пока `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED` не `true`; `/auth/callback` (PKCE) остаётся для OAuth.
 - i18n: next-intl без префикса в URL, локаль из куки `NEXT_LOCALE`, по умолчанию `ru`. Тексты — `messages/{ru,en}.json`.
 - `cacheComponents` выключен: страницы персональные. Вернуться к нему для публичных страниц (фаза 5).
 
