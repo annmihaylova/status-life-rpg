@@ -64,7 +64,7 @@
 ## Прод
 - Supabase: проект `status`, ref `jfrkugrsfiehgxvtckyb`, регион ca-central-1, бесплатный тариф. URL `https://jfrkugrsfiehgxvtckyb.supabase.co`.
 - Vercel: проект `status-life-rpg` (команда ann-mikhailova, Hobby), деплой на каждый пуш в `main`. В env только `NEXT_PUBLIC_SUPABASE_URL` и `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; `DATABASE_URL` добавит владелица, когда серверу понадобится прямой доступ к БД (фаза 1).
-- Миграции в облако: Supabase CLI (`supabase link --project-ref jfrkugrsfiehgxvtckyb`, затем `supabase db push`) требует входа владелицы (`supabase login`, в отдельном окне PowerShell — CLI не работает без TTY). Первые три миграции применены вручную через SQL Editor и записаны в `supabase_migrations.schema_migrations`.
+- Миграции в облако: Supabase CLI (`supabase link --project-ref jfrkugrsfiehgxvtckyb`, затем `supabase db push`) требует входа владелицы (`supabase login`, в отдельном окне PowerShell — CLI не работает без TTY). Пока CLI не подключён, миграции применяются вручную через SQL Editor и записываются в `supabase_migrations.schema_migrations` (применены все 4, до `engine_fields` включительно).
 - Облачный Supabase не выдаёт права на новые таблицы автоматически: каждую новую таблицу явно добавляй в миграцию с GRANT (см. `*_table_grants.sql`).
 
 ## Сделано
