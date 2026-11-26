@@ -1,4 +1,8 @@
 import math
+import sys
+
+# Windows-консоль по умолчанию не UTF-8: без этого русский вывод превращается в кракозябры
+sys.stdout.reconfigure(encoding="utf-8")
 
 def xp_to_next_level(L): return round(100 * L**1.2)
 def xp_to_next_point(v): return round(600 * (v - 9)**1.2)      # v -> v+1
