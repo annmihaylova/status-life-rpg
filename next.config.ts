@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+
+// cacheComponents выключен: почти все страницы персональные и читают сессию.
+// Вернёмся к нему, когда появятся публичные страницы (лендинг, фаза 5).
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
   turbopack: {
     rules: {
       "*.css": {
@@ -14,4 +16,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

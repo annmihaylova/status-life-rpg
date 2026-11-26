@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "Status",
+    "tagline": "Level up your real life"
+  },
+  "login": {
+    "title": "Enter the System",
+    "subtitle": "We'll email you a sign-in link. No password needed.",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "sendLink": "Send link",
+    "sending": "Sending…",
+    "sent": "[System] Link sent. Check your inbox.",
+    "or": "or",
+    "google": "Continue with Google",
+    "error": "Something went wrong: {message}"
+  },
+  "home": {
+    "greeting": "[System] Character registered.",
+    "level": "Level {level}",
+    "soon": "The status window opens in the next phase.",
+    "signOut": "Sign out"
+  }
+}
