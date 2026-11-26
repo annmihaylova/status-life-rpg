@@ -27,5 +27,54 @@
     "level": "Уровень {level}",
     "soon": "Окно статуса откроется в следующей фазе.",
     "signOut": "Выйти"
+  },
+  "system": {
+    "xpGained": "[Система] Получено опыта: {amount}",
+    "levelUp": "[Система] Уровень персонажа повышен: {from} → {to}",
+    "slotUnlockedMain": "[Система] Открыт основной слот навыка! Всего основных: {total}",
+    "slotUnlockedSecondary": "[Система] Открыт второстепенный слот навыка! Всего второстепенных: {total}",
+    "skillLevelUp": "[Система] Навык «{skill}» повышен: {from} → {to}",
+    "skillRankUp": "[Система] Навык «{skill}»: новый ранг — {rank}",
+    "skillAwakened": "[Система] Пробуждён спящий навык «{skill}»",
+    "skillOffer": "[Система] Обнаружена повторяющаяся активность. Доступен навык: «{skill}». Взять?",
+    "specializationAvailable": "[Система] Навык «{skill}» достиг уровня {milestone}: доступна специализация",
+    "attributeStar": "[Система] {attribute}: получена звезда ({stars}/10 до +1 очка)",
+    "attributePoint": "[Система] Характеристика «{attribute}» повышена: {from} → {to}",
+    "unfoldAvailable": "[Система] Характеристика «{attribute}» готова к раскрытию: {parts}. Раскрыть?",
+    "unfolded": "[Система] Характеристика «{attribute}» раскрыта: {values}",
+    "hp": "[Система] HP: {current}/{max}",
+    "hpWithEffects": "[Система] HP: {current}/{max}. Статус: {effects}",
+    "hpRest": "[Система] HP: {current}/{max}. Статус: {effects}. Рекомендуется отдых."
+  },
+  "game": {
+    "attributes": {
+      "body": "Тело",
+      "mind": "Разум",
+      "spirit": "Дух",
+      "strength": "Сила",
+      "dexterity": "Ловкость",
+      "endurance": "Выносливость",
+      "intellect": "Интеллект",
+      "perception": "Восприятие",
+      "will": "Воля",
+      "charisma": "Харизма",
+      "empathy": "Эмпатия",
+      "creativity": "Творчество"
+    },
+    "ranks": {
+      "novice": "Новичок",
+      "apprentice": "Ученик",
+      "journeyman": "Подмастерье",
+      "specialist": "Специалист",
+      "expert": "Эксперт",
+      "master": "Мастер"
+    },
+    "effects": {
+      "lack_of_sleep": "Недосып",
+      "overload": "Перегруз",
+      "unwell": "Недомогание",
+      "recovery": "Восстановление",
+      "second_wind": "Второе дыхание"
+    }
   }
 }

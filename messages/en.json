@@ -27,5 +27,54 @@
     "level": "Level {level}",
     "soon": "The status window opens in the next phase.",
     "signOut": "Sign out"
+  },
+  "system": {
+    "xpGained": "[System] Experience gained: {amount}",
+    "levelUp": "[System] Character level up: {from} → {to}",
+    "slotUnlockedMain": "[System] Main skill slot unlocked! Main slots: {total}",
+    "slotUnlockedSecondary": "[System] Secondary skill slot unlocked! Secondary slots: {total}",
+    "skillLevelUp": "[System] Skill “{skill}” increased: {from} → {to}",
+    "skillRankUp": "[System] Skill “{skill}”: new rank — {rank}",
+    "skillAwakened": "[System] Dormant skill awakened: “{skill}”",
+    "skillOffer": "[System] Recurring activity detected. Skill available: “{skill}”. Take it?",
+    "specializationAvailable": "[System] Skill “{skill}” reached level {milestone}: specialization available",
+    "attributeStar": "[System] {attribute}: star gained ({stars}/10 to +1 point)",
+    "attributePoint": "[System] Attribute “{attribute}” increased: {from} → {to}",
+    "unfoldAvailable": "[System] Attribute “{attribute}” is ready to unfold: {parts}. Unfold?",
+    "unfolded": "[System] Attribute “{attribute}” unfolded: {values}",
+    "hp": "[System] HP: {current}/{max}",
+    "hpWithEffects": "[System] HP: {current}/{max}. Status: {effects}",
+    "hpRest": "[System] HP: {current}/{max}. Status: {effects}. Rest is recommended."
+  },
+  "game": {
+    "attributes": {
+      "body": "Body",
+      "mind": "Mind",
+      "spirit": "Spirit",
+      "strength": "Strength",
+      "dexterity": "Dexterity",
+      "endurance": "Endurance",
+      "intellect": "Intellect",
+      "perception": "Perception",
+      "will": "Will",
+      "charisma": "Charisma",
+      "empathy": "Empathy",
+      "creativity": "Creativity"
+    },
+    "ranks": {
+      "novice": "Novice",
+      "apprentice": "Apprentice",
+      "journeyman": "Journeyman",
+      "specialist": "Specialist",
+      "expert": "Expert",
+      "master": "Master"
+    },
+    "effects": {
+      "lack_of_sleep": "Sleep-deprived",
+      "overload": "Overload",
+      "unwell": "Unwell",
+      "recovery": "Recovery",
+      "second_wind": "Second wind"
+    }
   }
 }
