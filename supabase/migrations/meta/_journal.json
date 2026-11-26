@@ -15,6 +15,13 @@
       "when": 1795714203373,
       "tag": "20261126173003_seed_and_new_user",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795716351180,
+      "tag": "20261126180551_table_grants",
+      "breakpoints": true
     }
   ]
 }

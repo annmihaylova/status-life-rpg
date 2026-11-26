@@ -66,6 +66,22 @@ async function asRole<T>(
   return result as T;
 }
 
+/** Количество строк, затронутых запросом, или "denied", если у роли нет прав на операцию. */
+async function rowsOrDenied(
+  role: "authenticated" | "anon",
+  userId: string | null,
+  query: string,
+  params: string[] = [],
+): Promise<number | "denied"> {
+  try {
+    const r = await asRole(role, userId, (tx) => tx.unsafe(query, params));
+    return r.count;
+  } catch (e) {
+    if (e instanceof Error && /permission denied/.test(e.message)) return "denied";
+    throw e;
+  }
+}
+
 async function createUser(id: string) {
   await sql`
     insert into auth.users (id, instance_id, aud, role, email, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
@@ -143,30 +159,36 @@ describe("RLS", () => {
         expect(foreign[0].n).toBe(0);
       });
 
-      it("аноним не видит ничего", async () => {
-        const r = await asRole("anon", null, (tx) =>
-          tx.unsafe(`select count(*)::int as n from ${table}`),
-        );
-        expect(r[0].n).toBe(0);
+      it("у анонима нет доступа", async () => {
+        expect(await rowsOrDenied("anon", null, `select 1 from ${table}`)).toBe("denied");
       });
 
       it("чужие строки нельзя изменить или удалить", async () => {
-        const upd = await asRole("authenticated", B, (tx) =>
-          tx.unsafe(`update ${table} set ${col} = ${col} where ${col} = $1`, [A]),
+        const upd = await rowsOrDenied(
+          "authenticated",
+          B,
+          `update ${table} set ${col} = ${col} where ${col} = $1`,
+          [A],
         );
-        expect(upd.count).toBe(0);
-        const del = await asRole("authenticated", B, (tx) =>
-          tx.unsafe(`delete from ${table} where ${col} = $1`, [A]),
-        );
-        expect(del.count).toBe(0);
+        expect([0, "denied"]).toContain(upd);
+        const del = await rowsOrDenied("authenticated", B, `delete from ${table} where ${col} = $1`, [
+          A,
+        ]);
+        expect([0, "denied"]).toContain(del);
       });
 
       if (READ_ONLY.has(table)) {
-        it("только чтение: свои строки тоже нельзя удалить", async () => {
-          const del = await asRole("authenticated", A, (tx) =>
-            tx.unsafe(`delete from ${table} where ${col} = $1`, [A]),
-          );
-          expect(del.count).toBe(0);
+        it("только чтение: свои строки нельзя ни менять, ни удалять", async () => {
+          const q = `delete from ${table} where ${col} = $1`;
+          expect(await rowsOrDenied("authenticated", A, q, [A])).toBe("denied");
+          const u = `update ${table} set ${col} = ${col} where ${col} = $1`;
+          expect(await rowsOrDenied("authenticated", A, u, [A])).toBe("denied");
+        });
+      } else {
+        it("права: authenticated может читать и писать, RLS ограничивает строки", async () => {
+          const [r] = await sql<{ ok: boolean }[]>`
+            select has_table_privilege('authenticated', ${"public." + table}, 'SELECT, INSERT, UPDATE, DELETE') as ok`;
+          expect(r.ok).toBe(true);
         });
       }
     });
@@ -186,7 +208,7 @@ describe("RLS", () => {
         (tx) => tx`insert into xp_events (user_id, target_type, target_id, amount, formula_version)
                    values (${A}, 'character', ${A}, 999999, 1)`,
       ),
-    ).rejects.toThrow(/row-level security/);
+    ).rejects.toThrow(/row-level security|permission denied/);
   });
 
   it("свою запись создать можно", async () => {
