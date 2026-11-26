@@ -19,6 +19,8 @@
 
 ## Окружение
 - Windows 11. Python: `python` (не `python3`). Node 24, pnpm 12, Docker Desktop (нужен для локального Supabase).
+- Docker Desktop здесь ломается после аварийного выхода: остаются неудаляемые файлы-сокеты, и он падает при старте с «remove ...sock: The file cannot be accessed by the system». Лечится `scripts/windows/fix-docker-sockets.ps1`. Закрывать Docker — через Quit в трее, не убивать процесс.
+- Локальный `.env.local` указывает на локальный Supabase (`pnpm db:start`). Почта magic link локально — Mailpit на http://127.0.0.1:54324.
 - Переводы строк — LF (`.gitattributes`).
 
 ## Команды
@@ -48,4 +50,4 @@
 
 ## Сделано
 - Подготовка: SPEC, план (`docs/PLAN.md`), эталон баланса.
-- Фаза 0 (в работе): Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами и RLS, тест RLS, auth, i18n, CI. Осталось: облачный Supabase и деплой на Vercel (нужны аккаунты владелицы).
+- Фаза 0 (в работе): Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами и RLS, тест RLS, auth, i18n, CI. Локально проверено: RLS-тест (76) и вход по magic link. Осталось: облачный Supabase и деплой на Vercel (нужны аккаунты владелицы).
