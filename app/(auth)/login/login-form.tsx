@@ -2,7 +2,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { createClient as createSupabaseJsClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
+import { publicEnv } from "@/lib/env";
 
 type State =
   | { kind: "idle" }
@@ -13,6 +15,28 @@ type State =
 
 // Google показываем, только когда провайдер включён в Supabase (иначе кнопка ведёт на ошибку).
 const GOOGLE_ENABLED = process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED === "true";
+// Поле для кода показываем, только если шаблон письма содержит код ({{ .Token }}).
+// Локально — да (supabase/templates/sign-in.html). В облаке шаблон меняется только со своим SMTP.
+const EMAIL_CODE_ENABLED = process.env.NEXT_PUBLIC_AUTH_EMAIL_CODE === "true";
+
+/**
+ * Письмо отправляем в implicit-режиме: ссылка из письма приносит токены прямо в URL (#…),
+ * и вход срабатывает в любом браузере, а не только в том, где запросили письмо (как в PKCE).
+ */
+function emailClient() {
+  return createSupabaseJsClient(
+    publicEnv.NEXT_PUBLIC_SUPABASE_URL,
+    publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth: {
+        flowType: "implicit",
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    },
+  );
+}
 
 export function LoginForm({ initialError }: { initialError: string | null }) {
   const t = useTranslations("login");
@@ -29,9 +53,9 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
   async function sendLink(e: React.FormEvent) {
     e.preventDefault();
     setState({ kind: "sending" });
-    const { error } = await createClient().auth.signInWithOtp({
+    const { error } = await emailClient().auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo: callbackUrl() },
+      options: { emailRedirectTo: `${window.location.origin}/auth/finish` },
     });
     if (error) {
       setState({ kind: "error", message: error.message });
@@ -45,6 +69,7 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
   async function verifyCode(e: React.FormEvent) {
     e.preventDefault();
     setState({ kind: "verifying" });
+    // implicit-клиент не хранит сессию, поэтому код проверяем обычным клиентом с куками
     const { error } = await createClient().auth.verifyOtp({
       email: email.trim(),
       token: code.trim(),
@@ -96,7 +121,7 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
         </button>
       </form>
 
-      {codeSent && (
+      {codeSent && EMAIL_CODE_ENABLED && (
         <form onSubmit={verifyCode} className="space-y-3">
           <label className="block text-sm" htmlFor="code">
             {t("code")}
@@ -133,7 +158,9 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
       )}
 
       <p role="status" aria-live="polite" className="min-h-5 font-mono text-sm">
-        {state.kind === "sent" && <span className="text-accent">{t("sent")}</span>}
+        {state.kind === "sent" && (
+          <span className="text-accent">{EMAIL_CODE_ENABLED ? t("sentWithCode") : t("sent")}</span>
+        )}
         {state.kind === "error" && (
           <span className="text-hp">{t("error", { message: state.message })}</span>
         )}

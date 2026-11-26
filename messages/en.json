@@ -10,7 +10,7 @@
     "emailPlaceholder": "you@example.com",
     "sendLink": "Get code",
     "sending": "Sending…",
-    "sent": "[System] Email sent. Enter the code from it or click the link.",
+    "sent": "[System] Email sent. Open it and click the link — any browser or phone works.",
     "or": "or",
     "google": "Continue with Google",
     "error": "Something went wrong: {message}",
@@ -18,7 +18,9 @@
     "code": "Code from the email",
     "signIn": "Sign in",
     "verifying": "Checking…",
-    "linkFailed": "the link did not work. Request a new code and enter it here."
+    "linkFailed": "the link did not work. Request a new code and enter it here.",
+    "finishing": "[System] Signing in…",
+    "sentWithCode": "[System] Email sent. Enter the code from it or click the link."
   },
   "home": {
     "greeting": "[System] Character registered.",
