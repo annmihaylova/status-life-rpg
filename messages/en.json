@@ -5,15 +5,20 @@
   },
   "login": {
     "title": "Enter the System",
-    "subtitle": "We'll email you a sign-in link. No password needed.",
+    "subtitle": "We will email you a sign-in code and link. No password needed.",
     "email": "Email",
     "emailPlaceholder": "you@example.com",
-    "sendLink": "Send link",
+    "sendLink": "Get code",
     "sending": "Sending…",
-    "sent": "[System] Link sent. Check your inbox.",
+    "sent": "[System] Email sent. Enter the code from it or click the link.",
     "or": "or",
     "google": "Continue with Google",
-    "error": "Something went wrong: {message}"
+    "error": "Something went wrong: {message}",
+    "resend": "Send again",
+    "code": "Code from the email",
+    "signIn": "Sign in",
+    "verifying": "Checking…",
+    "linkFailed": "the link did not work. Request a new code and enter it here."
   },
   "home": {
     "greeting": "[System] Character registered.",
