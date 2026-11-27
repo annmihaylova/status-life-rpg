@@ -19,6 +19,7 @@ import { GAME_CONFIG } from "@/lib/game/config";
 import { isIsoDate } from "@/lib/game/dates";
 import { mainSlots, secondarySlots } from "@/lib/game/formulas";
 import { mutateAndRecompute, type MutationResult } from "@/lib/server/game/mutate";
+import { getGameView } from "@/lib/server/game/queries";
 import { requireUserId } from "@/lib/server/session";
 
 export type ActionResult = MutationResult & { error?: string };
@@ -265,4 +266,16 @@ export async function wearTitle(titleKey: string | null): Promise<ActionResult> 
   });
   revalidatePath("/", "layout");
   return ok ? { messages: [] } : { messages: [], error: "title_not_earned" };
+}
+
+/** Смежный класс: один из вариантов, которые предлагает Система; null — снять. */
+export async function chooseSideClass(classKey: string | null): Promise<ActionResult> {
+  const userId = await requireUserId();
+  const key = z.string().max(60).nullable().parse(classKey);
+  if (key && !(await getGameView(userId)).result.classOptions.includes(key)) {
+    return { messages: [], error: "side_class_not_available" };
+  }
+  return run(userId, async (tx) => {
+    await tx.insert(gameDecisions).values({ userId, kind: "choose_side_class", payload: { classKey: key } });
+  });
 }

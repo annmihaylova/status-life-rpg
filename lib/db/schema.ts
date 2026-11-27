@@ -120,6 +120,7 @@ export const decisionKindEnum = pgEnum("decision_kind", [
   "decline_unfold",
   "wear_title",
   "set_experiments",
+  "choose_side_class",
 ]);
 
 // ───────────────────────── профиль и настройки ─────────────────────────
@@ -511,6 +512,8 @@ export const notificationSettings = pgTable(
     checkinLocalTime: text("checkin_local_time").notNull().default("21:00"),
     channels: jsonb("channels").notNull().default({ push: true, email: false }),
     enabled: boolean("enabled").notNull().default(true),
+    /** локальная дата последнего напоминания о чек-ине (не чаще раза в день) */
+    lastSentOn: date("last_sent_on"),
   },
   (t) => [...ownRows("notification_settings", t.userId)],
 ).enableRLS();

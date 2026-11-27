@@ -102,6 +102,8 @@ export function eventToMessage(e: GameEvent, n: MessageNames): SystemMessage {
       return { ...base, key: "titleEarned", values: { title: n.title(e.title) }, tone: "rare" };
     case "class_unlocked":
       return { ...base, key: "classUnlocked", values: { class: n.className(e.classKey) }, tone: "epic" };
+    case "side_class_taken":
+      return { ...base, key: "sideClassTaken", values: { class: n.className(e.classKey) }, tone: "rare" };
     case "class_changed":
       return {
         ...base,
@@ -166,4 +168,5 @@ export const SYSTEM_MESSAGE_KEYS = [
   "titleEarned",
   "classUnlocked",
   "classChanged",
+  "sideClassTaken",
 ] as const;

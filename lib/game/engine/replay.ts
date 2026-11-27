@@ -40,7 +40,7 @@ import {
   type AttributeProgress,
 } from "../formulas";
 import { computeHp, isRestDay, secondWindBonus, type HpDayEntry } from "../hp";
-import { chooseClass, isWeekStart, newTitles, topAttributes, type ProgressCounters } from "../progression";
+import { chooseClass, isWeekStart, newTitles, sideClassOptions, topAttributes, type ProgressCounters } from "../progression";
 import type {
   AttributeState,
   CalibrationState,
@@ -108,6 +108,8 @@ export function replay(input: EngineInput): EngineResult {
   // титулы и класс
   const earnedTitles = new Map<string, IsoDate>();
   let currentClass: { key: string; since: IsoDate } | null = null;
+  let sideClass: string | null = null;
+  let classOptions: string[] = [];
   const counters: ProgressCounters = {
     date: input.registeredOn,
     entriesTotal: 0,
@@ -320,6 +322,17 @@ export function replay(input: EngineInput): EngineResult {
       }
       case "decline_unfold":
         return;
+      case "choose_side_class": {
+        const k = d.payload.classKey;
+        if (k === null) {
+          sideClass = null;
+          return;
+        }
+        if (!currentClass || !classOptions.includes(k)) return reject(d, "side_class_not_available");
+        sideClass = k;
+        emit({ type: "side_class_taken", date: d.date, classKey: k });
+        return;
+      }
     }
   };
 
@@ -675,6 +688,9 @@ export function replay(input: EngineInput): EngineResult {
       emit({ type: "class_changed", date, from: currentClass.key, classKey: next.key });
       currentClass = { key: next.key, since: date };
     }
+    classOptions = sideClassOptions(next.key, top, domains);
+    // смежный класс не может совпадать с основным; взятый раньше остаётся, даже если выпал из списка
+    if (sideClass === next.key) sideClass = null;
   };
 
   // ───────── проход по дням ─────────
@@ -704,7 +720,9 @@ export function replay(input: EngineInput): EngineResult {
   let returnBreak = 0;
 
   for (let date = firstDate; date <= lastDate; date = addDays(date, 1)) {
-    for (const d of decisionsByDay.get(date) ?? []) applyDecision(d);
+    // смежный класс выбирают из вариантов, известных на конец дня, — применяем после закрытия дня
+    const dayDecisions = decisionsByDay.get(date) ?? [];
+    for (const d of dayDecisions) if (d.kind !== "choose_side_class") applyDecision(d);
 
     const dayEntries = entriesByDay.get(date) ?? [];
     const breakBefore = dayEntries.length > 0 && lastActiveDate ? diffDays(date, lastActiveDate) - 1 : null;
@@ -774,6 +792,7 @@ export function replay(input: EngineInput): EngineResult {
       hpDays[date] = { ...hp, date, restDay };
     }
     closeProgress(date, dayEntries.length > 0, restDay, breakBefore);
+    for (const d of dayDecisions) if (d.kind === "choose_side_class") applyDecision(d);
 
     yesterdayRest = restDay;
     if (dayEntries.length > 0) lastActiveDate = date;
@@ -808,6 +827,8 @@ export function replay(input: EngineInput): EngineResult {
     calibrations: windows.map((w) => ({ ...w, base: [...w.base], keys: [...w.keys] })),
     titles: [...earnedTitles.entries()].map(([key, earnedOn]) => ({ key, earnedOn })),
     characterClass: currentClass,
+    sideClass,
+    classOptions,
     rejectedDecisions: rejected,
   };
 }

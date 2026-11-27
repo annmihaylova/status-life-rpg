@@ -47,7 +47,8 @@
     "hpRest": "[System] HP: {current}/{max}. Status: {effects}. Rest is recommended.",
     "titleEarned": "[System] Title earned: \"{title}\"",
     "classUnlocked": "[System] Class revealed: {class}",
-    "classChanged": "[System] Class changed: {from} → {to}"
+    "classChanged": "[System] Class changed: {from} → {to}",
+    "sideClassTaken": "[System] Adjacent class taken: {class}"
   },
   "game": {
     "attributes": {
@@ -185,7 +186,8 @@
       "too_many_tokens": "Too many active tokens: revoke the ones you do not need.",
       "oauth_failed": "Could not answer the access request. Start connecting in Claude again.",
       "title_not_earned": "This title is not earned yet.",
-      "bad_timer": "The timer shows an odd duration. Reset it and start again."
+      "bad_timer": "The timer shows an odd duration. Reset it and start again.",
+      "side_class_not_available": "This adjacent class is not available right now."
     }
   },
   "onboarding": {
@@ -692,5 +694,15 @@
     "tooShort": "Less than a minute: nothing to log.",
     "focusQuestion": "How much of this time were you really focused?",
     "focusValue": "{percent}% → {minutes} min focused"
+  },
+  "classes": {
+    "title": "Class",
+    "locked": "Your class unlocks at level 10. Then you can also take an adjacent class.",
+    "main": "Main",
+    "side": "Adjacent",
+    "sideHint": "You can take an adjacent class: it shares an attribute with your main class and shows next to it.",
+    "take": "+ {name}",
+    "drop": "Drop",
+    "about": "The System recalculates the main class on Mondays. You choose the adjacent one yourself and can change it any time."
   }
 }

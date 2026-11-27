@@ -172,24 +172,38 @@ function attrMatch(have: AttributeKey, want: PartKey): number {
  * (`domains` отсортированы по убыванию). Раскрытие для класса не нужно.
  */
 export function chooseClass(top: AttributeKey[], domains: string[]): ClassDef | null {
-  let best: ClassDef | null = null;
-  let bestScore = 0;
-  for (const c of CLASSES) {
+  return rankClasses(top, domains)[0]?.cls ?? null;
+}
+
+/** Все подходящие классы по убыванию соответствия (при равенстве — порядок конфига). */
+export function rankClasses(top: AttributeKey[], domains: string[]): { cls: ClassDef; score: number }[] {
+  const out: { cls: ClassDef; score: number; i: number }[] = [];
+  CLASSES.forEach((c, i) => {
     // каждой характеристике человека — лучшая пара из класса, без повторов
     const [a, b] = c.attrs;
     const [x, y] = top;
     const straight = (x ? attrMatch(x, a) : 0) + (y ? attrMatch(y, b) : 0);
     const crossed = (x ? attrMatch(x, b) : 0) + (y ? attrMatch(y, a) : 0);
     const attrScore = Math.max(straight, crossed);
-    if (attrScore === 0) continue;
-    const domainScore = (domains[0] && c.domains.includes(domains[0]) ? 2 : 0) + (domains[1] && c.domains.includes(domains[1]) ? 1 : 0);
-    const score = attrScore * 10 + domainScore;
-    if (score > bestScore) {
-      best = c;
-      bestScore = score;
-    }
-  }
-  return best;
+    if (attrScore === 0) return;
+    const domainScore =
+      (domains[0] && c.domains.includes(domains[0]) ? 2 : 0) + (domains[1] && c.domains.includes(domains[1]) ? 1 : 0);
+    out.push({ cls: c, score: attrScore * 10 + domainScore, i });
+  });
+  return out.sort((p, q) => q.score - p.score || p.i - q.i).map(({ cls, score }) => ({ cls, score }));
+}
+
+/**
+ * Смежные классы: подходят персонажу и делят с основным классом хотя бы одну характеристику.
+ * Смежный класс человек берёт сам (решение `choose_side_class`), это дополнение к основному.
+ */
+export function sideClassOptions(mainKey: string, top: AttributeKey[], domains: string[], limit = 4): string[] {
+  const main = classByKey.get(mainKey);
+  if (!main) return [];
+  return rankClasses(top, domains)
+    .filter(({ cls }) => cls.key !== mainKey && cls.attrs.some((a) => main.attrs.includes(a)))
+    .slice(0, limit)
+    .map(({ cls }) => cls.key);
 }
 
 /** Классы пересчитываются раз в неделю — по понедельникам. */

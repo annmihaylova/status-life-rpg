@@ -10,6 +10,7 @@ import {
   TITLES,
   chooseClass,
   isWeekStart,
+  sideClassOptions,
   skillDomain,
   titleMet,
   topAttributes,
@@ -233,5 +234,51 @@ describe("классы", () => {
     expect(r.characterClass?.key).toBeTruthy();
     const unlocked = r.events.filter((e) => e.type === "class_unlocked");
     expect(unlocked).toHaveLength(1);
+  });
+});
+
+describe("смежные классы", () => {
+  it("варианты делят с основным классом характеристику и не включают его самого", () => {
+    const opts = sideClassOptions("researcher", ["intellect", "perception"], ["science"]);
+    expect(opts.length).toBeGreaterThan(0);
+    expect(opts.length).toBeLessThanOrEqual(4);
+    expect(opts).not.toContain("researcher");
+    for (const k of opts) {
+      const c = CLASSES.find((x) => x.key === k)!;
+      expect(c.attrs.some((a) => a === "intellect" || a === "perception")).toBe(true);
+    }
+  });
+
+  it("движок: смежный класс берётся в день открытия класса, недоступный — отклоняется", () => {
+    const xp10 = totalXpForLevel(10);
+    const days = Math.ceil(xp10 / 600) + 1;
+    const entries = Array.from({ length: days }, (_, i) => entry(addDays(D0, i), 600));
+    const base = run({ today: addDays(D0, days), entries });
+    const unlockedOn = base.characterClass!.since;
+    const option = base.classOptions[0];
+    expect(option).toBeTruthy();
+
+    const r = run({
+      today: addDays(D0, days),
+      entries,
+      decisions: [...takeAll, decision("choose_side_class", unlockedOn, { classKey: option })],
+    });
+    expect(r.sideClass).toBe(option);
+    expect(r.events.some((e) => e.type === "side_class_taken")).toBe(true);
+
+    const bad = run({
+      today: addDays(D0, days),
+      entries,
+      decisions: [...takeAll, decision("choose_side_class", unlockedOn, { classKey: base.characterClass!.key })],
+    });
+    expect(bad.sideClass).toBeNull();
+    expect(bad.rejectedDecisions.map((x) => x.reason)).toContain("side_class_not_available");
+
+    const early = run({
+      today: addDays(D0, days),
+      entries,
+      decisions: [...takeAll, decision("choose_side_class", D0, { classKey: option })],
+    });
+    expect(early.sideClass).toBeNull();
   });
 });

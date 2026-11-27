@@ -63,7 +63,9 @@ export type EngineDecision =
     >
   | Decision<"calibration_finish", { kind: "start" | "unfold"; general?: GeneralKey }>
   | Decision<"unfold", { general: GeneralKey }>
-  | Decision<"decline_unfold", { general: GeneralKey }>;
+  | Decision<"decline_unfold", { general: GeneralKey }>
+  /** смежный класс: один из `classOptions`; null — снять */
+  | Decision<"choose_side_class", { classKey: string | null }>;
 
 interface Decision<K extends string, P> {
   id: string;
@@ -118,6 +120,7 @@ export type GameEvent = { id: string; date: IsoDate; entryId?: string } & (
   | { type: "title_earned"; title: string }
   | { type: "class_unlocked"; classKey: string }
   | { type: "class_changed"; from: string; classKey: string }
+  | { type: "side_class_taken"; classKey: string }
 );
 
 export interface SkillState {
@@ -191,6 +194,10 @@ export interface EngineResult {
   titles: { key: string; earnedOn: IsoDate }[];
   /** класс: открывается на 10 уровне, пересчитывается по понедельникам */
   characterClass: { key: string; since: IsoDate } | null;
+  /** смежный класс, выбранный пользователем */
+  sideClass: string | null;
+  /** смежные классы, которые можно взять сейчас */
+  classOptions: string[];
   /** решения, которые движок не смог применить (некорректная калибровка и т.п.) */
   rejectedDecisions: { id: string; reason: string }[];
 }

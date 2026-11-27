@@ -59,6 +59,7 @@ const payloadSchemas = {
   calibration_finish: z.object({ kind: z.enum(["start", "unfold"]), general: general.optional() }),
   unfold: z.object({ general }),
   decline_unfold: z.object({ general }),
+  choose_side_class: z.object({ classKey: z.string().max(60).nullable() }),
 } as const;
 
 export interface LoadedInput {

@@ -85,7 +85,14 @@ export default async function StatusPage() {
               <p className="truncate font-mono text-xs text-star">«{titleName(view.character.titleKey, loc)}»</p>
             )}
             <p className="text-xs text-muted">
-              {r.characterClass ? t("classLabel", { name: className(r.characterClass.key, loc) }) : t("classLocked")}
+              {r.characterClass
+                ? t("classLabel", {
+                    name: [r.characterClass.key, r.sideClass]
+                      .filter((k): k is string => Boolean(k))
+                      .map((k) => className(k, loc))
+                      .join(" · "),
+                  })
+                : t("classLocked")}
             </p>
             <p className="font-mono text-2xl">{t("level", { level })}</p>
           </div>
