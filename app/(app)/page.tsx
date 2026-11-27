@@ -231,6 +231,9 @@ export default async function StatusPage() {
 
       <footer className="flex items-center justify-between text-xs text-muted">
         <span>{new Date().toLocaleDateString(locale)}</span>
+        <Link href="/settings" className="underline underline-offset-4 hover:text-foreground">
+          {t("settings")}
+        </Link>
         <form action="/auth/signout" method="post">
           <button type="submit" className="underline underline-offset-4 hover:text-foreground">
             {t("signOut")}

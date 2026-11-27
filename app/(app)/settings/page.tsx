@@ -1,0 +1,76 @@
+import { and, desc, eq, isNull } from "drizzle-orm";
+import { headers } from "next/headers";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Panel } from "@/components/ui/primitives";
+import { withUser } from "@/lib/db";
+import { apiTokens, userSettings } from "@/lib/db/schema";
+import { requireUserId } from "@/lib/server/session";
+import { AiSettings, LocaleSwitch, TokenManager } from "./settings-client";
+
+export default async function SettingsPage() {
+  const userId = await requireUserId();
+  const [t, locale, h] = await Promise.all([getTranslations("settings"), getLocale(), headers()]);
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "status-life-rpg.vercel.app";
+  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  const mcpUrl = `${proto}://${host}/api/mcp`;
+
+  const data = await withUser(userId, async (tx) => {
+    const tokens = await tx
+      .select({ id: apiTokens.id, label: apiTokens.label, createdAt: apiTokens.createdAt, lastUsedAt: apiTokens.lastUsedAt })
+      .from(apiTokens)
+      .where(and(eq(apiTokens.userId, userId), isNull(apiTokens.revokedAt)))
+      .orderBy(desc(apiTokens.createdAt));
+    const [s] = await tx.select({ auto: userSettings.autoConfirmAi }).from(userSettings).where(eq(userSettings.userId, userId));
+    return { tokens, autoConfirm: s?.auto ?? false };
+  });
+  const fmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+
+  return (
+    <>
+      <h1 className="text-lg font-semibold">{t("title")}</h1>
+
+      <Panel title={t("ai.title")} className="space-y-4">
+        <p className="text-sm text-muted">{t("ai.intro")}</p>
+        <TokenManager
+          mcpUrl={mcpUrl}
+          tokens={data.tokens.map((x) => ({
+            id: x.id,
+            label: x.label,
+            created: fmt.format(x.createdAt),
+            lastUsed: x.lastUsedAt ? fmt.format(x.lastUsedAt) : null,
+          }))}
+        />
+      </Panel>
+
+      <Panel title={t("ai.how")} className="space-y-3 text-sm">
+        <ol className="list-inside list-decimal space-y-2">
+          <li>{t("ai.step1")}</li>
+          <li>{t("ai.step2")}</li>
+          <li>
+            {t("ai.step3")} <code className="break-all rounded bg-black/40 px-1 font-mono text-xs">{mcpUrl}</code>
+          </li>
+          <li>{t("ai.step4")}</li>
+          <li>{t("ai.step5")}</li>
+        </ol>
+        <p className="text-xs text-muted">{t("ai.noHeaders")}</p>
+        <details>
+          <summary className="cursor-pointer text-muted">{t("ai.instructionsTitle")}</summary>
+          <p className="mt-2 text-xs text-muted">{t("ai.instructionsHint")}</p>
+          <pre className="mt-2 whitespace-pre-wrap rounded-lg bg-black/40 p-3 font-mono text-xs">{t("ai.instructions")}</pre>
+        </details>
+        <details>
+          <summary className="cursor-pointer text-muted">{t("ai.chatgptTitle")}</summary>
+          <p className="mt-2 text-xs">{t("ai.chatgpt")}</p>
+        </details>
+      </Panel>
+
+      <Panel title={t("autoTitle")}>
+        <AiSettings autoConfirm={data.autoConfirm} />
+      </Panel>
+
+      <Panel title={t("language")}>
+        <LocaleSwitch locale={locale} />
+      </Panel>
+    </>
+  );
+}

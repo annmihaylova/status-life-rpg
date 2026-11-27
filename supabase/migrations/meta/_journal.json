@@ -36,6 +36,13 @@
       "when": 1795740910314,
       "tag": "20261127005510_checkin_merge",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795742097905,
+      "tag": "20261127011457_mcp_rate",
+      "breakpoints": true
     }
   ]
 }

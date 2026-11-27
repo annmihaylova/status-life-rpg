@@ -40,6 +40,8 @@ const OWNER_COL: Record<string, string> = {
 };
 const READ_ONLY = new Set(["xp_events", "user_titles", "api_tokens"]);
 const REFERENCE = new Set(["attributes", "titles"]);
+/** служебные таблицы: RLS без политик и без прав для anon/authenticated */
+const SYSTEM = new Set(["mcp_rate"]);
 
 class Rollback extends Error {}
 
@@ -131,11 +133,11 @@ describe("RLS", () => {
       select c.relname, c.relrowsecurity
       from pg_class c join pg_namespace n on n.oid = c.relnamespace
       where n.nspname = 'public' and c.relkind = 'r'`;
-    expect(rows.length).toBe(Object.keys(OWNER_COL).length + REFERENCE.size);
+    expect(rows.length).toBe(Object.keys(OWNER_COL).length + REFERENCE.size + SYSTEM.size);
     for (const r of rows) {
       expect(r.relrowsecurity, `RLS выключена: ${r.relname}`).toBe(true);
       expect(
-        r.relname in OWNER_COL || REFERENCE.has(r.relname),
+        r.relname in OWNER_COL || REFERENCE.has(r.relname) || SYSTEM.has(r.relname),
         `таблица не покрыта тестом: ${r.relname}`,
       ).toBe(true);
     }
@@ -218,6 +220,15 @@ describe("RLS", () => {
       (tx) => tx`insert into skills (user_id, name) values (${A}, 'Шахматы') returning id`,
     );
     expect(r).toHaveLength(1);
+  });
+
+  it("служебные таблицы закрыты для anon и authenticated", async () => {
+    for (const t of SYSTEM) {
+      for (const role of ["anon", "authenticated"]) {
+        const [r] = await sql`select has_table_privilege(${role}, ${"public." + t}, 'SELECT, INSERT, UPDATE, DELETE') as ok`;
+        expect(r.ok, `${role} → ${t}`).toBe(false);
+      }
+    }
   });
 
   it("справочники читаются всеми", async () => {

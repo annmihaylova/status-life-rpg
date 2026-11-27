@@ -170,7 +170,9 @@
       "llm_refusal": "The System could not parse this report. Try rephrasing.",
       "llm_unparsed": "The System returned an unclear answer. Try again.",
       "llm_unavailable": "Report parsing is unavailable right now.",
-      "llm_rate_limited": "Too many requests. Try again in a minute."
+      "llm_rate_limited": "Too many requests. Try again in a minute.",
+      "bad_label": "Token name cannot be empty.",
+      "too_many_tokens": "Too many active tokens: revoke the ones you do not need."
     }
   },
   "onboarding": {
@@ -302,7 +304,8 @@
     },
     "signOut": "Sign out",
     "editCharacter": "Edit character",
-    "dailyReport": "Daily report"
+    "dailyReport": "Daily report",
+    "settings": "Settings"
   },
   "skills": {
     "title": "Skills",
@@ -510,5 +513,40 @@
     "split": "Split",
     "delete": "Delete",
     "confirmAll": "Confirm all ({n})"
+  },
+  "settings": {
+    "title": "Settings",
+    "ai": {
+      "title": "Connect Claude and ChatGPT",
+      "intro": "Claude can log your activity into Status itself: on the command \"log my day\" or during a conversation. It needs the server address and a token.",
+      "serverUrl": "MCP server address",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyHeader": "Copy header",
+      "label": "Token name",
+      "create": "Create token",
+      "freshWarning": "The token is shown once. Copy it now: later it is hidden, you can only revoke it and create a new one.",
+      "tokenMeta": "created {created} · used {used}",
+      "never": "not yet",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke this token? The AI connected with it will stop logging activity.",
+      "how": "How to connect Claude",
+      "step1": "Create a token above and copy the \"Bearer …\" line.",
+      "step2": "In Claude open Settings → Connectors → Add custom connector.",
+      "step3": "Name: Status. Address:",
+      "step4": "In the authentication block choose No sign-in and under Request headers add the header authorization with the value \"Bearer …\".",
+      "step5": "Enable the connector in a chat and write \"log my day\".",
+      "noHeaders": "If the dialog has no Request headers section, this option is not enabled for your Claude account yet. Then the connection will use OAuth sign-in, which we add next.",
+      "instructionsTitle": "Text for Claude instructions",
+      "instructionsHint": "Add this to Claude Settings → Profile → instructions so that \"log my day\" works reliably.",
+      "instructions": "I have the Status connector (a levelling tracker). When I write \"log my day\":\n1) find today's conversations; 2) call list_skills and get_day;\n3) make a list of activities with an honest estimate of focused time (not chat length)\nand show it to me; 4) after my \"ok\", call log_activities.\nDuring normal conversations, log activity only when I ask.",
+      "chatgptTitle": "ChatGPT",
+      "chatgpt": "In ChatGPT, connectors are added in Developer mode in the apps settings. The address is the same; header token auth is not supported in every version, in which case OAuth is needed."
+    },
+    "autoTitle": "Entries from AI",
+    "autoOff": "As drafts (I confirm)",
+    "autoOn": "Confirm right away",
+    "autoHint": "By default entries from Claude arrive as drafts and wait for your confirmation in the Journal.",
+    "language": "Language"
   }
 }

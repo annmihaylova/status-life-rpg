@@ -563,6 +563,16 @@ export const weeklyChronicles = pgTable(
   ],
 ).enableRLS();
 
+/**
+ * Счётчик вызовов MCP для лимита «N в минуту на пользователя» (SPEC 7.5).
+ * Служебная: RLS включена без политик и без прав — доступ только у сервера.
+ */
+export const mcpRate = pgTable("mcp_rate", {
+  userId: userId().primaryKey(),
+  windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+  count: integer("count").notNull().default(0),
+}).enableRLS();
+
 /** Таблицы с данными пользователя — для теста RLS и экспорта. */
 export const USER_TABLES = {
   profiles,
