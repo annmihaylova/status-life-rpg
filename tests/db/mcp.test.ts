@@ -141,6 +141,7 @@ describe("MCP: доступ", () => {
         "update_activity",
         "get_week_summary",
         "save_week_letter",
+        "record_measurement",
       ].sort(),
     );
   });
@@ -233,6 +234,15 @@ describe("MCP: инструменты", () => {
     expect(rows[0].letter_text).not.toMatch(/\u0000/);
     const future = await call(tokenA, "save_week_letter", { week_start: "2999-01-07", text });
     expect(future).toMatchObject({ ok: false, error: "future_week" });
+  });
+
+  it("record_measurement: замер виден в list_skills с динамикой; чужой навык и плохое значение отклоняются", async () => {
+    expect(await call(tokenA, "record_measurement", { skill_id: skillA, scale: "elo", value: "1400", measured_on: "2026-01-01" })).toMatchObject({ ok: true });
+    expect(await call(tokenA, "record_measurement", { skill_id: skillA, scale: "elo", value: "1450", note: "lichess" })).toMatchObject({ ok: true });
+    const list = await call(tokenA, "list_skills");
+    expect(list.skills[0].last_measurement).toMatchObject({ scale: "elo", value: "1450", trend: "better" });
+    expect(await call(tokenB, "record_measurement", { skill_id: skillA, scale: "elo", value: "1500" })).toMatchObject({ ok: false, error: "skill_not_found" });
+    expect(await call(tokenA, "record_measurement", { skill_id: skillA, scale: "cefr", value: "Z9" })).toMatchObject({ ok: false, error: "bad_value" });
   });
 
   it("описания в ответах обрезаются и чистятся от управляющих символов", async () => {

@@ -1,4 +1,4 @@
-import { Bot, Hand, Mic, Timer } from "lucide-react";
+import { Bot, Hand, Mic, Timer, Watch } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { EntryActions } from "@/components/game/skill-actions";
@@ -13,6 +13,7 @@ const SOURCE_ICON = {
   checkin: Mic,
   manual: Hand,
   timer: Timer,
+  device: Watch,
 } as const;
 
 export default async function JournalPage() {

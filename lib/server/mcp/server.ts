@@ -25,6 +25,8 @@ import {
   listSkills,
   logActivities,
   logItemSchema,
+  measurementToolSchema,
+  recordMeasurementTool,
   requestSkill,
   requestSkillSchema,
   saveWeekLetter,
@@ -133,6 +135,17 @@ export function buildMcpServer(ctx: McpContext): McpServer {
       inputSchema: requestSkillSchema.shape,
     },
     async (args) => json(await requestSkill(ctx, args)),
+  );
+
+  server.registerTool(
+    "record_measurement",
+    {
+      title: "Записать замер",
+      description:
+        "Результат теста или измерения по внешней шкале для навыка: уровень языка (CEFR), рейтинг Elo, скорость печати, тест Купера, VO₂max, время, оценка. Показывается рядом с уровнем как «последний замер»; может быть ниже прошлого, на опыт не влияет. Записывай только реальный результат, который назвал пользователь.",
+      inputSchema: measurementToolSchema.shape,
+    },
+    async (args) => json(await recordMeasurementTool(ctx, args)),
   );
 
   server.registerTool(

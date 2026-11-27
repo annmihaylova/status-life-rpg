@@ -27,17 +27,21 @@ import { characterLevelFromXp, normalizeShares, skillRank } from "@/lib/game/for
 import { eventToMessage, xpMessage } from "@/lib/game/messages";
 import { letterWeekStart, periodSummary } from "@/lib/game/chronicle";
 import { className, titleName, weekStartOf } from "@/lib/game/progression";
+import { SCALE_KEYS } from "@/lib/game/measurements";
 import { loadEngineInput } from "@/lib/server/game/load";
+import { addMeasurement, latestMeasurements } from "@/lib/server/game/measurements";
 import { recomputeUser } from "@/lib/server/game/recompute";
 import { confirmDrafts } from "@/lib/server/game/drafts";
 
 export type McpSource = "mcp_claude" | "mcp_chatgpt" | "mcp_other";
+/** источник записи: агент через MCP или часы/телефон через /api/ingest */
+export type EntrySource = McpSource | "device";
 
 export interface McpContext {
   db: Db;
   userId: string;
   tokenId: string;
-  source: McpSource;
+  source: EntrySource;
 }
 
 const E = GAME_CONFIG.entry;
@@ -181,15 +185,22 @@ export async function listSkills(ctx: McpContext, query?: string) {
           q ? ilike(skillCandidates.suggestedName, `%${q}%`) : undefined,
         ),
       );
+    const measured = await latestMeasurements(tx, ctx.userId);
     return {
-      skills: rows.map((s) => ({
-        skill_id: s.id,
-        name: safe(s.name, 60),
-        scope: safe(s.scope),
-        level: s.levelCache,
-        status: s.status,
-        slot: s.slot,
-      })),
+      skills: rows.map((s) => {
+        const m = measured.get(s.id);
+        return {
+          skill_id: s.id,
+          name: safe(s.name, 60),
+          scope: safe(s.scope),
+          level: s.levelCache,
+          status: s.status,
+          slot: s.slot,
+          last_measurement: m
+            ? { scale: m.scale, value: safe(m.text, 40), unit: m.unit, measured_on: m.measuredOn, trend: m.trend }
+            : null,
+        };
+      }),
       candidates: cands.map((c) => ({
         activity_cluster: c.clusterKey,
         name: safe(c.suggestedName ?? c.clusterKey, 60),
@@ -198,6 +209,36 @@ export async function listSkills(ctx: McpContext, query?: string) {
       note: "Используй skill_id существующего навыка. Если ничего не подходит — activity_cluster: короткое обобщённое название умения.",
     };
   });
+}
+
+// ───────── record_measurement (замеры, фаза 3d) ─────────
+
+export const measurementToolSchema = z.object({
+  skill_id: z.string().describe("skill_id из list_skills"),
+  scale: z
+    .enum(SCALE_KEYS)
+    .describe("cefr (A1–C2), elo, wpm, cpm, cooper (м), vo2max, time (мм:сс), grade (текст), custom (число + unit)"),
+  value: z.string().max(40).describe("Например: B2, 1450, 24:10, 92/100"),
+  unit: z.string().max(20).optional().describe("Только для custom"),
+  measured_on: z.string().optional().describe("YYYY-MM-DD, по умолчанию сегодня"),
+  note: z.string().max(200).optional().describe("Где и как мерили: «тест Goethe», «lichess rapid»"),
+});
+
+/** Замер навыка по внешней шкале: результат теста или измерения. На опыт не влияет. */
+export async function recordMeasurementTool(ctx: McpContext, a: z.infer<typeof measurementToolSchema>) {
+  const { tz } = await profileOf(ctx);
+  const today = localDate(new Date(), tz);
+  if (!z.uuid().safeParse(a.skill_id).success) return { ok: false, error: "skill_not_found" };
+  const res = await withUserTx(ctx.db, ctx.userId, (tx) =>
+    addMeasurement(
+      tx,
+      ctx.userId,
+      { skillId: a.skill_id, scale: a.scale, value: a.value, unit: a.unit ?? null, measuredOn: a.measured_on ?? today, note: a.note ?? null },
+      today,
+      "mcp",
+    ),
+  );
+  return res.ok ? { ok: true, id: res.id, shown_in: "Status → Навыки" } : { ok: false, error: res.error };
 }
 
 // ───────── get_day ─────────
