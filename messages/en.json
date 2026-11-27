@@ -801,26 +801,30 @@
     "tokenOnce": "The key is shown once: copy the \"Bearer …\" line and paste it into each automation as the Authorization header.",
     "iphoneTitle": "iPhone and Apple Watch: Shortcuts → Automation",
     "iphoneIntro": "For each recipe: Shortcuts → Automation → + → pick the trigger → Run Immediately → New Blank Shortcut and add the actions step by step.",
-    "requestStep": "Get Contents of URL: the address above, method POST, header Authorization with the value \"Bearer …\", JSON body with the fields below (values in <> are variables from earlier steps).",
+    "requestStep": "Get Contents of URL: the address above, method POST, headers: Authorization = \"Bearer …\" (your key); request body JSON with the fields below. In JSON choose Text for type and kind, Number for numbers, and fill values in [ ] with variables from earlier steps.",
     "sleep": {
       "title": "Sleep: every morning",
+      "body": "type: sleep\nminutes: [Sum]",
       "steps": [
         "Trigger Time of Day, e.g. 10:00, daily.",
-        "Find Health Samples: type Sleep Analysis, start date in the last 1 day, value is not In Bed and not Awake.",
+        "Find Health Samples: type Sleep Analysis, start date in the last 1 day; add a Value filter: not In Bed and not Awake.",
         "Get Details of Health Samples: Duration.",
-        "Calculate Statistics: Sum. If the number turns out to be seconds, send seconds instead of minutes."
+        "Calculate Statistics: Sum. If Shortcuts returns seconds instead of minutes, Status detects it."
       ]
     },
     "workout": {
       "title": "Workout: when it ends",
+      "body": "type: workout\nkind: [Type]\nstarted_at: [Start Date in ISO 8601]\nended_at: [End Date in ISO 8601]",
       "steps": [
         "Trigger Apple Watch Workout → Ends (iOS 17 or later).",
         "Find Health Samples: type Workouts, sort by start date, latest first, limit 1.",
-        "Get Details of Health Samples three times: Type, Duration (in minutes), Start Date."
+        "Get Details of Health Samples three times: Type, Start Date, End Date.",
+        "Format Date for both dates: ISO 8601, with time. Status computes the duration itself."
       ]
     },
     "walking": {
       "title": "Steps: every evening",
+      "body": "type: walking\nsteps: [Sum]",
       "steps": [
         "Trigger Time of Day, e.g. 22:00, daily.",
         "Find Health Samples: type Steps, start date today.",
@@ -829,6 +833,7 @@
     },
     "after": "To check, run the shortcut by hand: Status replies with what it accepted. Entries appear in the Journal with a watch icon, sleep in HP on Status.",
     "androidTitle": "Android",
-    "android": "A web app cannot read Health Connect. Until the native app, you can send the same requests from an automation app (for example HTTP Shortcuts or Tasker): same address, header and body."
+    "android": "A web app cannot read Health Connect. Until the native app, you can send the same requests from an automation app (for example HTTP Shortcuts or Tasker): same address, header and body.",
+    "showStep": "Show Result (while testing): Status replies with what it accepted. Once everything works you can delete this step."
   }
 }

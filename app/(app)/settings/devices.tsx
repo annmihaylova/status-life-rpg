@@ -6,11 +6,7 @@ import { useState, useTransition } from "react";
 import { createApiToken } from "@/app/actions/settings";
 import { Button } from "@/components/ui/primitives";
 
-const RECIPES = [
-  { key: "sleep", body: '{ "type": "sleep", "minutes": <Сумма> }' },
-  { key: "workout", body: '{ "type": "workout", "kind": <Тип>, "minutes": <Длительность>, "started_at": <Начало> }' },
-  { key: "walking", body: '{ "type": "walking", "steps": <Сумма> }' },
-] as const;
+const RECIPES = ["sleep", "workout", "walking"] as const;
 
 /**
  * Часы и телефон (фаза 3d): отдельный ключ для автоматизаций и пошаговые рецепты «Команд».
@@ -82,16 +78,17 @@ export function DevicesPanel({ ingestUrl }: { ingestUrl: string }) {
       <div className="space-y-2">
         <p className="font-medium">{t("iphoneTitle")}</p>
         <p className="text-xs text-muted">{t("iphoneIntro")}</p>
-        {RECIPES.map((r) => (
-          <details key={r.key} className="rounded-xl border border-panel-border p-3">
-            <summary className="cursor-pointer">{t(`${r.key}.title`)}</summary>
+        {RECIPES.map((key) => (
+          <details key={key} className="rounded-xl border border-panel-border p-3">
+            <summary className="cursor-pointer">{t(`${key}.title`)}</summary>
             <ol className="mt-2 list-inside list-decimal space-y-1 text-xs text-muted">
-              {(t.raw(`${r.key}.steps`) as string[]).map((s, i) => (
+              {(t.raw(`${key}.steps`) as string[]).map((s, i) => (
                 <li key={i}>{s}</li>
               ))}
               <li>{t("requestStep")}</li>
+              <li>{t("showStep")}</li>
             </ol>
-            <code className={`${code} mt-2`}>{r.body}</code>
+            <code className={`${code} mt-2 whitespace-pre-wrap`}>{t(`${key}.body`)}</code>
           </details>
         ))}
         <p className="text-xs text-muted">{t("after")}</p>

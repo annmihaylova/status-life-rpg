@@ -4,9 +4,17 @@
  * запись в БД — app/api/ingest. Повторная отправка не создаёт дублей (client_ref).
  */
 import { z } from "zod";
-import { isIsoDate, type IsoDate } from "@/lib/game/dates";
+import { isIsoDate, localDate, type IsoDate } from "@/lib/game/dates";
 
-const num = z.union([z.number(), z.string().trim().regex(/^-?\d+([.,]\d+)?$/).transform((s) => Number(s.replace(",", ".")))]);
+// «Команды» иногда присылают числа строкой, с пробелами-разделителями тысяч или запятой
+const num = z.union([
+  z.number(),
+  z
+    .string()
+    .transform((s) => s.replace(/[\s\u00a0\u202f]/g, "").replace(",", "."))
+    .pipe(z.string().regex(/^-?\d+(\.\d+)?$/))
+    .transform(Number),
+]);
 const day = z.string().trim().refine(isIsoDate).optional();
 const intensityWord = z.enum(["light", "normal", "hard", "max"]);
 
@@ -20,7 +28,8 @@ const sleepItem = z.object({
 const workoutItem = z.object({
   type: z.literal("workout"),
   date: day,
-  started_at: z.string().max(40).optional(),
+  started_at: z.string().max(60).optional(),
+  ended_at: z.string().max(60).optional(),
   kind: z.string().trim().min(1).max(60).default("workout"),
   minutes: num.optional(),
   seconds: num.optional(),
@@ -60,6 +69,16 @@ export function parseIngestBody(body: unknown): { items: IngestItem[]; errors: n
     else errors += 1;
   }
   return { items, errors: errors + Math.max(0, raw.length - 50) };
+}
+
+/**
+ * Момент времени из «Команд»: ISO 8601 (рекомендуем «Форматировать дату» → ISO 8601)
+ * или английская запись вида «Nov 26, 2026 at 7:00 AM».
+ */
+export function parseInstant(s: string | undefined): Date | null {
+  if (!s) return null;
+  const t = Date.parse(s.trim()) || Date.parse(s.trim().replace(/\s+at\s+/i, " "));
+  return Number.isFinite(t) && t > 0 ? new Date(t) : null;
 }
 
 /** Тип тренировки Apple Health / Health Connect → понятное название навыка. */
@@ -149,7 +168,7 @@ function minutesOf(i: { minutes?: number; seconds?: number }): number | null {
 
 export function planIngest(
   items: IngestItem[],
-  ctx: { today: IsoDate; locale: "ru" | "en"; skills: UserSkillRef[] },
+  ctx: { today: IsoDate; locale: "ru" | "en"; skills: UserSkillRef[]; timeZone?: string },
 ): IngestPlan {
   const plan: IngestPlan = { entries: [], sleep: [], skipped: 0 };
   const en = ctx.locale === "en";
@@ -166,7 +185,10 @@ export function planIngest(
     }
     switch (it.type) {
       case "sleep": {
-        const h = it.hours ?? (it.minutes !== undefined ? it.minutes / 60 : it.seconds !== undefined ? it.seconds / 3600 : null);
+        // единицы из «Команд» бывают неочевидны: больше 60 «часов» — это минуты, больше 960 «минут» — секунды
+        let h = it.hours ?? (it.minutes !== undefined ? it.minutes / 60 : it.seconds !== undefined ? it.seconds / 3600 : null);
+        if (h !== null && it.hours !== undefined && h > 60 && h <= 960) h = h / 60;
+        if (h !== null && it.minutes !== undefined && it.minutes > 960) h = it.minutes / 3600;
         if (h === null || !(h > 0) || h > 16) {
           plan.skipped += 1;
           break;
@@ -175,14 +197,24 @@ export function planIngest(
         break;
       }
       case "workout": {
-        const m = minutesOf(it);
+        // по меткам начала и конца — надёжнее, чем поле длительности с неизвестной единицей
+        const start = parseInstant(it.started_at);
+        const end = parseInstant(it.ended_at);
+        const span = start && end ? (end.getTime() - start.getTime()) / 60000 : null;
+        let m = span !== null && span > 0 ? span : minutesOf(it);
+        if (span === null && it.minutes !== undefined && it.seconds === undefined && it.minutes > 960) m = it.minutes / 60;
+        const wDate = it.date ?? (start && ctx.timeZone ? localDate(start, ctx.timeZone) : date);
+        if (wDate > ctx.today) {
+          plan.skipped += 1;
+          break;
+        }
         if (m === null || m < 1 || m > 960) {
           plan.skipped += 1;
           break;
         }
         const w = workoutName(it.kind, ctx.locale);
         plan.entries.push({
-          date,
+          date: wDate,
           description: w.name,
           focus_minutes: Math.round(m),
           intensity: intensityOf(it.intensity, w.intensity),
@@ -190,7 +222,7 @@ export function planIngest(
           skills: alloc(w.name),
           confidence: 0.9,
           evidence: en ? "workout from the watch" : "тренировка с часов",
-          client_ref: `device:workout:${(it.started_at ?? `${date}:${it.kind}:${Math.round(m)}`).slice(0, 90)}`,
+          client_ref: `device:workout:${(start?.toISOString() ?? it.started_at ?? `${wDate}:${it.kind}:${Math.round(m)}`).slice(0, 90)}`,
         });
         break;
       }

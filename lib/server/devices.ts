@@ -35,6 +35,7 @@ export async function handleIngest(db: Db, req: Request): Promise<Response> {
     const [p] = await tx.select({ tz: profiles.timezone, locale: profiles.locale }).from(profiles).where(eq(profiles.id, owner.userId));
     const own = await tx.select({ id: skills.id, name: skills.name, status: skills.status }).from(skills).where(eq(skills.userId, owner.userId));
     return {
+      timeZone: p?.tz || "UTC",
       today: localDate(new Date(), p?.tz || "UTC"),
       locale: (p?.locale === "en" ? "en" : "ru") as "ru" | "en",
       skills: own.filter((s) => s.status !== "archived").map((s) => ({ id: s.id, name: s.name })),
@@ -61,8 +62,23 @@ export async function handleIngest(db: Db, req: Request): Promise<Response> {
   // если записи подтвердились автоматически, пересчёт уже был; иначе пересчитываем ради сна
   if (plan.sleep.length > 0 && logged?.status !== "confirmed") await recomputeUser(db, owner.userId);
 
+  const en = ctx.locale === "en";
+  const created = (logged?.results ?? []).filter((r) => r.status === "created").length;
+  const dup = (logged?.results ?? []).filter((r) => r.status === "duplicate").length;
+  const parts = [
+    ...plan.sleep.map((s) => (en ? `sleep ${s.hours} h (${s.date})` : `сон ${s.hours} ч (${s.date})`)),
+    ...plan.entries.map((e) => `${e.description} ${e.focus_minutes} ${en ? "min" : "мин"} (${e.date})`),
+  ];
+  const message =
+    (en ? "Status: " : "Status: ") +
+    (parts.length ? parts.join(", ") : en ? "nothing to save" : "нечего записать") +
+    (created ? (en ? `. New drafts: ${created}` : `. Новых черновиков: ${created}`) : "") +
+    (dup ? (en ? `. Already saved: ${dup}` : `. Уже было: ${dup}`) : "") +
+    (plan.skipped + errors ? (en ? `. Skipped: ${plan.skipped + errors}` : `. Пропущено: ${plan.skipped + errors}`) : "");
+
   return json({
     ok: true,
+    message,
     sleep: plan.sleep,
     entries: logged?.results ?? [],
     status: logged?.status ?? null,
