@@ -22,6 +22,7 @@ import {
   AGE_BANDS,
   estimatePastHours,
   GOALS,
+  CATEGORIES,
   GROUPS,
   OCCUPATIONS,
   PRESET_SKILLS,
@@ -138,7 +139,7 @@ export function OnboardingWizard({ data }: { data: WizardData }) {
         </div>
       )}
 
-      {step === "starter" && <StarterStep data={data} groups={answers.groups} onDone={next} />}
+      {step === "starter" && <StarterStep data={data} groups={answers.groups} ageBand={answers.ageBand} onDone={next} />}
 
       {step === "assessment" && (
         <AssessmentStep
@@ -210,9 +211,10 @@ function GroupsStep({
 }) {
   const t = useTranslations("onboarding");
   const [q, setQ] = useState("");
-  const shown = GROUPS.filter((g) => (loc === "en" ? g.en : g.ru).toLowerCase().includes(q.toLowerCase()));
+  const ql = q.trim().toLowerCase();
+  const shown = GROUPS.filter((g) => (loc === "en" ? g.en : g.ru).toLowerCase().includes(ql));
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
@@ -220,13 +222,22 @@ function GroupsStep({
         aria-label={t("groups.search")}
         className="w-full rounded-xl border border-panel-border bg-black/30 px-3 py-2 outline-none focus:border-accent"
       />
-      <div className="flex flex-wrap gap-2">
-        {shown.map((g) => (
-          <Chip key={g.key} selected={answers.groups.includes(g.key)} onClick={() => toggle("groups", g.key, 6)}>
-            {loc === "en" ? g.en : g.ru}
-          </Chip>
-        ))}
-      </div>
+      {CATEGORIES.map((c) => {
+        const list = shown.filter((g) => g.category === c.key);
+        if (list.length === 0) return null;
+        return (
+          <section key={c.key} className="space-y-2">
+            <h2 className="font-mono text-xs uppercase tracking-widest text-muted">{loc === "en" ? c.en : c.ru}</h2>
+            <div className="flex flex-wrap gap-2">
+              {list.map((g) => (
+                <Chip key={g.key} selected={answers.groups.includes(g.key)} onClick={() => toggle("groups", g.key, 6)}>
+                  {loc === "en" ? g.en : g.ru}
+                </Chip>
+              ))}
+            </div>
+          </section>
+        );
+      })}
       <input
         value={answers.otherGroup}
         onChange={(e) => setAnswers((a) => ({ ...a, otherGroup: e.target.value }))}
@@ -372,15 +383,37 @@ function SleepingStep({ data }: { data: WizardData }) {
   );
 }
 
-function StarterStep({ data, groups, onDone }: { data: WizardData; groups: string[]; onDone: () => void }) {
+function StarterStep({
+  data,
+  groups,
+  ageBand,
+  onDone,
+}: {
+  data: WizardData;
+  groups: string[];
+  ageBand: string | null;
+  onDone: () => void;
+}) {
   const t = useTranslations("onboarding");
+  const tg = useTranslations("game");
   const { run, pending } = useSystem();
   const [showAll, setShowAll] = useState(false);
+  const [q, setQ] = useState("");
   const [pick, setPick] = useState<Record<string, "main" | "secondary">>({});
-  const suggested = useMemo(() => suggestedSkills(groups), [groups]);
-  const list = (showAll || suggested.length === 0 ? Object.values(PRESET_SKILLS) : suggested).filter(
-    (s) => !data.takenNames.includes((data.locale === "en" ? s.en : s.ru).toLowerCase()),
+  const suggested = useMemo(() => suggestedSkills(groups, ageBand), [groups, ageBand]);
+  const en = data.locale === "en";
+  const ql = q.trim().toLowerCase();
+  const all = showAll || suggested.length === 0 || ql.length > 0;
+  const list = (all ? Object.values(PRESET_SKILLS) : suggested).filter(
+    (s) =>
+      !data.takenNames.includes((en ? s.en : s.ru).toLowerCase()) &&
+      (!ql || `${en ? s.en : s.ru} ${en ? s.scope_en : s.scope_ru}`.toLowerCase().includes(ql)),
   );
+  const raises = (s: (typeof list)[number]) =>
+    [s.primary, s.secondary].filter(Boolean).map((k) => tg(`attributes.${k}`)).join(" · ");
+  const sections = all
+    ? [...new Set(list.map((s) => s.domain))].map((d) => ({ title: tg(`domains.${d}`), items: list.filter((s) => s.domain === d) }))
+    : [{ title: "", items: list }];
   const count = (slot: "main" | "secondary") => Object.values(pick).filter((v) => v === slot).length;
   const maxMain = mainSlots(1);
   const maxSecondary = secondarySlots(1);
@@ -402,33 +435,44 @@ function StarterStep({ data, groups, onDone }: { data: WizardData; groups: strin
       <p className="font-mono text-xs text-muted">
         {t("starter.counter", { main: count("main"), maxMain, secondary: count("secondary"), maxSecondary })}
       </p>
-      <ul className="space-y-2">
-        {list.map((s) => {
-          const slot = pick[s.key];
-          return (
-            <li key={s.key}>
-              <button
-                type="button"
-                onClick={() => cycle(s.key)}
-                aria-pressed={Boolean(slot)}
-                className={cn(
-                  "system-panel flex w-full items-center justify-between gap-3 p-3 text-left",
-                  slot && "border-accent",
-                )}
-              >
-                <span>
-                  <span className="block">{data.locale === "en" ? s.en : s.ru}</span>
-                  <span className="block text-xs text-muted">{data.locale === "en" ? s.scope_en : s.scope_ru}</span>
-                </span>
-                <span className="shrink-0 font-mono text-xs text-accent">
-                  {slot ? t(`starter.${slot}`) : ""}
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-      {!showAll && suggested.length > 0 && (
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder={t("starter.search")}
+        aria-label={t("starter.search")}
+        className="w-full rounded-xl border border-panel-border bg-black/30 px-3 py-2 outline-none focus:border-accent"
+      />
+      {sections.map((sec) => (
+        <section key={sec.title || "suggested"} className="space-y-2">
+          {sec.title && <h2 className="font-mono text-xs uppercase tracking-widest text-muted">{sec.title}</h2>}
+          <ul className="space-y-2">
+            {sec.items.map((s) => {
+              const slot = pick[s.key];
+              return (
+                <li key={s.key}>
+                  <button
+                    type="button"
+                    onClick={() => cycle(s.key)}
+                    aria-pressed={Boolean(slot)}
+                    className={cn(
+                      "system-panel flex w-full items-center justify-between gap-3 p-3 text-left",
+                      slot && "border-accent",
+                    )}
+                  >
+                    <span>
+                      <span className="block">{en ? s.en : s.ru}</span>
+                      <span className="block text-xs text-muted">{en ? s.scope_en : s.scope_ru}</span>
+                      <span className="mt-0.5 block text-xs text-accent/80">{t("starter.raises", { attrs: raises(s) })}</span>
+                    </span>
+                    <span className="shrink-0 font-mono text-xs text-accent">{slot ? t(`starter.${slot}`) : ""}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+      {!all && (
         <Button variant="ghost" onClick={() => setShowAll(true)}>
           {t("starter.showAll")}
         </Button>

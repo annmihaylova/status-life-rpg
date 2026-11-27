@@ -213,7 +213,9 @@
       "counter": "Main {main}/{maxMain} · secondary {secondary}/{maxSecondary}",
       "main": "main",
       "secondary": "secondary",
-      "showAll": "Show all skills"
+      "showAll": "Show all skills",
+      "search": "Search all skills",
+      "raises": "Trains: {attrs}"
     },
     "assessment": {
       "title": "Character assessment",
@@ -320,7 +322,8 @@
       "secondary": "Secondary",
       "none": "None",
       "save": "Save"
-    }
+    },
+    "raises": "Trains: {attrs}"
   },
   "journal": {
     "title": "Journal",

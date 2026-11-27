@@ -81,6 +81,17 @@ export default async function SkillsPage({ searchParams }: PageProps<"/skills">)
             </div>
           </>
         )}
+        {x.row.scope && <p className="text-xs text-muted">{x.row.scope}</p>}
+        {x.row.primaryAttrKey && (
+          <p className="text-xs text-accent/80">
+            {t("raises", {
+              attrs: [x.row.primaryAttrKey, x.row.secondaryAttrKey]
+                .filter((k): k is string => Boolean(k))
+                .map((k) => tg(`attributes.${k}`))
+                .join(" · "),
+            })}
+          </p>
+        )}
         {x.state.specializations.length > 0 && (
           <p className="text-xs text-muted">{x.state.specializations.map((s) => s.name).join(" · ")}</p>
         )}

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { isPartKey } from "./attributes";
 import {
   assessCharacter,
+  CATEGORIES,
   estimatePastHours,
   GROUPS,
   hoursToPoints,
@@ -15,7 +16,19 @@ describe("пресеты онбординга", () => {
     for (const g of GROUPS) {
       for (const k of g.skills) expect(PRESET_SKILLS[k], `${g.key}.${k}`).toBeDefined();
     }
-    expect(GROUPS).toHaveLength(23);
+    expect(GROUPS.length).toBeGreaterThanOrEqual(60);
+  });
+
+  it("каждая группа в известной категории, у каждой категории есть группы", () => {
+    const cats = new Set(CATEGORIES.map((c) => c.key));
+    for (const g of GROUPS) expect(cats.has(g.category), g.key).toBe(true);
+    for (const c of CATEGORIES) expect(GROUPS.some((g) => g.category === c.key), c.key).toBe(true);
+  });
+
+  it("есть группы для всех возрастов: школьники и пенсионеры", () => {
+    expect(suggestedSkills([], "13-15").length).toBeGreaterThan(0);
+    expect(suggestedSkills([], "65+").map((s) => s.key)).toContain("gardening");
+    expect(suggestedSkills([], "25-34")).toEqual([]);
   });
 
   it("у каждого навыка корректные теги и обобщённое имя", () => {

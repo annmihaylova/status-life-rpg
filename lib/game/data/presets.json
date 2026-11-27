@@ -1,101 +1,1871 @@
 {
-  "ageBands": ["13-15", "16-17", "18-24", "25-34", "35-49", "50-64", "65+"],
+  "ageBands": [
+    "13-15",
+    "16-17",
+    "18-24",
+    "25-34",
+    "35-49",
+    "50-64",
+    "65+"
+  ],
   "occupations": [
-    { "key": "school", "ru": "Учусь в школе", "en": "In school" },
-    { "key": "university", "ru": "Учусь в колледже или университете", "en": "In college or university" },
-    { "key": "work", "ru": "Работаю", "en": "Working" },
-    { "key": "business", "ru": "Своё дело", "en": "Own business" },
-    { "key": "pro_sport", "ru": "Спорт профессионально", "en": "Professional sport" },
-    { "key": "caregiving", "ru": "Дома с детьми или ухаживаю за близкими", "en": "Raising kids or caring for family" },
-    { "key": "retired", "ru": "На пенсии", "en": "Retired" },
-    { "key": "between_quests", "ru": "Между квестами: ищу работу или себя", "en": "Between quests: looking for work or myself" }
+    {
+      "key": "school",
+      "ru": "Учусь в школе",
+      "en": "In school"
+    },
+    {
+      "key": "university",
+      "ru": "Учусь в колледже или университете",
+      "en": "In college or university"
+    },
+    {
+      "key": "work",
+      "ru": "Работаю",
+      "en": "Working"
+    },
+    {
+      "key": "business",
+      "ru": "Своё дело",
+      "en": "Own business"
+    },
+    {
+      "key": "pro_sport",
+      "ru": "Спорт профессионально",
+      "en": "Professional sport"
+    },
+    {
+      "key": "caregiving",
+      "ru": "Дома с детьми или ухаживаю за близкими",
+      "en": "Raising kids or caring for family"
+    },
+    {
+      "key": "retired",
+      "ru": "На пенсии",
+      "en": "Retired"
+    },
+    {
+      "key": "between_quests",
+      "ru": "Между квестами: ищу работу или себя",
+      "en": "Between quests: looking for work or myself"
+    }
   ],
   "goals": [
-    { "key": "health", "ru": "Здоровье и тело", "en": "Health and body" },
-    { "key": "knowledge", "ru": "Знания", "en": "Knowledge" },
-    { "key": "career", "ru": "Карьера", "en": "Career" },
-    { "key": "creativity", "ru": "Творчество", "en": "Creativity" },
-    { "key": "relationships", "ru": "Отношения", "en": "Relationships" },
-    { "key": "calm", "ru": "Спокойствие", "en": "Calm" },
-    { "key": "discipline", "ru": "Дисциплина", "en": "Discipline" },
-    { "key": "business", "ru": "Своё дело", "en": "Own business" }
+    {
+      "key": "health",
+      "ru": "Здоровье и тело",
+      "en": "Health and body"
+    },
+    {
+      "key": "knowledge",
+      "ru": "Знания",
+      "en": "Knowledge"
+    },
+    {
+      "key": "career",
+      "ru": "Карьера",
+      "en": "Career"
+    },
+    {
+      "key": "creativity",
+      "ru": "Творчество",
+      "en": "Creativity"
+    },
+    {
+      "key": "relationships",
+      "ru": "Отношения",
+      "en": "Relationships"
+    },
+    {
+      "key": "calm",
+      "ru": "Спокойствие",
+      "en": "Calm"
+    },
+    {
+      "key": "discipline",
+      "ru": "Дисциплина",
+      "en": "Discipline"
+    },
+    {
+      "key": "business",
+      "ru": "Своё дело",
+      "en": "Own business"
+    }
   ],
+  "categories": [
+    {
+      "key": "study",
+      "ru": "Учёба",
+      "en": "Study"
+    },
+    {
+      "key": "science_it",
+      "ru": "Наука и IT",
+      "en": "Science and IT"
+    },
+    {
+      "key": "office",
+      "ru": "Офис и бизнес",
+      "en": "Office and business"
+    },
+    {
+      "key": "trades",
+      "ru": "Рабочие профессии",
+      "en": "Trades and manual work"
+    },
+    {
+      "key": "transport",
+      "ru": "Транспорт и логистика",
+      "en": "Transport and logistics"
+    },
+    {
+      "key": "health",
+      "ru": "Медицина и забота",
+      "en": "Health and care"
+    },
+    {
+      "key": "education",
+      "ru": "Обучение и помощь людям",
+      "en": "Education and helping people"
+    },
+    {
+      "key": "service",
+      "ru": "Сервис, торговля, еда",
+      "en": "Service, retail, food"
+    },
+    {
+      "key": "creative",
+      "ru": "Творчество и медиа",
+      "en": "Creative and media"
+    },
+    {
+      "key": "sport",
+      "ru": "Спорт и безопасность",
+      "en": "Sport and security"
+    },
+    {
+      "key": "nature",
+      "ru": "Земля и природа",
+      "en": "Land and nature"
+    },
+    {
+      "key": "home",
+      "ru": "Дом и семья",
+      "en": "Home and family"
+    },
+    {
+      "key": "retired",
+      "ru": "На пенсии",
+      "en": "Retired"
+    },
+    {
+      "key": "other",
+      "ru": "Другое",
+      "en": "Other"
+    }
+  ],
+  "ageDefaults": {
+    "13-15": [
+      "schoolkid"
+    ],
+    "16-17": [
+      "schoolkid"
+    ],
+    "65+": [
+      "retiree"
+    ]
+  },
   "groups": [
-    { "key": "schoolkid", "ru": "Школьник", "en": "School student", "skills": ["math", "languages", "natural_sciences", "sport", "music"] },
-    { "key": "student_science", "ru": "Студент: естественные науки", "en": "Student: natural sciences", "skills": ["biology", "chemistry", "math", "programming", "lab_work", "research"] },
-    { "key": "student_tech", "ru": "Студент: технический / IT", "en": "Student: engineering / IT", "skills": ["programming", "math", "engineering", "research"] },
-    { "key": "student_humanities", "ru": "Студент: гуманитарий", "en": "Student: humanities", "skills": ["literature", "languages", "history", "writing", "public_speaking"] },
-    { "key": "researcher", "ru": "Учёный / исследователь", "en": "Scientist / researcher", "skills": ["research", "biology", "programming", "teaching", "bookworm"] },
-    { "key": "it", "ru": "IT / инженер", "en": "IT / engineer", "skills": ["programming", "engineering", "project_management"] },
-    { "key": "manual_labor", "ru": "Грузчик / строитель / склад", "en": "Mover / builder / warehouse", "skills": ["athletics", "construction", "warehouse", "driving"] },
-    { "key": "tradesperson", "ru": "Мастер: электрик, сантехник, механик", "en": "Tradesperson: electrician, plumber, mechanic", "skills": ["electrics", "plumbing", "mechanics", "carpentry"] },
-    { "key": "driver", "ru": "Водитель / курьер", "en": "Driver / courier", "skills": ["driving", "navigation", "customer_service"] },
-    { "key": "athlete", "ru": "Спортсмен", "en": "Athlete", "skills": ["sport", "athletics", "recovery"] },
-    { "key": "medic", "ru": "Врач / медсестра", "en": "Doctor / nurse", "skills": ["medicine", "patient_care", "psychology"] },
-    { "key": "psychologist", "ru": "Психолог / соцработник", "en": "Psychologist / social worker", "skills": ["psychology", "counseling", "public_speaking"] },
-    { "key": "teacher", "ru": "Учитель / тренер", "en": "Teacher / coach", "skills": ["teaching", "public_speaking", "bookworm"] },
-    { "key": "creative", "ru": "Творческие профессии", "en": "Creative professions", "skills": ["drawing", "music", "writing", "design"] },
-    { "key": "service", "ru": "Сервис и продажи", "en": "Service and sales", "skills": ["sales", "customer_service", "cooking"] },
-    { "key": "cook", "ru": "Повар", "en": "Cook", "skills": ["cooking", "kitchen_management"] },
-    { "key": "office", "ru": "Офис", "en": "Office", "skills": ["management", "analytics", "negotiation", "finance"] },
-    { "key": "entrepreneur", "ru": "Предприниматель", "en": "Entrepreneur", "skills": ["sales", "management", "finance", "negotiation"] },
-    { "key": "rescuer", "ru": "Спасатель / пожарный / охрана", "en": "Rescuer / firefighter / security", "skills": ["athletics", "first_aid", "tactics"] },
-    { "key": "agriculture", "ru": "Сельское хозяйство", "en": "Agriculture", "skills": ["farming", "animal_husbandry", "mechanics"] },
-    { "key": "caregiver", "ru": "Дома с детьми / уход", "en": "Home with kids / caregiving", "skills": ["parenting", "housekeeping", "cooking", "patient_care"] },
-    { "key": "retiree", "ru": "Пенсионер", "en": "Retiree", "skills": ["gardening", "housekeeping", "languages", "bookworm"] },
-    { "key": "between_quests", "ru": "Между квестами", "en": "Between quests", "skills": ["job_search", "self_learning", "bookworm"] }
+    {
+      "key": "schoolkid",
+      "category": "study",
+      "ru": "Школьник",
+      "en": "School student",
+      "skills": [
+        "math",
+        "languages",
+        "natural_sciences",
+        "history",
+        "sport",
+        "music",
+        "digital_skills"
+      ]
+    },
+    {
+      "key": "student_science",
+      "category": "study",
+      "ru": "Студент: естественные науки",
+      "en": "Student: natural sciences",
+      "skills": [
+        "biology",
+        "chemistry",
+        "math",
+        "programming",
+        "lab_work",
+        "research"
+      ]
+    },
+    {
+      "key": "student_tech",
+      "category": "study",
+      "ru": "Студент: технический / IT",
+      "en": "Student: engineering / IT",
+      "skills": [
+        "programming",
+        "math",
+        "engineering",
+        "research"
+      ]
+    },
+    {
+      "key": "student_humanities",
+      "category": "study",
+      "ru": "Студент: гуманитарий",
+      "en": "Student: humanities",
+      "skills": [
+        "literature",
+        "languages",
+        "history",
+        "writing",
+        "public_speaking"
+      ]
+    },
+    {
+      "key": "student_medical",
+      "category": "study",
+      "ru": "Студент-медик",
+      "en": "Medical student",
+      "skills": [
+        "medicine",
+        "biology",
+        "chemistry",
+        "first_aid",
+        "patient_care"
+      ]
+    },
+    {
+      "key": "student_economics",
+      "category": "study",
+      "ru": "Студент: экономика, право, управление",
+      "en": "Student: economics, law, management",
+      "skills": [
+        "finance",
+        "law",
+        "analytics",
+        "languages",
+        "public_speaking"
+      ]
+    },
+    {
+      "key": "student_creative",
+      "category": "study",
+      "ru": "Студент творческого вуза",
+      "en": "Art school student",
+      "skills": [
+        "drawing",
+        "design",
+        "music",
+        "acting",
+        "photography"
+      ]
+    },
+    {
+      "key": "vocational",
+      "category": "study",
+      "ru": "Колледж / техникум",
+      "en": "Vocational college",
+      "skills": [
+        "electrics",
+        "mechanics",
+        "construction",
+        "cooking",
+        "digital_skills"
+      ]
+    },
+    {
+      "key": "researcher",
+      "category": "science_it",
+      "ru": "Учёный / исследователь",
+      "en": "Scientist / researcher",
+      "skills": [
+        "research",
+        "biology",
+        "programming",
+        "teaching",
+        "bookworm"
+      ]
+    },
+    {
+      "key": "it",
+      "category": "science_it",
+      "ru": "IT / программист",
+      "en": "IT / developer",
+      "skills": [
+        "programming",
+        "engineering",
+        "project_management",
+        "bookworm"
+      ]
+    },
+    {
+      "key": "engineer",
+      "category": "science_it",
+      "ru": "Инженер / конструктор",
+      "en": "Engineer / designer",
+      "skills": [
+        "engineering",
+        "drafting",
+        "math",
+        "project_management"
+      ]
+    },
+    {
+      "key": "office",
+      "category": "office",
+      "ru": "Офис",
+      "en": "Office",
+      "skills": [
+        "management",
+        "analytics",
+        "negotiation",
+        "administration"
+      ]
+    },
+    {
+      "key": "accountant",
+      "category": "office",
+      "ru": "Бухгалтер / финансист",
+      "en": "Accountant / finance",
+      "skills": [
+        "accounting",
+        "finance",
+        "analytics",
+        "administration"
+      ]
+    },
+    {
+      "key": "lawyer",
+      "category": "office",
+      "ru": "Юрист",
+      "en": "Lawyer",
+      "skills": [
+        "law",
+        "negotiation",
+        "writing",
+        "public_speaking"
+      ]
+    },
+    {
+      "key": "manager",
+      "category": "office",
+      "ru": "Руководитель",
+      "en": "Manager",
+      "skills": [
+        "management",
+        "project_management",
+        "negotiation",
+        "public_speaking"
+      ]
+    },
+    {
+      "key": "marketing",
+      "category": "office",
+      "ru": "Маркетинг / реклама / SMM",
+      "en": "Marketing / ads / social media",
+      "skills": [
+        "marketing",
+        "writing",
+        "design",
+        "analytics",
+        "blogging"
+      ]
+    },
+    {
+      "key": "hr",
+      "category": "office",
+      "ru": "HR / рекрутинг",
+      "en": "HR / recruiting",
+      "skills": [
+        "hr",
+        "negotiation",
+        "psychology",
+        "administration"
+      ]
+    },
+    {
+      "key": "entrepreneur",
+      "category": "office",
+      "ru": "Предприниматель",
+      "en": "Entrepreneur",
+      "skills": [
+        "sales",
+        "management",
+        "finance",
+        "negotiation",
+        "marketing"
+      ]
+    },
+    {
+      "key": "manual_labor",
+      "category": "trades",
+      "ru": "Грузчик / строитель / склад",
+      "en": "Mover / builder / warehouse",
+      "skills": [
+        "athletics",
+        "construction",
+        "warehouse",
+        "driving"
+      ]
+    },
+    {
+      "key": "tradesperson",
+      "category": "trades",
+      "ru": "Мастер: электрик, сантехник, механик",
+      "en": "Tradesperson: electrician, plumber, mechanic",
+      "skills": [
+        "electrics",
+        "plumbing",
+        "mechanics",
+        "carpentry",
+        "welding"
+      ]
+    },
+    {
+      "key": "finisher",
+      "category": "trades",
+      "ru": "Отделочник / маляр",
+      "en": "Finisher / painter",
+      "skills": [
+        "finishing",
+        "construction",
+        "design"
+      ]
+    },
+    {
+      "key": "factory",
+      "category": "trades",
+      "ru": "Рабочий на производстве",
+      "en": "Factory worker",
+      "skills": [
+        "factory_work",
+        "mechanics",
+        "welding"
+      ]
+    },
+    {
+      "key": "cleaner",
+      "category": "trades",
+      "ru": "Клининг / уборка",
+      "en": "Cleaning",
+      "skills": [
+        "cleaning",
+        "housekeeping",
+        "customer_service"
+      ]
+    },
+    {
+      "key": "tailor",
+      "category": "trades",
+      "ru": "Швея / портной",
+      "en": "Seamstress / tailor",
+      "skills": [
+        "sewing",
+        "design",
+        "crafts"
+      ]
+    },
+    {
+      "key": "driver",
+      "category": "transport",
+      "ru": "Водитель / курьер / таксист",
+      "en": "Driver / courier / taxi",
+      "skills": [
+        "driving",
+        "navigation",
+        "customer_service"
+      ]
+    },
+    {
+      "key": "logistician",
+      "category": "transport",
+      "ru": "Логист / диспетчер",
+      "en": "Logistics / dispatcher",
+      "skills": [
+        "logistics",
+        "analytics",
+        "negotiation"
+      ]
+    },
+    {
+      "key": "medic",
+      "category": "health",
+      "ru": "Врач",
+      "en": "Doctor",
+      "skills": [
+        "medicine",
+        "patient_care",
+        "psychology",
+        "bookworm"
+      ]
+    },
+    {
+      "key": "nurse",
+      "category": "health",
+      "ru": "Медсестра / медбрат",
+      "en": "Nurse",
+      "skills": [
+        "patient_care",
+        "medicine",
+        "first_aid"
+      ]
+    },
+    {
+      "key": "caregiver_pro",
+      "category": "health",
+      "ru": "Сиделка / соцработник",
+      "en": "Caregiver / social worker",
+      "skills": [
+        "patient_care",
+        "counseling",
+        "housekeeping"
+      ]
+    },
+    {
+      "key": "psychologist",
+      "category": "health",
+      "ru": "Психолог",
+      "en": "Psychologist",
+      "skills": [
+        "psychology",
+        "counseling",
+        "public_speaking"
+      ]
+    },
+    {
+      "key": "pharmacist",
+      "category": "health",
+      "ru": "Фармацевт",
+      "en": "Pharmacist",
+      "skills": [
+        "pharmacy",
+        "customer_service",
+        "medicine"
+      ]
+    },
+    {
+      "key": "massage_therapist",
+      "category": "health",
+      "ru": "Массажист / реабилитолог",
+      "en": "Massage / rehab therapist",
+      "skills": [
+        "massage",
+        "medicine",
+        "patient_care"
+      ]
+    },
+    {
+      "key": "vet",
+      "category": "health",
+      "ru": "Ветеринар / зоозащита",
+      "en": "Vet / animal welfare",
+      "skills": [
+        "veterinary",
+        "animal_care",
+        "volunteering"
+      ]
+    },
+    {
+      "key": "teacher",
+      "category": "education",
+      "ru": "Учитель",
+      "en": "Teacher",
+      "skills": [
+        "teaching",
+        "public_speaking",
+        "bookworm"
+      ]
+    },
+    {
+      "key": "coach",
+      "category": "education",
+      "ru": "Тренер / инструктор",
+      "en": "Coach / instructor",
+      "skills": [
+        "coaching",
+        "sport",
+        "teaching"
+      ]
+    },
+    {
+      "key": "kindergarten",
+      "category": "education",
+      "ru": "Воспитатель / няня",
+      "en": "Nursery teacher / nanny",
+      "skills": [
+        "parenting",
+        "teaching",
+        "crafts"
+      ]
+    },
+    {
+      "key": "volunteer",
+      "category": "education",
+      "ru": "Волонтёр",
+      "en": "Volunteer",
+      "skills": [
+        "volunteering",
+        "community",
+        "first_aid"
+      ]
+    },
+    {
+      "key": "service",
+      "category": "service",
+      "ru": "Продавец / консультант",
+      "en": "Shop assistant",
+      "skills": [
+        "sales",
+        "customer_service"
+      ]
+    },
+    {
+      "key": "cook",
+      "category": "service",
+      "ru": "Повар / кондитер",
+      "en": "Cook / pastry chef",
+      "skills": [
+        "cooking",
+        "baking",
+        "kitchen_management"
+      ]
+    },
+    {
+      "key": "waiter",
+      "category": "service",
+      "ru": "Официант / бариста",
+      "en": "Waiter / barista",
+      "skills": [
+        "hospitality",
+        "customer_service",
+        "cooking"
+      ]
+    },
+    {
+      "key": "beauty",
+      "category": "service",
+      "ru": "Парикмахер / мастер маникюра / визажист",
+      "en": "Hairdresser / nail / make-up artist",
+      "skills": [
+        "beauty",
+        "customer_service",
+        "design"
+      ]
+    },
+    {
+      "key": "hotel",
+      "category": "service",
+      "ru": "Гостиница и туризм",
+      "en": "Hotels and tourism",
+      "skills": [
+        "hospitality",
+        "languages",
+        "customer_service"
+      ]
+    },
+    {
+      "key": "creative",
+      "category": "creative",
+      "ru": "Художник / дизайнер",
+      "en": "Artist / designer",
+      "skills": [
+        "drawing",
+        "design",
+        "photography"
+      ]
+    },
+    {
+      "key": "musician",
+      "category": "creative",
+      "ru": "Музыкант / вокалист",
+      "en": "Musician / singer",
+      "skills": [
+        "music",
+        "singing",
+        "public_speaking"
+      ]
+    },
+    {
+      "key": "dancer",
+      "category": "creative",
+      "ru": "Танцор",
+      "en": "Dancer",
+      "skills": [
+        "dance",
+        "coaching",
+        "sport"
+      ]
+    },
+    {
+      "key": "actor",
+      "category": "creative",
+      "ru": "Актёр",
+      "en": "Actor",
+      "skills": [
+        "acting",
+        "public_speaking",
+        "singing"
+      ]
+    },
+    {
+      "key": "photographer",
+      "category": "creative",
+      "ru": "Фотограф / видеограф",
+      "en": "Photographer / videographer",
+      "skills": [
+        "photography",
+        "video",
+        "design"
+      ]
+    },
+    {
+      "key": "writer",
+      "category": "creative",
+      "ru": "Писатель / журналист",
+      "en": "Writer / journalist",
+      "skills": [
+        "writing",
+        "bookworm",
+        "public_speaking"
+      ]
+    },
+    {
+      "key": "blogger",
+      "category": "creative",
+      "ru": "Блогер",
+      "en": "Blogger",
+      "skills": [
+        "blogging",
+        "video",
+        "writing",
+        "marketing"
+      ]
+    },
+    {
+      "key": "athlete",
+      "category": "sport",
+      "ru": "Спортсмен",
+      "en": "Athlete",
+      "skills": [
+        "sport",
+        "athletics",
+        "recovery"
+      ]
+    },
+    {
+      "key": "rescuer",
+      "category": "sport",
+      "ru": "Спасатель / пожарный",
+      "en": "Rescuer / firefighter",
+      "skills": [
+        "athletics",
+        "first_aid",
+        "tactics"
+      ]
+    },
+    {
+      "key": "security",
+      "category": "sport",
+      "ru": "Охрана",
+      "en": "Security",
+      "skills": [
+        "security",
+        "athletics",
+        "first_aid"
+      ]
+    },
+    {
+      "key": "military",
+      "category": "sport",
+      "ru": "Военный",
+      "en": "Military",
+      "skills": [
+        "tactics",
+        "athletics",
+        "first_aid",
+        "driving"
+      ]
+    },
+    {
+      "key": "agriculture",
+      "category": "nature",
+      "ru": "Сельское хозяйство",
+      "en": "Agriculture",
+      "skills": [
+        "farming",
+        "animal_husbandry",
+        "mechanics",
+        "driving"
+      ]
+    },
+    {
+      "key": "gardener",
+      "category": "nature",
+      "ru": "Садовод / дачник",
+      "en": "Gardener",
+      "skills": [
+        "gardening",
+        "home_repair",
+        "cooking"
+      ]
+    },
+    {
+      "key": "caregiver",
+      "category": "home",
+      "ru": "Дома с детьми",
+      "en": "Home with kids",
+      "skills": [
+        "parenting",
+        "housekeeping",
+        "cooking",
+        "home_budget"
+      ]
+    },
+    {
+      "key": "homemaker",
+      "category": "home",
+      "ru": "Веду хозяйство",
+      "en": "Running a household",
+      "skills": [
+        "housekeeping",
+        "cooking",
+        "home_budget",
+        "home_repair"
+      ]
+    },
+    {
+      "key": "family_care",
+      "category": "home",
+      "ru": "Ухаживаю за близкими",
+      "en": "Caring for family",
+      "skills": [
+        "patient_care",
+        "housekeeping",
+        "cooking"
+      ]
+    },
+    {
+      "key": "retiree",
+      "category": "retired",
+      "ru": "Пенсионер",
+      "en": "Retiree",
+      "skills": [
+        "gardening",
+        "walking",
+        "leisure_reading",
+        "digital_skills"
+      ]
+    },
+    {
+      "key": "grandparent",
+      "category": "retired",
+      "ru": "Бабушка / дедушка",
+      "en": "Grandparent",
+      "skills": [
+        "parenting",
+        "cooking",
+        "crafts",
+        "walking"
+      ]
+    },
+    {
+      "key": "active_retiree",
+      "category": "retired",
+      "ru": "Активный пенсионер",
+      "en": "Active retiree",
+      "skills": [
+        "walking",
+        "travel",
+        "languages",
+        "community",
+        "health_care_self"
+      ]
+    },
+    {
+      "key": "between_quests",
+      "category": "other",
+      "ru": "Между квестами",
+      "en": "Between quests",
+      "skills": [
+        "job_search",
+        "self_learning",
+        "bookworm"
+      ]
+    },
+    {
+      "key": "hobbyist",
+      "category": "other",
+      "ru": "Хобби и увлечения",
+      "en": "Hobbies",
+      "skills": [
+        "board_games",
+        "puzzles",
+        "crafts",
+        "music",
+        "fishing"
+      ]
+    }
   ],
   "skills": {
-    "math": { "ru": "Математика", "en": "Mathematics", "domain": "science", "primary": "intellect", "secondary": "will", "scope_ru": "задачи, доказательства, вычисления, математические курсы", "scope_en": "problems, proofs, calculations, math courses" },
-    "languages": { "ru": "Языки", "en": "Languages", "domain": "humanities", "primary": "intellect", "secondary": "charisma", "scope_ru": "изучение и практика иностранных языков", "scope_en": "learning and practising foreign languages" },
-    "natural_sciences": { "ru": "Естественные науки", "en": "Natural sciences", "domain": "science", "primary": "intellect", "secondary": "perception", "scope_ru": "физика, химия, биология в школе", "scope_en": "school physics, chemistry, biology" },
-    "sport": { "ru": "Спорт", "en": "Sport", "domain": "body", "primary": "dexterity", "secondary": "endurance", "scope_ru": "тренировки и игры в выбранном виде спорта", "scope_en": "training and games in your sport" },
-    "music": { "ru": "Музыка", "en": "Music", "domain": "creative", "primary": "creativity", "secondary": "dexterity", "scope_ru": "игра на инструментах, пение, сочинение музыки", "scope_en": "playing instruments, singing, composing" },
-    "biology": { "ru": "Биология", "en": "Biology", "domain": "science", "primary": "intellect", "secondary": "perception", "scope_ru": "лекции, учебники и задачи по биологии", "scope_en": "biology lectures, textbooks and problems" },
-    "chemistry": { "ru": "Химия", "en": "Chemistry", "domain": "science", "primary": "intellect", "secondary": "perception", "scope_ru": "лекции, задачи и практика по химии", "scope_en": "chemistry lectures, problems and practice" },
-    "programming": { "ru": "Программирование", "en": "Programming", "domain": "tech", "primary": "intellect", "secondary": "will", "scope_ru": "написание и разбор кода на любом языке", "scope_en": "writing and reviewing code in any language" },
-    "lab_work": { "ru": "Лабораторное дело", "en": "Lab work", "domain": "science", "primary": "dexterity", "secondary": "perception", "scope_ru": "эксперименты руками: пипетки, культуры, приборы", "scope_en": "hands-on experiments: pipettes, cultures, instruments" },
-    "research": { "ru": "Научная работа", "en": "Research", "domain": "science", "primary": "intellect", "secondary": "will", "scope_ru": "исследовательские проекты, анализ данных, научные тексты", "scope_en": "research projects, data analysis, scientific writing" },
-    "engineering": { "ru": "Инженерия", "en": "Engineering", "domain": "tech", "primary": "intellect", "secondary": "perception", "scope_ru": "проектирование систем, расчёты, схемы", "scope_en": "system design, calculations, schematics" },
-    "literature": { "ru": "Литература", "en": "Literature", "domain": "humanities", "primary": "intellect", "secondary": "creativity", "scope_ru": "чтение и анализ художественных текстов", "scope_en": "reading and analysing fiction" },
-    "history": { "ru": "История", "en": "History", "domain": "humanities", "primary": "intellect", "secondary": "perception", "scope_ru": "исторические курсы, источники, анализ", "scope_en": "history courses, sources, analysis" },
-    "writing": { "ru": "Письмо", "en": "Writing", "domain": "creative", "primary": "creativity", "secondary": "intellect", "scope_ru": "тексты, статьи, проза, посты", "scope_en": "texts, articles, prose, posts" },
-    "public_speaking": { "ru": "Ораторское искусство", "en": "Public speaking", "domain": "social", "primary": "charisma", "secondary": "will", "scope_ru": "выступления, доклады, подготовка речи", "scope_en": "talks, presentations, speech preparation" },
-    "teaching": { "ru": "Преподавание", "en": "Teaching", "domain": "social", "primary": "charisma", "secondary": "intellect", "scope_ru": "уроки, репетиторство, объяснение другим", "scope_en": "lessons, tutoring, explaining to others" },
-    "bookworm": { "ru": "Книжный червь", "en": "Bookworm", "domain": "humanities", "primary": "intellect", "secondary": "will", "scope_ru": "чтение сложных текстов, где приходится разбираться: научные статьи, учебники, документация, плотная нон-фикшн", "scope_en": "reading hard texts that take effort: papers, textbooks, documentation, dense non-fiction" },
-    "project_management": { "ru": "Управление проектами", "en": "Project management", "domain": "work", "primary": "will", "secondary": "charisma", "scope_ru": "планирование, координация, сроки", "scope_en": "planning, coordination, deadlines" },
-    "athletics": { "ru": "Атлетика", "en": "Athletics", "domain": "body", "primary": "strength", "secondary": "endurance", "scope_ru": "силовые тренировки, бег, физическая подготовка", "scope_en": "strength training, running, conditioning" },
-    "construction": { "ru": "Строительство", "en": "Construction", "domain": "craft", "primary": "strength", "secondary": "dexterity", "scope_ru": "стройка, ремонт, отделка", "scope_en": "building, renovation, finishing", "isWorkShift": true },
-    "warehouse": { "ru": "Складское дело", "en": "Warehouse work", "domain": "work", "primary": "endurance", "secondary": "strength", "scope_ru": "погрузка, сборка заказов, учёт на складе", "scope_en": "loading, order picking, stock keeping", "isWorkShift": true },
-    "driving": { "ru": "Вождение", "en": "Driving", "domain": "craft", "primary": "perception", "secondary": "endurance", "scope_ru": "вождение автомобиля и другого транспорта", "scope_en": "driving cars and other vehicles" },
-    "electrics": { "ru": "Электрика", "en": "Electrics", "domain": "craft", "primary": "dexterity", "secondary": "intellect", "scope_ru": "проводка, монтаж, диагностика электрики", "scope_en": "wiring, installation, electrical diagnostics" },
-    "plumbing": { "ru": "Сантехника", "en": "Plumbing", "domain": "craft", "primary": "dexterity", "secondary": "strength", "scope_ru": "монтаж и ремонт сантехники", "scope_en": "installing and repairing plumbing" },
-    "mechanics": { "ru": "Механика", "en": "Mechanics", "domain": "craft", "primary": "dexterity", "secondary": "perception", "scope_ru": "ремонт и обслуживание техники и машин", "scope_en": "repairing and servicing machines" },
-    "carpentry": { "ru": "Столярное дело", "en": "Carpentry", "domain": "craft", "primary": "dexterity", "secondary": "creativity", "scope_ru": "работа с деревом, мебель", "scope_en": "woodwork, furniture" },
-    "navigation": { "ru": "Ориентирование", "en": "Navigation", "domain": "craft", "primary": "perception", "secondary": "intellect", "scope_ru": "маршруты, карты, ориентирование на местности", "scope_en": "routes, maps, wayfinding" },
-    "customer_service": { "ru": "Обслуживание клиентов", "en": "Customer service", "domain": "social", "primary": "empathy", "secondary": "charisma", "scope_ru": "общение с клиентами, решение их вопросов", "scope_en": "talking to customers, solving their issues", "isWorkShift": true },
-    "recovery": { "ru": "Восстановление", "en": "Recovery", "domain": "body", "primary": "endurance", "secondary": "will", "scope_ru": "растяжка, массаж, восстановительные практики", "scope_en": "stretching, massage, recovery routines", "isRest": true },
-    "medicine": { "ru": "Медицина", "en": "Medicine", "domain": "care", "primary": "intellect", "secondary": "perception", "scope_ru": "диагностика, лечение, медицинские знания", "scope_en": "diagnosis, treatment, medical knowledge" },
-    "patient_care": { "ru": "Уход за больными", "en": "Patient care", "domain": "care", "primary": "empathy", "secondary": "endurance", "scope_ru": "уход, дежурства, помощь пациентам и близким", "scope_en": "care, shifts, helping patients and family", "isWorkShift": true },
-    "psychology": { "ru": "Психология", "en": "Psychology", "domain": "care", "primary": "empathy", "secondary": "intellect", "scope_ru": "психологические знания и практика", "scope_en": "psychology knowledge and practice" },
-    "counseling": { "ru": "Консультирование", "en": "Counseling", "domain": "care", "primary": "empathy", "secondary": "charisma", "scope_ru": "консультации и поддержка людей", "scope_en": "consultations and supporting people" },
-    "drawing": { "ru": "Рисование", "en": "Drawing", "domain": "creative", "primary": "creativity", "secondary": "perception", "scope_ru": "рисунок, живопись, иллюстрация", "scope_en": "drawing, painting, illustration" },
-    "design": { "ru": "Дизайн", "en": "Design", "domain": "creative", "primary": "creativity", "secondary": "perception", "scope_ru": "графический, интерфейсный и другой дизайн", "scope_en": "graphic, interface and other design" },
-    "sales": { "ru": "Торговля", "en": "Sales", "domain": "work", "primary": "charisma", "secondary": "empathy", "scope_ru": "продажи, переговоры с покупателями", "scope_en": "selling, dealing with buyers" },
-    "cooking": { "ru": "Кулинария", "en": "Cooking", "domain": "home", "primary": "dexterity", "secondary": "creativity", "scope_ru": "готовка дома и на работе, бариста", "scope_en": "cooking at home and at work, barista" },
-    "kitchen_management": { "ru": "Управление кухней", "en": "Kitchen management", "domain": "work", "primary": "will", "secondary": "charisma", "scope_ru": "организация кухни, смены, закупки", "scope_en": "running a kitchen, shifts, purchasing", "isWorkShift": true },
-    "management": { "ru": "Управление", "en": "Management", "domain": "work", "primary": "charisma", "secondary": "will", "scope_ru": "руководство людьми и процессами", "scope_en": "leading people and processes" },
-    "analytics": { "ru": "Аналитика", "en": "Analytics", "domain": "work", "primary": "intellect", "secondary": "perception", "scope_ru": "анализ данных, отчёты, таблицы", "scope_en": "data analysis, reports, spreadsheets" },
-    "negotiation": { "ru": "Переговоры", "en": "Negotiation", "domain": "social", "primary": "charisma", "secondary": "empathy", "scope_ru": "переговоры, согласования, сделки", "scope_en": "negotiations, agreements, deals" },
-    "finance": { "ru": "Финансы", "en": "Finance", "domain": "work", "primary": "intellect", "secondary": "will", "scope_ru": "бюджеты, учёт, финансовый анализ", "scope_en": "budgets, accounting, financial analysis" },
-    "first_aid": { "ru": "Первая помощь", "en": "First aid", "domain": "care", "primary": "perception", "secondary": "empathy", "scope_ru": "первая помощь, тренировки и практика", "scope_en": "first aid, drills and practice" },
-    "tactics": { "ru": "Тактика", "en": "Tactics", "domain": "work", "primary": "perception", "secondary": "will", "scope_ru": "тактическая подготовка, планирование операций", "scope_en": "tactical training, operation planning" },
-    "farming": { "ru": "Земледелие", "en": "Farming", "domain": "craft", "primary": "endurance", "secondary": "perception", "scope_ru": "полевые работы, выращивание культур", "scope_en": "field work, growing crops", "isWorkShift": true },
-    "animal_husbandry": { "ru": "Животноводство", "en": "Animal husbandry", "domain": "craft", "primary": "empathy", "secondary": "endurance", "scope_ru": "уход за животными на хозяйстве", "scope_en": "caring for farm animals", "isWorkShift": true },
-    "parenting": { "ru": "Воспитание", "en": "Parenting", "domain": "home", "primary": "empathy", "secondary": "will", "scope_ru": "занятия с детьми, воспитание, уход", "scope_en": "time with kids, upbringing, care" },
-    "housekeeping": { "ru": "Домоводство", "en": "Housekeeping", "domain": "home", "primary": "endurance", "secondary": "will", "scope_ru": "уборка, порядок, хозяйство", "scope_en": "cleaning, order, household" },
-    "gardening": { "ru": "Садоводство", "en": "Gardening", "domain": "home", "primary": "endurance", "secondary": "perception", "scope_ru": "сад, огород, растения", "scope_en": "garden, vegetables, plants", "isRest": true },
-    "job_search": { "ru": "Поиск работы", "en": "Job search", "domain": "work", "primary": "will", "secondary": "charisma", "scope_ru": "резюме, отклики, собеседования", "scope_en": "CVs, applications, interviews" },
-    "self_learning": { "ru": "Самообучение", "en": "Self-learning", "domain": "humanities", "primary": "intellect", "secondary": "will", "scope_ru": "курсы и самостоятельное изучение нового", "scope_en": "courses and learning new things on your own" }
+    "math": {
+      "ru": "Математика",
+      "en": "Mathematics",
+      "domain": "science",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "задачи, доказательства, вычисления, математические курсы",
+      "scope_en": "problems, proofs, calculations, math courses"
+    },
+    "physics": {
+      "ru": "Физика",
+      "en": "Physics",
+      "domain": "science",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "физика в школе и вузе, задачи, эксперименты",
+      "scope_en": "school and university physics, problems, experiments"
+    },
+    "chemistry": {
+      "ru": "Химия",
+      "en": "Chemistry",
+      "domain": "science",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "лекции, задачи и практика по химии",
+      "scope_en": "chemistry lectures, problems and practice"
+    },
+    "biology": {
+      "ru": "Биология",
+      "en": "Biology",
+      "domain": "science",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "лекции, учебники и задачи по биологии",
+      "scope_en": "biology lectures, textbooks and problems"
+    },
+    "natural_sciences": {
+      "ru": "Естественные науки",
+      "en": "Natural sciences",
+      "domain": "science",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "физика, химия, биология, география в школе",
+      "scope_en": "school physics, chemistry, biology, geography"
+    },
+    "research": {
+      "ru": "Научная работа",
+      "en": "Research",
+      "domain": "science",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "исследовательские проекты, анализ данных, научные тексты",
+      "scope_en": "research projects, data analysis, scientific writing"
+    },
+    "lab_work": {
+      "ru": "Лабораторное дело",
+      "en": "Lab work",
+      "domain": "science",
+      "primary": "dexterity",
+      "secondary": "perception",
+      "scope_ru": "эксперименты руками: пипетки, культуры, приборы",
+      "scope_en": "hands-on experiments: pipettes, cultures, instruments"
+    },
+    "history": {
+      "ru": "История",
+      "en": "History",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "история, источники, музеи, анализ событий",
+      "scope_en": "history, sources, museums, analysing events"
+    },
+    "literature": {
+      "ru": "Литература",
+      "en": "Literature",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "creativity",
+      "scope_ru": "чтение и разбор художественных текстов",
+      "scope_en": "reading and analysing fiction"
+    },
+    "languages": {
+      "ru": "Языки",
+      "en": "Languages",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "charisma",
+      "scope_ru": "изучение и практика иностранных языков",
+      "scope_en": "learning and practising foreign languages"
+    },
+    "social_sciences": {
+      "ru": "Общественные науки",
+      "en": "Social sciences",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "empathy",
+      "scope_ru": "обществознание, экономика, социология, философия",
+      "scope_en": "civics, economics, sociology, philosophy"
+    },
+    "bookworm": {
+      "ru": "Книжный червь",
+      "en": "Bookworm",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "чтение сложных текстов, где приходится разбираться: научные статьи, учебники, документация, плотная нон-фикшн",
+      "scope_en": "reading hard texts that take effort: papers, textbooks, documentation, dense non-fiction"
+    },
+    "self_learning": {
+      "ru": "Самообучение",
+      "en": "Self-learning",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "онлайн-курсы и самостоятельное изучение нового",
+      "scope_en": "online courses and learning new things on your own"
+    },
+    "writing": {
+      "ru": "Письмо",
+      "en": "Writing",
+      "domain": "creative",
+      "primary": "creativity",
+      "secondary": "intellect",
+      "scope_ru": "тексты, статьи, эссе, проза, посты",
+      "scope_en": "texts, articles, essays, prose, posts"
+    },
+    "public_speaking": {
+      "ru": "Ораторское искусство",
+      "en": "Public speaking",
+      "domain": "social",
+      "primary": "charisma",
+      "secondary": "will",
+      "scope_ru": "выступления, доклады, подготовка речи",
+      "scope_en": "talks, presentations, speech preparation"
+    },
+    "programming": {
+      "ru": "Программирование",
+      "en": "Programming",
+      "domain": "tech",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "написание и разбор кода на любом языке",
+      "scope_en": "writing and reviewing code in any language"
+    },
+    "engineering": {
+      "ru": "Инженерия",
+      "en": "Engineering",
+      "domain": "tech",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "проектирование систем, расчёты, схемы",
+      "scope_en": "system design, calculations, schematics"
+    },
+    "drafting": {
+      "ru": "Черчение и проектирование",
+      "en": "Drafting and CAD",
+      "domain": "tech",
+      "primary": "perception",
+      "secondary": "intellect",
+      "scope_ru": "чертежи, САПР, планировки",
+      "scope_en": "technical drawings, CAD, floor plans"
+    },
+    "electronics": {
+      "ru": "Электроника",
+      "en": "Electronics",
+      "domain": "tech",
+      "primary": "dexterity",
+      "secondary": "intellect",
+      "scope_ru": "схемы, пайка, сборка и ремонт устройств",
+      "scope_en": "circuits, soldering, building and fixing devices"
+    },
+    "it_support": {
+      "ru": "IT-поддержка",
+      "en": "IT support",
+      "domain": "tech",
+      "primary": "perception",
+      "secondary": "empathy",
+      "scope_ru": "настройка техники и помощь пользователям",
+      "scope_en": "setting up devices and helping users"
+    },
+    "digital_skills": {
+      "ru": "Цифровая грамотность",
+      "en": "Digital skills",
+      "domain": "tech",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "смартфон, компьютер, госуслуги, онлайн-сервисы, безопасность в интернете",
+      "scope_en": "phone, computer, online services, staying safe online"
+    },
+    "analytics": {
+      "ru": "Аналитика",
+      "en": "Analytics",
+      "domain": "work",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "анализ данных, отчёты, таблицы",
+      "scope_en": "data analysis, reports, spreadsheets"
+    },
+    "management": {
+      "ru": "Управление",
+      "en": "Management",
+      "domain": "work",
+      "primary": "charisma",
+      "secondary": "will",
+      "scope_ru": "руководство людьми и процессами",
+      "scope_en": "leading people and processes"
+    },
+    "project_management": {
+      "ru": "Управление проектами",
+      "en": "Project management",
+      "domain": "work",
+      "primary": "will",
+      "secondary": "charisma",
+      "scope_ru": "планирование, координация, сроки",
+      "scope_en": "planning, coordination, deadlines"
+    },
+    "finance": {
+      "ru": "Финансы",
+      "en": "Finance",
+      "domain": "work",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "бюджеты, финансовый анализ, инвестиционная грамотность",
+      "scope_en": "budgets, financial analysis, investment literacy"
+    },
+    "accounting": {
+      "ru": "Бухгалтерия",
+      "en": "Accounting",
+      "domain": "work",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "учёт, отчётность, налоги",
+      "scope_en": "bookkeeping, reporting, taxes"
+    },
+    "law": {
+      "ru": "Право",
+      "en": "Law",
+      "domain": "work",
+      "primary": "intellect",
+      "secondary": "charisma",
+      "scope_ru": "юридические документы, консультации, суды",
+      "scope_en": "legal documents, consultations, court work"
+    },
+    "administration": {
+      "ru": "Делопроизводство",
+      "en": "Administration",
+      "domain": "work",
+      "primary": "will",
+      "secondary": "perception",
+      "scope_ru": "документы, переписка, организация работы офиса",
+      "scope_en": "documents, correspondence, running an office"
+    },
+    "marketing": {
+      "ru": "Маркетинг",
+      "en": "Marketing",
+      "domain": "work",
+      "primary": "creativity",
+      "secondary": "charisma",
+      "scope_ru": "продвижение, реклама, соцсети, исследования аудитории",
+      "scope_en": "promotion, ads, social media, audience research"
+    },
+    "hr": {
+      "ru": "Работа с персоналом",
+      "en": "People and HR",
+      "domain": "work",
+      "primary": "empathy",
+      "secondary": "charisma",
+      "scope_ru": "подбор, адаптация и развитие сотрудников",
+      "scope_en": "hiring, onboarding and developing people"
+    },
+    "negotiation": {
+      "ru": "Переговоры",
+      "en": "Negotiation",
+      "domain": "social",
+      "primary": "charisma",
+      "secondary": "empathy",
+      "scope_ru": "переговоры, согласования, сделки",
+      "scope_en": "negotiations, agreements, deals"
+    },
+    "sales": {
+      "ru": "Торговля",
+      "en": "Sales",
+      "domain": "work",
+      "primary": "charisma",
+      "secondary": "empathy",
+      "scope_ru": "продажи, работа с покупателями",
+      "scope_en": "selling, dealing with buyers"
+    },
+    "customer_service": {
+      "ru": "Обслуживание клиентов",
+      "en": "Customer service",
+      "domain": "social",
+      "primary": "empathy",
+      "secondary": "charisma",
+      "scope_ru": "общение с клиентами, решение их вопросов",
+      "scope_en": "talking to customers, solving their issues",
+      "isWorkShift": true
+    },
+    "logistics": {
+      "ru": "Логистика",
+      "en": "Logistics",
+      "domain": "work",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "планирование поставок, маршрутов и складских остатков",
+      "scope_en": "planning deliveries, routes and stock"
+    },
+    "job_search": {
+      "ru": "Поиск работы",
+      "en": "Job search",
+      "domain": "work",
+      "primary": "will",
+      "secondary": "charisma",
+      "scope_ru": "резюме, отклики, собеседования",
+      "scope_en": "CVs, applications, interviews"
+    },
+    "athletics": {
+      "ru": "Атлетика",
+      "en": "Athletics",
+      "domain": "body",
+      "primary": "strength",
+      "secondary": "endurance",
+      "scope_ru": "силовые тренировки, физическая подготовка",
+      "scope_en": "strength training, conditioning"
+    },
+    "construction": {
+      "ru": "Строительство",
+      "en": "Construction",
+      "domain": "craft",
+      "primary": "strength",
+      "secondary": "dexterity",
+      "scope_ru": "стройка, кладка, монтаж конструкций",
+      "scope_en": "building, masonry, installing structures",
+      "isWorkShift": true
+    },
+    "finishing": {
+      "ru": "Отделочные работы",
+      "en": "Finishing work",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "endurance",
+      "scope_ru": "штукатурка, покраска, плитка, обои",
+      "scope_en": "plastering, painting, tiling, wallpaper",
+      "isWorkShift": true
+    },
+    "warehouse": {
+      "ru": "Складское дело",
+      "en": "Warehouse work",
+      "domain": "work",
+      "primary": "endurance",
+      "secondary": "strength",
+      "scope_ru": "погрузка, сборка заказов, учёт на складе",
+      "scope_en": "loading, order picking, stock keeping",
+      "isWorkShift": true
+    },
+    "factory_work": {
+      "ru": "Работа на производстве",
+      "en": "Factory work",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "endurance",
+      "scope_ru": "станки, конвейер, сборка, контроль качества",
+      "scope_en": "machines, assembly line, quality checks",
+      "isWorkShift": true
+    },
+    "cleaning": {
+      "ru": "Клининг",
+      "en": "Cleaning",
+      "domain": "work",
+      "primary": "endurance",
+      "secondary": "perception",
+      "scope_ru": "профессиональная уборка помещений",
+      "scope_en": "professional cleaning",
+      "isWorkShift": true
+    },
+    "electrics": {
+      "ru": "Электрика",
+      "en": "Electrics",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "intellect",
+      "scope_ru": "проводка, монтаж, диагностика электрики",
+      "scope_en": "wiring, installation, electrical diagnostics"
+    },
+    "plumbing": {
+      "ru": "Сантехника",
+      "en": "Plumbing",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "strength",
+      "scope_ru": "монтаж и ремонт сантехники",
+      "scope_en": "installing and repairing plumbing"
+    },
+    "mechanics": {
+      "ru": "Механика",
+      "en": "Mechanics",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "perception",
+      "scope_ru": "ремонт и обслуживание техники и машин",
+      "scope_en": "repairing and servicing machines"
+    },
+    "welding": {
+      "ru": "Сварка",
+      "en": "Welding",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "endurance",
+      "scope_ru": "сварка и работа с металлом",
+      "scope_en": "welding and metalwork"
+    },
+    "carpentry": {
+      "ru": "Столярное дело",
+      "en": "Carpentry",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "creativity",
+      "scope_ru": "работа с деревом, мебель",
+      "scope_en": "woodwork, furniture"
+    },
+    "home_repair": {
+      "ru": "Домашний ремонт",
+      "en": "Home repair",
+      "domain": "home",
+      "primary": "dexterity",
+      "secondary": "perception",
+      "scope_ru": "починить, собрать, повесить, заменить своими руками",
+      "scope_en": "fixing, assembling and replacing things yourself"
+    },
+    "sewing": {
+      "ru": "Шитьё",
+      "en": "Sewing",
+      "domain": "craft",
+      "primary": "dexterity",
+      "secondary": "creativity",
+      "scope_ru": "крой, шитьё, ремонт одежды",
+      "scope_en": "cutting, sewing, mending clothes"
+    },
+    "driving": {
+      "ru": "Вождение",
+      "en": "Driving",
+      "domain": "craft",
+      "primary": "perception",
+      "secondary": "endurance",
+      "scope_ru": "вождение автомобиля и другого транспорта",
+      "scope_en": "driving cars and other vehicles"
+    },
+    "navigation": {
+      "ru": "Ориентирование",
+      "en": "Navigation",
+      "domain": "craft",
+      "primary": "perception",
+      "secondary": "intellect",
+      "scope_ru": "маршруты, карты, ориентирование на местности",
+      "scope_en": "routes, maps, wayfinding"
+    },
+    "medicine": {
+      "ru": "Медицина",
+      "en": "Medicine",
+      "domain": "care",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "диагностика, лечение, медицинские знания",
+      "scope_en": "diagnosis, treatment, medical knowledge"
+    },
+    "patient_care": {
+      "ru": "Уход за больными",
+      "en": "Patient care",
+      "domain": "care",
+      "primary": "empathy",
+      "secondary": "endurance",
+      "scope_ru": "уход, дежурства, помощь пациентам, пожилым и близким",
+      "scope_en": "care, shifts, helping patients, elderly people and family",
+      "isWorkShift": true
+    },
+    "first_aid": {
+      "ru": "Первая помощь",
+      "en": "First aid",
+      "domain": "care",
+      "primary": "perception",
+      "secondary": "empathy",
+      "scope_ru": "первая помощь, тренировки и практика",
+      "scope_en": "first aid, drills and practice"
+    },
+    "pharmacy": {
+      "ru": "Фармацевтика",
+      "en": "Pharmacy",
+      "domain": "care",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "лекарства, рецепты, консультации в аптеке",
+      "scope_en": "medicines, prescriptions, pharmacy advice"
+    },
+    "massage": {
+      "ru": "Массаж и реабилитация",
+      "en": "Massage and rehab",
+      "domain": "care",
+      "primary": "dexterity",
+      "secondary": "empathy",
+      "scope_ru": "массаж, ЛФК, восстановление после травм",
+      "scope_en": "massage, physical therapy, recovery after injuries"
+    },
+    "psychology": {
+      "ru": "Психология",
+      "en": "Psychology",
+      "domain": "care",
+      "primary": "empathy",
+      "secondary": "intellect",
+      "scope_ru": "психологические знания и практика",
+      "scope_en": "psychology knowledge and practice"
+    },
+    "counseling": {
+      "ru": "Консультирование",
+      "en": "Counseling",
+      "domain": "care",
+      "primary": "empathy",
+      "secondary": "charisma",
+      "scope_ru": "консультации и поддержка людей",
+      "scope_en": "consultations and supporting people"
+    },
+    "veterinary": {
+      "ru": "Ветеринария",
+      "en": "Veterinary care",
+      "domain": "care",
+      "primary": "empathy",
+      "secondary": "intellect",
+      "scope_ru": "лечение и осмотр животных",
+      "scope_en": "treating and examining animals"
+    },
+    "animal_care": {
+      "ru": "Уход за животными",
+      "en": "Animal care",
+      "domain": "home",
+      "primary": "empathy",
+      "secondary": "endurance",
+      "scope_ru": "домашние питомцы: кормление, прогулки, дрессировка",
+      "scope_en": "pets: feeding, walks, training"
+    },
+    "health_care_self": {
+      "ru": "Забота о здоровье",
+      "en": "Looking after health",
+      "domain": "body",
+      "primary": "endurance",
+      "secondary": "will",
+      "scope_ru": "ЛФК, процедуры, режим, восстановление после болезни",
+      "scope_en": "exercise therapy, treatments, routine, recovery after illness",
+      "isRest": true
+    },
+    "teaching": {
+      "ru": "Преподавание",
+      "en": "Teaching",
+      "domain": "social",
+      "primary": "charisma",
+      "secondary": "intellect",
+      "scope_ru": "уроки, репетиторство, объяснение другим",
+      "scope_en": "lessons, tutoring, explaining to others"
+    },
+    "coaching": {
+      "ru": "Тренерская работа",
+      "en": "Coaching",
+      "domain": "social",
+      "primary": "charisma",
+      "secondary": "endurance",
+      "scope_ru": "тренировки других людей, команды, секции",
+      "scope_en": "training other people, teams, clubs"
+    },
+    "parenting": {
+      "ru": "Воспитание",
+      "en": "Parenting",
+      "domain": "home",
+      "primary": "empathy",
+      "secondary": "will",
+      "scope_ru": "занятия с детьми и внуками, воспитание, уход",
+      "scope_en": "time with children and grandchildren, upbringing, care"
+    },
+    "volunteering": {
+      "ru": "Волонтёрство",
+      "en": "Volunteering",
+      "domain": "social",
+      "primary": "empathy",
+      "secondary": "charisma",
+      "scope_ru": "помощь людям, животным, городу без оплаты",
+      "scope_en": "unpaid help to people, animals, your city"
+    },
+    "community": {
+      "ru": "Общественная жизнь",
+      "en": "Community life",
+      "domain": "social",
+      "primary": "charisma",
+      "secondary": "empathy",
+      "scope_ru": "клубы, соседские и городские дела, встречи по интересам",
+      "scope_en": "clubs, neighbourhood and city matters, interest groups",
+      "isRest": true
+    },
+    "cooking": {
+      "ru": "Кулинария",
+      "en": "Cooking",
+      "domain": "home",
+      "primary": "dexterity",
+      "secondary": "creativity",
+      "scope_ru": "готовка дома и на работе",
+      "scope_en": "cooking at home and at work"
+    },
+    "baking": {
+      "ru": "Выпечка",
+      "en": "Baking",
+      "domain": "home",
+      "primary": "dexterity",
+      "secondary": "creativity",
+      "scope_ru": "хлеб, пироги, торты, кондитерка",
+      "scope_en": "bread, pies, cakes, pastry"
+    },
+    "kitchen_management": {
+      "ru": "Управление кухней",
+      "en": "Kitchen management",
+      "domain": "work",
+      "primary": "will",
+      "secondary": "charisma",
+      "scope_ru": "организация кухни, смены, закупки",
+      "scope_en": "running a kitchen, shifts, purchasing",
+      "isWorkShift": true
+    },
+    "hospitality": {
+      "ru": "Гостеприимство",
+      "en": "Hospitality",
+      "domain": "social",
+      "primary": "empathy",
+      "secondary": "charisma",
+      "scope_ru": "официант, бариста, отель, приём гостей",
+      "scope_en": "waiting tables, barista, hotel, hosting guests",
+      "isWorkShift": true
+    },
+    "beauty": {
+      "ru": "Бьюти-мастерство",
+      "en": "Beauty craft",
+      "domain": "creative",
+      "primary": "dexterity",
+      "secondary": "creativity",
+      "scope_ru": "стрижки, маникюр, макияж, уход",
+      "scope_en": "haircuts, nails, make-up, skincare"
+    },
+    "drawing": {
+      "ru": "Рисование",
+      "en": "Drawing",
+      "domain": "creative",
+      "primary": "creativity",
+      "secondary": "perception",
+      "scope_ru": "рисунок, живопись, иллюстрация",
+      "scope_en": "drawing, painting, illustration"
+    },
+    "music": {
+      "ru": "Музыка",
+      "en": "Music",
+      "domain": "creative",
+      "primary": "creativity",
+      "secondary": "dexterity",
+      "scope_ru": "игра на инструментах, сочинение музыки",
+      "scope_en": "playing instruments, composing"
+    },
+    "singing": {
+      "ru": "Вокал",
+      "en": "Singing",
+      "domain": "creative",
+      "primary": "creativity",
+      "secondary": "charisma",
+      "scope_ru": "пение соло и в хоре",
+      "scope_en": "singing solo and in a choir"
+    },
+    "dance": {
+      "ru": "Танцы",
+      "en": "Dance",
+      "domain": "creative",
+      "primary": "dexterity",
+      "secondary": "creativity",
+      "scope_ru": "любые танцы: от бальных до уличных",
+      "scope_en": "any dance, from ballroom to street"
+    },
+    "acting": {
+      "ru": "Актёрское мастерство",
+      "en": "Acting",
+      "domain": "creative",
+      "primary": "charisma",
+      "secondary": "creativity",
+      "scope_ru": "театр, кино, импровизация",
+      "scope_en": "theatre, film, improv"
+    },
+    "photography": {
+      "ru": "Фотография",
+      "en": "Photography",
+      "domain": "creative",
+      "primary": "perception",
+      "secondary": "creativity",
+      "scope_ru": "съёмка, обработка, композиция",
+      "scope_en": "shooting, editing, composition"
+    },
+    "video": {
+      "ru": "Видео",
+      "en": "Video",
+      "domain": "creative",
+      "primary": "creativity",
+      "secondary": "perception",
+      "scope_ru": "съёмка и монтаж видео",
+      "scope_en": "shooting and editing video"
+    },
+    "design": {
+      "ru": "Дизайн",
+      "en": "Design",
+      "domain": "creative",
+      "primary": "creativity",
+      "secondary": "perception",
+      "scope_ru": "графический, интерфейсный, интерьерный дизайн",
+      "scope_en": "graphic, interface, interior design"
+    },
+    "crafts": {
+      "ru": "Рукоделие",
+      "en": "Handicraft",
+      "domain": "creative",
+      "primary": "dexterity",
+      "secondary": "creativity",
+      "scope_ru": "вязание, вышивка, бисер, лепка, поделки",
+      "scope_en": "knitting, embroidery, beading, modelling, crafts",
+      "isRest": true
+    },
+    "blogging": {
+      "ru": "Блогинг",
+      "en": "Blogging",
+      "domain": "creative",
+      "primary": "creativity",
+      "secondary": "charisma",
+      "scope_ru": "ведение блога, видео и постов для аудитории",
+      "scope_en": "running a blog, videos and posts for an audience"
+    },
+    "sport": {
+      "ru": "Спорт",
+      "en": "Sport",
+      "domain": "body",
+      "primary": "dexterity",
+      "secondary": "endurance",
+      "scope_ru": "тренировки и игры в выбранном виде спорта",
+      "scope_en": "training and games in your sport"
+    },
+    "running": {
+      "ru": "Бег",
+      "en": "Running",
+      "domain": "body",
+      "primary": "endurance",
+      "secondary": "will",
+      "scope_ru": "пробежки, забеги, интервалы",
+      "scope_en": "runs, races, intervals"
+    },
+    "swimming": {
+      "ru": "Плавание",
+      "en": "Swimming",
+      "domain": "body",
+      "primary": "endurance",
+      "secondary": "dexterity",
+      "scope_ru": "бассейн и открытая вода",
+      "scope_en": "pool and open water"
+    },
+    "team_sports": {
+      "ru": "Командные игры",
+      "en": "Team sports",
+      "domain": "body",
+      "primary": "dexterity",
+      "secondary": "charisma",
+      "scope_ru": "футбол, волейбол, баскетбол и другие",
+      "scope_en": "football, volleyball, basketball and others"
+    },
+    "martial_arts": {
+      "ru": "Единоборства",
+      "en": "Martial arts",
+      "domain": "body",
+      "primary": "dexterity",
+      "secondary": "strength",
+      "scope_ru": "бокс, борьба, восточные единоборства",
+      "scope_en": "boxing, wrestling, martial arts"
+    },
+    "yoga": {
+      "ru": "Йога и растяжка",
+      "en": "Yoga and stretching",
+      "domain": "body",
+      "primary": "dexterity",
+      "secondary": "will",
+      "scope_ru": "йога, пилатес, растяжка, гибкость",
+      "scope_en": "yoga, pilates, stretching, flexibility"
+    },
+    "hiking": {
+      "ru": "Походы",
+      "en": "Hiking",
+      "domain": "body",
+      "primary": "endurance",
+      "secondary": "perception",
+      "scope_ru": "походы, горы, туризм с рюкзаком",
+      "scope_en": "hiking, mountains, backpacking"
+    },
+    "walking": {
+      "ru": "Прогулки",
+      "en": "Walking",
+      "domain": "body",
+      "primary": "endurance",
+      "secondary": "perception",
+      "scope_ru": "пешие и скандинавские прогулки",
+      "scope_en": "walks and Nordic walking",
+      "isRest": true
+    },
+    "recovery": {
+      "ru": "Восстановление",
+      "en": "Recovery",
+      "domain": "body",
+      "primary": "endurance",
+      "secondary": "will",
+      "scope_ru": "растяжка, массаж, восстановительные практики",
+      "scope_en": "stretching, massage, recovery routines",
+      "isRest": true
+    },
+    "tactics": {
+      "ru": "Тактика",
+      "en": "Tactics",
+      "domain": "work",
+      "primary": "perception",
+      "secondary": "will",
+      "scope_ru": "тактическая подготовка, планирование операций",
+      "scope_en": "tactical training, operation planning"
+    },
+    "security": {
+      "ru": "Охрана",
+      "en": "Security",
+      "domain": "work",
+      "primary": "perception",
+      "secondary": "endurance",
+      "scope_ru": "охрана объектов, наблюдение, обходы",
+      "scope_en": "guarding sites, surveillance, patrols",
+      "isWorkShift": true
+    },
+    "farming": {
+      "ru": "Земледелие",
+      "en": "Farming",
+      "domain": "craft",
+      "primary": "endurance",
+      "secondary": "perception",
+      "scope_ru": "полевые работы, выращивание культур",
+      "scope_en": "field work, growing crops",
+      "isWorkShift": true
+    },
+    "animal_husbandry": {
+      "ru": "Животноводство",
+      "en": "Animal husbandry",
+      "domain": "craft",
+      "primary": "empathy",
+      "secondary": "endurance",
+      "scope_ru": "уход за животными на хозяйстве",
+      "scope_en": "caring for farm animals",
+      "isWorkShift": true
+    },
+    "gardening": {
+      "ru": "Садоводство",
+      "en": "Gardening",
+      "domain": "home",
+      "primary": "endurance",
+      "secondary": "perception",
+      "scope_ru": "сад, огород, дача, комнатные растения",
+      "scope_en": "garden, vegetables, country plot, houseplants",
+      "isRest": true
+    },
+    "fishing": {
+      "ru": "Рыбалка",
+      "en": "Fishing",
+      "domain": "body",
+      "primary": "perception",
+      "secondary": "will",
+      "scope_ru": "рыбалка с берега и с лодки",
+      "scope_en": "fishing from shore or boat",
+      "isRest": true
+    },
+    "foraging": {
+      "ru": "Тихая охота",
+      "en": "Foraging",
+      "domain": "body",
+      "primary": "perception",
+      "secondary": "endurance",
+      "scope_ru": "грибы, ягоды, травы",
+      "scope_en": "mushrooms, berries, herbs",
+      "isRest": true
+    },
+    "housekeeping": {
+      "ru": "Домоводство",
+      "en": "Housekeeping",
+      "domain": "home",
+      "primary": "endurance",
+      "secondary": "will",
+      "scope_ru": "уборка, порядок, хозяйство",
+      "scope_en": "cleaning, order, household"
+    },
+    "home_budget": {
+      "ru": "Домашние финансы",
+      "en": "Household finances",
+      "domain": "home",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "бюджет семьи, счета, планирование покупок",
+      "scope_en": "family budget, bills, planning purchases"
+    },
+    "leisure_reading": {
+      "ru": "Чтение для души",
+      "en": "Reading for pleasure",
+      "domain": "humanities",
+      "primary": "creativity",
+      "secondary": "intellect",
+      "scope_ru": "художественные книги, журналы, аудиокниги",
+      "scope_en": "novels, magazines, audiobooks",
+      "isRest": true
+    },
+    "puzzles": {
+      "ru": "Головоломки",
+      "en": "Puzzles",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "perception",
+      "scope_ru": "кроссворды, судоку, логические задачи",
+      "scope_en": "crosswords, sudoku, logic puzzles",
+      "isRest": true
+    },
+    "board_games": {
+      "ru": "Настольные игры и шахматы",
+      "en": "Board games and chess",
+      "domain": "humanities",
+      "primary": "intellect",
+      "secondary": "will",
+      "scope_ru": "шахматы, шашки, настольные игры",
+      "scope_en": "chess, checkers, board games"
+    },
+    "meditation": {
+      "ru": "Осознанность",
+      "en": "Mindfulness",
+      "domain": "body",
+      "primary": "will",
+      "secondary": "empathy",
+      "scope_ru": "медитация, дыхательные практики, дневник",
+      "scope_en": "meditation, breathing practice, journaling",
+      "isRest": true
+    },
+    "travel": {
+      "ru": "Путешествия",
+      "en": "Travel",
+      "domain": "body",
+      "primary": "perception",
+      "secondary": "charisma",
+      "scope_ru": "поездки, планирование маршрутов, новые места",
+      "scope_en": "trips, route planning, new places",
+      "isRest": true
+    }
   }
 }

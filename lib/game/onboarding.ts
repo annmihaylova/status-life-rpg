@@ -26,15 +26,24 @@ export interface PresetSkill {
 
 export interface PresetGroup {
   key: string;
+  category: string;
   ru: string;
   en: string;
   skills: string[];
+}
+
+export interface PresetCategory {
+  key: string;
+  ru: string;
+  en: string;
 }
 
 export const AGE_BANDS: readonly string[] = presets.ageBands;
 export const OCCUPATIONS = presets.occupations;
 export const GOALS = presets.goals;
 export const GROUPS: readonly PresetGroup[] = presets.groups;
+export const CATEGORIES: readonly PresetCategory[] = presets.categories;
+const AGE_DEFAULTS: Record<string, string[]> = presets.ageDefaults;
 
 export const PRESET_SKILLS: Readonly<Record<string, PresetSkill>> = Object.fromEntries(
   Object.entries(presets.skills).map(([key, s]) => {
@@ -57,11 +66,15 @@ export const PRESET_SKILLS: Readonly<Record<string, PresetSkill>> = Object.fromE
   }),
 );
 
-/** Стартовые навыки для выбранных групп: без повторов, в порядке групп. */
-export function suggestedSkills(groupKeys: readonly string[]): PresetSkill[] {
+/**
+ * Стартовые навыки для выбранных групп: без повторов, в порядке групп.
+ * Если сфера не выбрана, подсказки берутся по возрасту (школьник, пенсионер).
+ */
+export function suggestedSkills(groupKeys: readonly string[], ageBand?: string | null): PresetSkill[] {
+  const keys = groupKeys.length > 0 ? groupKeys : (ageBand && AGE_DEFAULTS[ageBand]) || [];
   const out: PresetSkill[] = [];
   const seen = new Set<string>();
-  for (const g of GROUPS.filter((g) => groupKeys.includes(g.key))) {
+  for (const g of GROUPS.filter((g) => keys.includes(g.key))) {
     for (const k of g.skills) {
       if (!seen.has(k) && PRESET_SKILLS[k]) {
         seen.add(k);

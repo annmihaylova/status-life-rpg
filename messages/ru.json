@@ -213,7 +213,9 @@
       "counter": "Основные {main}/{maxMain} · второстепенные {secondary}/{maxSecondary}",
       "main": "основной",
       "secondary": "второстепенный",
-      "showAll": "Показать все навыки"
+      "showAll": "Показать все навыки",
+      "search": "Поиск по всем навыкам",
+      "raises": "Качает: {attrs}"
     },
     "assessment": {
       "title": "Оценка персонажа",
@@ -320,7 +322,8 @@
       "secondary": "Вторичная",
       "none": "Нет",
       "save": "Сохранить"
-    }
+    },
+    "raises": "Качает: {attrs}"
   },
   "journal": {
     "title": "Журнал",
