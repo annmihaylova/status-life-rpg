@@ -1,12 +1,13 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { adminDb, withUser, type Tx } from "@/lib/db";
 import { skillCandidates, skills } from "@/lib/db/schema";
 import type { AttributeKey } from "@/lib/game/attributes";
 import { replay } from "@/lib/game/engine/replay";
 import type { EngineResult, GameEvent } from "@/lib/game/engine/types";
 import { eventToMessage, xpMessage, type MessageTone } from "@/lib/game/messages";
+import { className, titleName } from "@/lib/game/progression";
 import { loadEngineInput } from "./load";
 import { recomputeUser } from "./recompute";
 
@@ -51,7 +52,7 @@ export async function diffMessages(
   if (fresh.length === 0 && gained < 0.5) return [];
 
   const db = adminDb();
-  const [skillRows, candRows, t, tg] = await Promise.all([
+  const [skillRows, candRows, t, tg, locale] = await Promise.all([
     db.select({ id: skills.id, name: skills.name }).from(skills).where(eq(skills.userId, userId)),
     db
       .select({ cluster: skillCandidates.clusterKey, name: skillCandidates.suggestedName })
@@ -59,7 +60,9 @@ export async function diffMessages(
       .where(eq(skillCandidates.userId, userId)),
     getTranslations("system"),
     getTranslations("game"),
+    getLocale(),
   ]);
+  const loc = locale === "en" ? "en" : "ru";
   const skillName = new Map(skillRows.map((s) => [s.id, s.name]));
   const clusterName = new Map(candRows.map((c) => [c.cluster, c.name ?? c.cluster]));
   const names = {
@@ -67,6 +70,8 @@ export async function diffMessages(
     cluster: (c: string) => clusterName.get(c) ?? c,
     attribute: (k: AttributeKey) => tg(`attributes.${k}`),
     rank: (r: string) => tg(`ranks.${r}`),
+    title: (k: string) => titleName(k, loc),
+    className: (k: string) => className(k, loc),
   };
 
   const out: UiSystemMessage[] = [];

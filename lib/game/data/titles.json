@@ -1,0 +1,319 @@
+[
+ {
+  "key": "first_blood",
+  "ru": "Первая кровь",
+  "en": "First Blood",
+  "desc_ru": "Первая подтверждённая запись.",
+  "desc_en": "Your first confirmed entry.",
+  "rule": {
+   "type": "entries_total",
+   "n": 1
+  }
+ },
+ {
+  "key": "comeback",
+  "ru": "Возвращение",
+  "en": "The Return",
+  "desc_ru": "Запись после перерыва в 7 дней и больше. Возвращаться — тоже навык.",
+  "desc_en": "An entry after a break of 7 days or more. Coming back is a skill too.",
+  "rule": {
+   "type": "return_after_break",
+   "days": 7
+  }
+ },
+ {
+  "key": "world_explorer",
+  "ru": "Исследователь миров",
+  "en": "World Explorer",
+  "desc_ru": "3 новых навыка за 30 дней: взятых по предложению Системы или пробуждённых.",
+  "desc_en": "3 new skills within 30 days: taken from a System offer or awakened.",
+  "rule": {
+   "type": "new_skills_window",
+   "n": 3,
+   "days": 30
+  }
+ },
+ {
+  "key": "jack_of_all_trades",
+  "ru": "Многостаночник",
+  "en": "Jack of All Trades",
+  "desc_ru": "5 разных областей за один день.",
+  "desc_en": "5 different domains in a single day.",
+  "rule": {
+   "type": "domains_in_day",
+   "n": 5
+  }
+ },
+ {
+  "key": "paper_devourer",
+  "ru": "Пожиратель статей",
+  "en": "Devourer of Papers",
+  "desc_ru": "25 записей в навыках из области «Наука».",
+  "desc_en": "25 entries in skills from the Science domain.",
+  "rule": {
+   "type": "domain_entries",
+   "domain": "science",
+   "n": 25
+  }
+ },
+ {
+  "key": "hundred_hours",
+  "ru": "Сотня часов",
+  "en": "Hundred Hours",
+  "desc_ru": "100 часов фокусного времени за всё время.",
+  "desc_en": "100 hours of focused time in total.",
+  "rule": {
+   "type": "hours_total",
+   "n": 100
+  }
+ },
+ {
+  "key": "thousand_hours",
+  "ru": "Тысяча часов",
+  "en": "Thousand Hours",
+  "desc_ru": "1000 часов фокусного времени за всё время.",
+  "desc_en": "1000 hours of focused time in total.",
+  "rule": {
+   "type": "hours_total",
+   "n": 1000
+  }
+ },
+ {
+  "key": "thirty_days",
+  "ru": "Тридцать дней в пути",
+  "en": "Thirty Days on the Road",
+  "desc_ru": "30 дней с записями — не обязательно подряд.",
+  "desc_en": "30 days with entries, not necessarily in a row.",
+  "rule": {
+   "type": "active_days_total",
+   "n": 30
+  }
+ },
+ {
+  "key": "hundred_days",
+  "ru": "Сто дней",
+  "en": "Hundred Days",
+  "desc_ru": "100 дней с записями — не обязательно подряд.",
+  "desc_en": "100 days with entries, not necessarily in a row.",
+  "rule": {
+   "type": "active_days_total",
+   "n": 100
+  }
+ },
+ {
+  "key": "tenth_step",
+  "ru": "Десятая ступень",
+  "en": "Tenth Step",
+  "desc_ru": "10 уровень персонажа.",
+  "desc_en": "Character level 10.",
+  "rule": {
+   "type": "character_level",
+   "n": 10
+  }
+ },
+ {
+  "key": "veteran",
+  "ru": "Ветеран",
+  "en": "Veteran",
+  "desc_ru": "25 уровень персонажа.",
+  "desc_en": "Character level 25.",
+  "rule": {
+   "type": "character_level",
+   "n": 25
+  }
+ },
+ {
+  "key": "knows_the_craft",
+  "ru": "Знающий своё дело",
+  "en": "Knows the Craft",
+  "desc_ru": "Любой навык достиг 10 уровня.",
+  "desc_en": "Any skill reaches level 10.",
+  "rule": {
+   "type": "skill_level",
+   "n": 10
+  }
+ },
+ {
+  "key": "devoted",
+  "ru": "Одержимый делом",
+  "en": "Devoted",
+  "desc_ru": "100 часов в одном навыке.",
+  "desc_en": "100 hours in a single skill.",
+  "rule": {
+   "type": "skill_hours",
+   "n": 100
+  }
+ },
+ {
+  "key": "recovery_master",
+  "ru": "Мастер восстановления",
+  "en": "Master of Recovery",
+  "desc_ru": "10 дней отдыха. Отдых — часть прокачки.",
+  "desc_en": "10 rest days. Rest is part of levelling.",
+  "rule": {
+   "type": "rest_days",
+   "n": 10
+  }
+ },
+ {
+  "key": "potential_unlocked",
+  "ru": "Раскрытый потенциал",
+  "en": "Potential Unlocked",
+  "desc_ru": "Первая раскрытая характеристика.",
+  "desc_en": "Your first unfolded attribute.",
+  "rule": {
+   "type": "unfolded"
+  }
+ },
+ {
+  "key": "own_path",
+  "ru": "Свой путь",
+  "en": "Own Path",
+  "desc_ru": "Первая специализация навыка.",
+  "desc_en": "Your first skill specialization.",
+  "rule": {
+   "type": "specialization"
+  }
+ },
+ {
+  "key": "awakening",
+  "ru": "Пробуждение",
+  "en": "Awakening",
+  "desc_ru": "Пробуждён спящий навык.",
+  "desc_en": "A sleeping skill has awakened.",
+  "rule": {
+   "type": "awakened"
+  }
+ },
+ {
+  "key": "beyond_limits",
+  "ru": "Выше головы",
+  "en": "Beyond Limits",
+  "desc_ru": "Любая характеристика достигла 20.",
+  "desc_en": "Any attribute reaches 20.",
+  "rule": {
+   "type": "attribute_value",
+   "n": 20
+  }
+ },
+ {
+  "key": "pillar",
+  "ru": "Опора",
+  "en": "Pillar",
+  "desc_ru": "50 часов в области «Забота о людях».",
+  "desc_en": "50 hours in the Caring for people domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "care",
+   "n": 50
+  }
+ },
+ {
+  "key": "tempered",
+  "ru": "Закалённый",
+  "en": "Tempered",
+  "desc_ru": "50 часов в области «Тело и спорт».",
+  "desc_en": "50 hours in the Body and sport domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "body",
+   "n": 50
+  }
+ },
+ {
+  "key": "maker",
+  "ru": "Творец",
+  "en": "Maker",
+  "desc_ru": "50 часов в области «Творчество».",
+  "desc_en": "50 hours in the Creativity domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "creative",
+   "n": 50
+  }
+ },
+ {
+  "key": "golden_hands",
+  "ru": "Золотые руки",
+  "en": "Golden Hands",
+  "desc_ru": "50 часов в области «Ремесло».",
+  "desc_en": "50 hours in the Craft domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "craft",
+   "n": 50
+  }
+ },
+ {
+  "key": "life_of_the_party",
+  "ru": "Душа компании",
+  "en": "Life of the Party",
+  "desc_ru": "50 часов в области «Общение».",
+  "desc_en": "50 hours in the Social domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "social",
+   "n": 50
+  }
+ },
+ {
+  "key": "machine_whisperer",
+  "ru": "Повелитель машин",
+  "en": "Machine Whisperer",
+  "desc_ru": "50 часов в области «Технологии».",
+  "desc_en": "50 hours in the Technology domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "tech",
+   "n": 50
+  }
+ },
+ {
+  "key": "hearthkeeper",
+  "ru": "Хранитель очага",
+  "en": "Hearthkeeper",
+  "desc_ru": "50 часов в области «Дом».",
+  "desc_en": "50 hours in the Home domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "home",
+   "n": 50
+  }
+ },
+ {
+  "key": "man_of_letters",
+  "ru": "Книжник",
+  "en": "Man of Letters",
+  "desc_ru": "50 часов в области «Гуманитарное».",
+  "desc_en": "50 hours in the Humanities domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "humanities",
+   "n": 50
+  }
+ },
+ {
+  "key": "scientist",
+  "ru": "Учёный",
+  "en": "Scientist",
+  "desc_ru": "100 часов в области «Наука».",
+  "desc_en": "100 hours in the Science domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "science",
+   "n": 100
+  }
+ },
+ {
+  "key": "professional",
+  "ru": "Профессионал",
+  "en": "Professional",
+  "desc_ru": "100 часов в области «Работа».",
+  "desc_en": "100 hours in the Work domain.",
+  "rule": {
+   "type": "domain_hours",
+   "domain": "work",
+   "n": 100
+  }
+ }
+]

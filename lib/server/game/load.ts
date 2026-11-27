@@ -14,6 +14,7 @@ import type {
   EngineInput,
   SkillDef,
 } from "@/lib/game/engine/types";
+import { skillDomain } from "@/lib/game/progression";
 import type { DbOrTx } from "@/lib/db/client";
 import {
   activityEntries,
@@ -87,6 +88,7 @@ export async function loadEngineInput(db: DbOrTx, userId: string, now: Date): Pr
     secondaryAttr: asPart(s.secondaryAttrKey),
     isWorkShift: s.isWorkShift,
     isRest: s.isRest,
+    domain: skillDomain(s.domain, asPart(s.primaryAttrKey)),
     sleepingTargetLevel: s.sleepingTargetLevel,
   }));
 

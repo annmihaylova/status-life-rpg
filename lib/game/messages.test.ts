@@ -4,6 +4,7 @@ import ru from "@/messages/ru.json";
 import { ATTRIBUTES } from "./attributes";
 import { GAME_CONFIG } from "./config";
 import type { GameEvent } from "./engine/types";
+import { className, titleName } from "./progression";
 import { eventToMessage, hpMessage, SYSTEM_MESSAGE_KEYS, xpMessage, type SystemMessage } from "./messages";
 
 const names = {
@@ -11,6 +12,8 @@ const names = {
   cluster: (c: string) => `cluster:${c}`,
   attribute: (k: string) => ru.game.attributes[k as keyof typeof ru.game.attributes],
   rank: (r: string) => ru.game.ranks[r as keyof typeof ru.game.ranks],
+  title: (k: string) => titleName(k, "ru"),
+  className: (k: string) => className(k, "ru"),
 };
 
 const sample: GameEvent[] = [

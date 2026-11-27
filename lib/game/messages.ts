@@ -23,6 +23,8 @@ export interface MessageNames {
   cluster: (cluster: string) => string;
   attribute: (key: AttributeKey) => string;
   rank: (rank: string) => string;
+  title: (key: string) => string;
+  className: (key: string) => string;
 }
 
 export function eventToMessage(e: GameEvent, n: MessageNames): SystemMessage {
@@ -96,6 +98,17 @@ export function eventToMessage(e: GameEvent, n: MessageNames): SystemMessage {
         },
         tone: "epic",
       };
+    case "title_earned":
+      return { ...base, key: "titleEarned", values: { title: n.title(e.title) }, tone: "rare" };
+    case "class_unlocked":
+      return { ...base, key: "classUnlocked", values: { class: n.className(e.classKey) }, tone: "epic" };
+    case "class_changed":
+      return {
+        ...base,
+        key: "classChanged",
+        values: { from: n.className(e.from), to: n.className(e.classKey) },
+        tone: "rare",
+      };
   }
 }
 
@@ -150,4 +163,7 @@ export const SYSTEM_MESSAGE_KEYS = [
   "hp",
   "hpWithEffects",
   "hpRest",
+  "titleEarned",
+  "classUnlocked",
+  "classChanged",
 ] as const;

@@ -11,6 +11,7 @@ import {
   skillCandidates,
   skillSpecializations,
   skills,
+  userTitles,
 } from "@/lib/db/schema";
 import { GENERAL_KEYS, isPartKey, PART_KEYS } from "@/lib/game/attributes";
 import { avatarSchema } from "@/lib/game/avatar";
@@ -245,4 +246,23 @@ export async function saveCharacter(input: z.input<typeof characterSchema>): Pro
   });
   revalidatePath("/", "layout");
   return { messages: [] };
+}
+
+/** Носить титул (SPEC 2.7): только полученный; null — без титула. */
+export async function wearTitle(titleKey: string | null): Promise<ActionResult> {
+  const userId = await requireUserId();
+  const key = z.string().max(60).nullable().parse(titleKey);
+  const ok = await withUser(userId, async (tx) => {
+    if (key) {
+      const [owned] = await tx
+        .select({ k: userTitles.titleKey })
+        .from(userTitles)
+        .where(and(eq(userTitles.userId, userId), eq(userTitles.titleKey, key)));
+      if (!owned) return false;
+    }
+    await tx.update(characters).set({ titleKey: key, updatedAt: new Date() }).where(eq(characters.userId, userId));
+    return true;
+  });
+  revalidatePath("/", "layout");
+  return ok ? { messages: [] } : { messages: [], error: "title_not_earned" };
 }

@@ -17,6 +17,8 @@ export interface SkillDef {
   secondaryAttr: PartKey | null;
   isWorkShift: boolean;
   isRest: boolean;
+  /** область навыка (presets: science, tech, care…); для титулов и классов */
+  domain?: string | null;
   /** для спящего навыка — целевой уровень (из оценки прошлых часов) */
   sleepingTargetLevel: number | null;
 }
@@ -113,6 +115,9 @@ export type GameEvent = { id: string; date: IsoDate; entryId?: string } & (
   | { type: "attribute_point"; attribute: AttributeKey; from: number; to: number }
   | { type: "unfold_available"; general: GeneralKey }
   | { type: "unfolded"; general: GeneralKey; values: Partial<Record<PartKey, number>> }
+  | { type: "title_earned"; title: string }
+  | { type: "class_unlocked"; classKey: string }
+  | { type: "class_changed"; from: string; classKey: string }
 );
 
 export interface SkillState {
@@ -182,6 +187,10 @@ export interface EngineResult {
   ledger: XpLedgerEvent[];
   events: GameEvent[];
   calibrations: CalibrationState[];
+  /** полученные титулы (SPEC 2.7) */
+  titles: { key: string; earnedOn: IsoDate }[];
+  /** класс: открывается на 10 уровне, пересчитывается по понедельникам */
+  characterClass: { key: string; since: IsoDate } | null;
   /** решения, которые движок не смог применить (некорректная калибровка и т.п.) */
   rejectedDecisions: { id: string; reason: string }[];
 }

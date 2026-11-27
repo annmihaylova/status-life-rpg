@@ -44,7 +44,10 @@
     "unfolded": "[System] Attribute “{attribute}” unfolded: {values}",
     "hp": "[System] HP: {current}/{max}",
     "hpWithEffects": "[System] HP: {current}/{max}. Status: {effects}",
-    "hpRest": "[System] HP: {current}/{max}. Status: {effects}. Rest is recommended."
+    "hpRest": "[System] HP: {current}/{max}. Status: {effects}. Rest is recommended.",
+    "titleEarned": "[System] Title earned: \"{title}\"",
+    "classUnlocked": "[System] Class revealed: {class}",
+    "classChanged": "[System] Class changed: {from} → {to}"
   },
   "game": {
     "attributes": {
@@ -160,7 +163,8 @@
     "skills": "Skills",
     "log": "Log",
     "journal": "Journal",
-    "checkin": "Report"
+    "checkin": "Report",
+    "chronicle": "Chronicle"
   },
   "common": {
     "systemWindow": "System window",
@@ -179,7 +183,9 @@
       "llm_rate_limited": "Too many requests. Try again in a minute.",
       "bad_label": "Token name cannot be empty.",
       "too_many_tokens": "Too many active tokens: revoke the ones you do not need.",
-      "oauth_failed": "Could not answer the access request. Start connecting in Claude again."
+      "oauth_failed": "Could not answer the access request. Start connecting in Claude again.",
+      "title_not_earned": "This title is not earned yet.",
+      "bad_timer": "The timer shows an odd duration. Reset it and start again."
     }
   },
   "onboarding": {
@@ -263,8 +269,7 @@
   "status": {
     "portrait": "Character portrait",
     "noName": "Nameless hero",
-    "classLocked": "Class unlocks at level 10",
-    "classPending": "Class will be revealed in the next version",
+    "classLocked": "Class: undetermined — unlocks at level 10",
     "level": "Level {level}",
     "xpLabel": "Experience to next level",
     "today": "Today +{xp} XP",
@@ -312,7 +317,9 @@
     "signOut": "Sign out",
     "editCharacter": "Edit character",
     "dailyReport": "Daily report",
-    "settings": "Settings"
+    "settings": "Settings",
+    "classLabel": "Class: {name}",
+    "chronicle": "Chronicle"
   },
   "skills": {
     "title": "Skills",
@@ -397,7 +404,10 @@
       "new": "Lots of new"
     },
     "rest": "This is rest",
-    "description": "Description (optional)"
+    "description": "Description (optional)",
+    "modeManual": "Manual",
+    "modeTimer": "Timer",
+    "modeTimerRunning": "Timer ●"
   },
   "attrSheet": {
     "open": "Details: {attr}",
@@ -608,5 +618,79 @@
         "p": "You can revoke AI assistant tokens in Settings. To delete your account and all data, email the support address shown on the Google sign-in screen; we delete it within 30 days."
       }
     ]
+  },
+  "titles": {
+    "title": "Titles",
+    "none": "No titles yet. The first one comes with your first confirmed entry.",
+    "noTitle": "No title",
+    "wear": "Which title to wear",
+    "locked": "Not earned yet ({count})"
+  },
+  "chronicle": {
+    "title": "Chronicle",
+    "compareTitle": "You {days, plural, one {# day} other {# days}} ago and now",
+    "compareStart": "You on sign-up day and now",
+    "level": "Level",
+    "xp": "Experience",
+    "attributes": "Attributes",
+    "topSkills": "Top skills",
+    "was": "then",
+    "now": "now",
+    "week": "This week",
+    "month": "This month",
+    "hours": "{hours} h",
+    "focusHours": "Focused time",
+    "activeDays": "Days with entries",
+    "entries": "Entries",
+    "byDomain": "By domain",
+    "newSkills": "New skills",
+    "rankUps": "New ranks",
+    "titlesEarned": "Titles",
+    "levelUp": "Level: {from} → {to}",
+    "nothing": "No entries in this period, and that is not a penalty.",
+    "allTime": "All time",
+    "allTimeHours": "{hours} h of focused time",
+    "allTimeEntries": "{count, plural, one {# entry} other {# entries}}",
+    "allTimeDays": "{count, plural, one {# day} other {# days}} with entries",
+    "heatmap": "Activity over half a year",
+    "heatmapHint": "Empty cells are just days. Gaps are not punished.",
+    "less": "less",
+    "more": "more",
+    "dayMinutes": "{date}: {hours} h",
+    "letterTitle": "Letter from the System",
+    "letterWeek": "Week of {from}",
+    "fromClaude": "Written by Claude from the week's data",
+    "fromTemplate": "Assembled by the System from the week's numbers",
+    "letterHint": "Claude can write a living letter: open a chat with Status connected and write \"Write the week's letter for Status\".",
+    "letter": {
+      "quiet": "This week had no entries. That happens: rest, illness, other concerns. The System takes nothing away.",
+      "quietPrev": "The week before had {hours} h of focused work, and those hours are still there in your skills.",
+      "quietEnd": "One short entry is enough to continue.",
+      "opening": "This week: {hours} h of focused time, {days, plural, one {# day} other {# days}} with entries, {entries} entries.",
+      "topSkill": "Most of the time went to \"{skill}\": {hours} h.",
+      "breadth": "A varied week: {count, plural, one {# domain} other {# domains}}: {domains}.",
+      "levelUp": "Character level rose from {from} to {to}.",
+      "rankUp": "\"{skill}\" is now at rank \"{rank}\".",
+      "newSkills": "New skills on the list: {skills}.",
+      "title": "Title earned: \"{title}\".",
+      "moreThanPrev": "That is {hours} h more than the week before.",
+      "lessThanPrev": "That is {hours} h less than the week before. Load varies, and that is fine.",
+      "steady": "About the same as the week before: a steady pace.",
+      "closing": "[System] The week's data is saved in the Chronicle."
+    }
+  },
+  "timer": {
+    "title": "Timer",
+    "hint": "Pick a skill and start the timer. At the end the System will ask how much of that time you were focused.",
+    "noSkills": "No skills yet: the timer needs at least one.",
+    "start": "Start",
+    "stop": "Stop",
+    "cancel": "Reset",
+    "resume": "Resume",
+    "discard": "Don't log",
+    "elapsed": "{minutes} min",
+    "tooShort": "Less than a minute: nothing to log.",
+    "focusQuestion": "How much of this time were you really focused?",
+    "focusValue": "{percent}% → {minutes} min focused"
   }
 }

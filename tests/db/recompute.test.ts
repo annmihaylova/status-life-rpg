@@ -5,6 +5,7 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createDb } from "@/lib/db/client";
+import { TITLES } from "@/lib/game/progression";
 import { recomputeUser } from "@/lib/server/game/recompute";
 
 const url = process.env.DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
@@ -149,5 +150,37 @@ describe("game:recompute", () => {
       { env: { ...process.env, DATABASE_URL: url }, encoding: "utf8" },
     );
     expect(out).toContain("повтор совпал");
+  });
+});
+
+describe("титулы в БД", () => {
+  it("справочник titles содержит все титулы из конфига", async () => {
+    const rows = await sql`select key from titles`;
+    const keys = new Set(rows.map((r) => r.key));
+    for (const t of TITLES) expect(keys.has(t.key), t.key).toBe(true);
+  });
+
+  it("пересчёт пишет полученные титулы; удалённая запись забирает титул и снимает его с персонажа", async () => {
+    await recomputeUser(db, A, NOW);
+    const earned = await sql`select title_key from user_titles where user_id = ${A}`;
+    expect(earned.map((r) => r.title_key)).toContain("first_blood");
+
+    // временный пользователь с одной записью
+    const U = randomUUID();
+    users.push(U);
+    await sql`insert into auth.users (id, instance_id, aud, role, email, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+              values (${U}, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', ${`${U}@titles.test`}, '{}', '{}', now(), now())`;
+    await sql`update profiles set created_at = '2026-01-01T08:00:00Z', timezone = 'UTC' where id = ${U}`;
+    const [{ id: entryId }] = await sql`insert into activity_entries (user_id, date, focus_minutes, description, source, status)
+                                        values (${U}, '2026-01-02', 30, 'тест', 'manual', 'confirmed') returning id`;
+    await recomputeUser(db, U, NOW);
+    await sql`update characters set title_key = 'first_blood' where user_id = ${U}`;
+    expect((await sql`select 1 from user_titles where user_id = ${U} and title_key = 'first_blood'`).length).toBe(1);
+
+    await sql`delete from activity_entries where id = ${entryId}`;
+    await recomputeUser(db, U, NOW);
+    expect(await sql`select 1 from user_titles where user_id = ${U}`).toHaveLength(0);
+    const [c] = await sql`select title_key from characters where user_id = ${U}`;
+    expect(c.title_key).toBeNull();
   });
 });

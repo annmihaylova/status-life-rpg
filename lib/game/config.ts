@@ -132,6 +132,13 @@ export const GAME_CONFIG = {
     recoveryXpBonus: 0.1,
   },
 
+  /** Классы (SPEC 2.7): «не определён» до 10 уровня, дальше пересчёт по понедельникам. */
+  classes: {
+    unlockLevel: 10,
+    /** опыт навыков по областям считается за последние N дней */
+    domainWindowDays: 28,
+  },
+
   /** Переключаемые эксперименты (PLAN 2б). По умолчанию — вариант A. */
   experiments: {
     restDay: {

@@ -2,9 +2,10 @@
  * Запись результата движка в кэш-таблицы и леджер.
  * Всё пересчитывается целиком: леджер пользователя заменяется, агрегаты перезаписываются.
  */
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, notInArray, sql } from "drizzle-orm";
 import { FORMULA_VERSION } from "@/lib/game/config";
 import type { EngineResult } from "@/lib/game/engine/types";
+import { titleDef } from "@/lib/game/progression";
 import type { Tx } from "@/lib/db/client";
 import {
   attributeXpTags,
@@ -12,7 +13,9 @@ import {
   hpDays,
   skillCandidates,
   skills,
+  titles,
   userAttributes,
+  userTitles,
   xpEvents,
 } from "@/lib/db/schema";
 
@@ -40,9 +43,48 @@ export async function persistEngineResult(tx: Tx, userId: string, r: EngineResul
     .set({
       levelCache: r.character.level,
       totalXpCache: r.character.totalXp,
+      classKey: r.characterClass?.key ?? null,
       updatedAt: new Date(),
     })
     .where(eq(characters.userId, userId));
+
+  // титулы: ровно те, что выводит движок (удалённые записи могут забрать титул)
+  const earned = r.titles.map((t) => t.key);
+  await tx
+    .delete(userTitles)
+    .where(
+      earned.length > 0
+        ? and(eq(userTitles.userId, userId), notInArray(userTitles.titleKey, earned))
+        : eq(userTitles.userId, userId),
+    );
+  if (r.titles.length > 0) {
+    // справочник титулов: миграция-сид его заполняет, но пересчёт не должен зависеть от того, применена ли она
+    await tx
+      .insert(titles)
+      .values(
+        r.titles
+          .map((t) => titleDef(t.key))
+          .filter((d): d is NonNullable<typeof d> => Boolean(d))
+          .map((d) => ({ key: d.key, nameRu: d.ru, nameEn: d.en, rule: d.rule })),
+      )
+      .onConflictDoNothing();
+    await tx
+      .insert(userTitles)
+      .values(r.titles.map((t) => ({ userId, titleKey: t.key, earnedAt: new Date(`${t.earnedOn}T12:00:00Z`) })))
+      .onConflictDoUpdate({
+        target: [userTitles.userId, userTitles.titleKey],
+        set: { earnedAt: sql`excluded.earned_at` },
+      });
+  }
+  // носимый титул, которого больше нет, снимаем
+  await tx
+    .update(characters)
+    .set({ titleKey: null })
+    .where(
+      earned.length > 0
+        ? and(eq(characters.userId, userId), notInArray(characters.titleKey, earned))
+        : eq(characters.userId, userId),
+    );
 
   // навыки
   for (const s of Object.values(r.skills)) {

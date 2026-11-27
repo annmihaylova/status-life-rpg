@@ -40,6 +40,7 @@ import {
   type AttributeProgress,
 } from "../formulas";
 import { computeHp, isRestDay, secondWindBonus, type HpDayEntry } from "../hp";
+import { chooseClass, isWeekStart, newTitles, topAttributes, type ProgressCounters } from "../progression";
 import type {
   AttributeState,
   CalibrationState,
@@ -104,6 +105,33 @@ export function replay(input: EngineInput): EngineResult {
   const events: GameEvent[] = [];
   const rejected: { id: string; reason: string }[] = [];
 
+  // титулы и класс
+  const earnedTitles = new Map<string, IsoDate>();
+  let currentClass: { key: string; since: IsoDate } | null = null;
+  const counters: ProgressCounters = {
+    date: input.registeredOn,
+    entriesTotal: 0,
+    minutesTotal: 0,
+    activeDaysTotal: 0,
+    domainEntries: {},
+    domainMinutes: {},
+    domainsToday: 0,
+    returnBreakToday: null,
+    newSkillDates: [],
+    characterLevel: 1,
+    maxSkillLevel: 1,
+    maxSkillMinutes: 0,
+    maxAttributeValue: C.attributes.base,
+    restDays: 0,
+    anyUnfolded: false,
+    anySpecialization: false,
+    anyAwakened: false,
+  };
+  const skillMinutesTotal = new Map<string, number>();
+  /** опыт навыков по областям за день — для класса (окно 28 дней) */
+  const domainXpByDay = new Map<IsoDate, Map<string, number>>();
+  let dayDomains = new Set<string>();
+
   for (const g of GENERAL_KEYS) attrs.set(g, newAttr(g, "general", C.attributes.base));
 
   const emit = (e: GameEventInput) => {
@@ -118,7 +146,11 @@ export function replay(input: EngineInput): EngineResult {
               ? e.cluster
               : "slot" in e
                 ? e.slot
-                : "";
+                : "title" in e
+                  ? e.title
+                  : "classKey" in e
+                    ? e.classKey
+                    : "";
     const detail = "to" in e ? e.to : "stars" in e ? e.stars : "milestone" in e ? e.milestone : "";
     events.push({ ...e, id: `${e.type}:${key}:${detail}:${e.date}` } as GameEvent);
   };
@@ -183,7 +215,10 @@ export function replay(input: EngineInput): EngineResult {
         st.status = "active";
         st.slot = d.payload.slot;
         st.takenOn ??= d.date;
-        if (d.payload.clusterKey) ensureCandidate(d.payload.clusterKey).offerStatus = "accepted";
+        if (d.payload.clusterKey) {
+          ensureCandidate(d.payload.clusterKey).offerStatus = "accepted";
+          counters.newSkillDates.push(d.date);
+        }
         return;
       }
       case "add_sleeping_skill": {
@@ -226,6 +261,7 @@ export function replay(input: EngineInput): EngineResult {
         }
         st.pendingSpecializations = st.pendingSpecializations.filter((m) => m !== d.payload.milestone);
         st.specializations.push({ milestone: d.payload.milestone, name: d.payload.name });
+        counters.anySpecialization = true;
         return;
       }
       case "assessment": {
@@ -311,6 +347,7 @@ export function replay(input: EngineInput): EngineResult {
     });
     a.state = "unfolded";
     a.unfoldedOn = date;
+    counters.anyUnfolded = true;
     unfolded.add(g);
     const u = C.attributes.unfold;
     windows.push({
@@ -386,6 +423,16 @@ export function replay(input: EngineInput): EngineResult {
 
     const max = C.entry.maxSkillsPerEntry;
     const allocs = normalizeShares(normalizeShares(e.allocations).slice(0, max));
+
+    counters.entriesTotal += 1;
+    counters.minutesTotal += e.focusMinutes;
+    const entryDomains = new Set<string>();
+    for (const a of allocs) {
+      const id = a.skillId ?? (a.cluster ? clusterToSkill.get(a.cluster)?.skillId : null);
+      const domain = id ? skillDefs.get(id)?.domain : null;
+      if (domain) entryDomains.add(domain);
+    }
+    for (const d of entryDomains) counters.domainEntries[d] = (counters.domainEntries[d] ?? 0) + 1;
     if (allocs.length === 0) {
       const t = e.attributeTags;
       if (t) addAttrByTags(t.primary, t.secondary, xpE * noSkillWeight, e.focusMinutes, e.id, "no_skill");
@@ -455,6 +502,8 @@ export function replay(input: EngineInput): EngineResult {
             ? "main"
             : "none";
       emit({ type: "skill_awakened", date: e.date, entryId: e.id, skillId: def.id });
+      counters.anyAwakened = true;
+      counters.newSkillDates.push(e.date);
     }
     const key = `skill:${def.id}`;
     const prior = dayMinutes.get(key) ?? 0;
@@ -497,6 +546,14 @@ export function replay(input: EngineInput): EngineResult {
       amount: res.amount,
       multipliers: res.multipliers,
     });
+    skillMinutesTotal.set(def.id, (skillMinutesTotal.get(def.id) ?? 0) + minutes);
+    if (def.domain) {
+      counters.domainMinutes[def.domain] = (counters.domainMinutes[def.domain] ?? 0) + minutes;
+      dayDomains.add(def.domain);
+      const byDomain = domainXpByDay.get(e.date) ?? new Map<string, number>();
+      byDomain.set(def.domain, (byDomain.get(def.domain) ?? 0) + res.amount);
+      domainXpByDay.set(e.date, byDomain);
+    }
 
     // В характеристики идёт XP навыка без бонусов (иначе характеристики разгоняли бы сами себя)
     // и без множителя спящего навыка (SPEC 3.1). Второстепенный слот — ×0.5.
@@ -578,6 +635,48 @@ export function replay(input: EngineInput): EngineResult {
     }
   };
 
+  // ───────── титулы и класс (SPEC 2.7) ─────────
+  const closeProgress = (date: IsoDate, active: boolean, restDay: boolean, breakBefore: number | null) => {
+    counters.date = date;
+    if (active) counters.activeDaysTotal += 1;
+    if (restDay) counters.restDays += 1;
+    counters.domainsToday = dayDomains.size;
+    counters.returnBreakToday = breakBefore;
+    counters.characterLevel = level();
+    for (const st of skills.values()) counters.maxSkillLevel = Math.max(counters.maxSkillLevel, st.level);
+    for (const m of skillMinutesTotal.values()) counters.maxSkillMinutes = Math.max(counters.maxSkillMinutes, m);
+    for (const a of attrs.values()) {
+      if (a.state !== "unfolded") counters.maxAttributeValue = Math.max(counters.maxAttributeValue, a.value);
+    }
+
+    for (const t of newTitles(new Set(earnedTitles.keys()), counters)) {
+      earnedTitles.set(t.key, date);
+      emit({ type: "title_earned", date, title: t.key });
+    }
+
+    const cls = C.classes;
+    if (counters.characterLevel < cls.unlockLevel) return;
+    if (currentClass && !isWeekStart(date)) return;
+    const domainXp = new Map<string, number>();
+    for (let d = addDays(date, -(cls.domainWindowDays - 1)); d <= date; d = addDays(d, 1)) {
+      for (const [k, v] of domainXpByDay.get(d) ?? []) domainXp.set(k, (domainXp.get(k) ?? 0) + v);
+    }
+    const domains = [...domainXp.entries()]
+      .filter(([, v]) => v > 0)
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([k]) => k);
+    const top = topAttributes([...attrs.values()]);
+    const next = chooseClass(top, domains);
+    if (!next) return;
+    if (!currentClass) {
+      currentClass = { key: next.key, since: date };
+      emit({ type: "class_unlocked", date, classKey: next.key });
+    } else if (currentClass.key !== next.key) {
+      emit({ type: "class_changed", date, from: currentClass.key, classKey: next.key });
+      currentClass = { key: next.key, since: date };
+    }
+  };
+
   // ───────── проход по дням ─────────
   const firstDate = [
     input.registeredOn,
@@ -608,6 +707,7 @@ export function replay(input: EngineInput): EngineResult {
     for (const d of decisionsByDay.get(date) ?? []) applyDecision(d);
 
     const dayEntries = entriesByDay.get(date) ?? [];
+    const breakBefore = dayEntries.length > 0 && lastActiveDate ? diffDays(date, lastActiveDate) - 1 : null;
     if (dayEntries.length > 0 && lastActiveDate) {
       const gap = diffDays(date, lastActiveDate) - 1;
       if (gap >= C.experiments.secondWind.breakDays) {
@@ -624,6 +724,7 @@ export function replay(input: EngineInput): EngineResult {
     dayMinutes = new Map();
     dayAttrXp = new Map();
     dayAttrMinutes = new Map();
+    dayDomains = new Set();
     const levelBefore = level();
     for (const e of dayEntries) processEntry(e, buffs);
     closeAttributes(date);
@@ -672,6 +773,8 @@ export function replay(input: EngineInput): EngineResult {
       });
       hpDays[date] = { ...hp, date, restDay };
     }
+    closeProgress(date, dayEntries.length > 0, restDay, breakBefore);
+
     yesterdayRest = restDay;
     if (dayEntries.length > 0) lastActiveDate = date;
   }
@@ -703,6 +806,8 @@ export function replay(input: EngineInput): EngineResult {
     ledger,
     events,
     calibrations: windows.map((w) => ({ ...w, base: [...w.base], keys: [...w.keys] })),
+    titles: [...earnedTitles.entries()].map(([key, earnedOn]) => ({ key, earnedOn })),
+    characterClass: currentClass,
     rejectedDecisions: rejected,
   };
 }

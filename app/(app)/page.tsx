@@ -21,6 +21,7 @@ import {
   xpToNextPoint,
 } from "@/lib/game/formulas";
 import { parseAvatar } from "@/lib/game/avatar";
+import { className, titleName } from "@/lib/game/progression";
 import { getGameView } from "@/lib/server/game/queries";
 import { requireUserId } from "@/lib/server/session";
 import { attrColor, tagLabel } from "@/lib/ui/game";
@@ -68,6 +69,7 @@ export default async function StatusPage() {
   const hp = r.hpDays[view.today];
   const wellbeing = view.input.wellbeing[view.today];
   const u = GAME_CONFIG.attributes.unfold;
+  const loc = locale === "en" ? "en" : "ru";
   const level = lp.level;
 
   return (
@@ -79,8 +81,11 @@ export default async function StatusPage() {
           </Link>
           <div className="min-w-0 flex-1 space-y-1">
             <h1 className="truncate text-lg font-semibold">{view.character.gameName || t("noName")}</h1>
+            {view.character.titleKey && (
+              <p className="truncate font-mono text-xs text-star">«{titleName(view.character.titleKey, loc)}»</p>
+            )}
             <p className="text-xs text-muted">
-              {level < 10 ? t("classLocked") : t("classPending")}
+              {r.characterClass ? t("classLabel", { name: className(r.characterClass.key, loc) }) : t("classLocked")}
             </p>
             <p className="font-mono text-2xl">{t("level", { level })}</p>
           </div>

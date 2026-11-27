@@ -1,0 +1,455 @@
+[
+ {
+  "key": "researcher",
+  "ru": "Исследователь",
+  "en": "Researcher",
+  "attrs": [
+   "intellect",
+   "perception"
+  ],
+  "domains": [
+   "science"
+  ]
+ },
+ {
+  "key": "mentor",
+  "ru": "Наставник",
+  "en": "Mentor",
+  "attrs": [
+   "intellect",
+   "charisma"
+  ],
+  "domains": [
+   "humanities",
+   "science",
+   "social"
+  ]
+ },
+ {
+  "key": "engineer",
+  "ru": "Инженер",
+  "en": "Engineer",
+  "attrs": [
+   "intellect",
+   "creativity"
+  ],
+  "domains": [
+   "tech"
+  ]
+ },
+ {
+  "key": "titan",
+  "ru": "Титан",
+  "en": "Titan",
+  "attrs": [
+   "strength",
+   "endurance"
+  ],
+  "domains": [
+   "body"
+  ]
+ },
+ {
+  "key": "artisan",
+  "ru": "Мастеровой",
+  "en": "Artisan",
+  "attrs": [
+   "dexterity",
+   "perception"
+  ],
+  "domains": [
+   "craft"
+  ]
+ },
+ {
+  "key": "soul_healer",
+  "ru": "Целитель душ",
+  "en": "Healer of Souls",
+  "attrs": [
+   "empathy",
+   "charisma"
+  ],
+  "domains": [
+   "care",
+   "social"
+  ]
+ },
+ {
+  "key": "wanderer",
+  "ru": "Странник",
+  "en": "Wanderer",
+  "attrs": [
+   "perception",
+   "endurance"
+  ],
+  "domains": [
+   "body",
+   "other"
+  ]
+ },
+ {
+  "key": "analyst",
+  "ru": "Аналитик",
+  "en": "Analyst",
+  "attrs": [
+   "intellect",
+   "will"
+  ],
+  "domains": [
+   "tech",
+   "science",
+   "work"
+  ]
+ },
+ {
+  "key": "scholar",
+  "ru": "Книжник",
+  "en": "Scholar",
+  "attrs": [
+   "intellect",
+   "will"
+  ],
+  "domains": [
+   "humanities"
+  ]
+ },
+ {
+  "key": "strategist",
+  "ru": "Стратег",
+  "en": "Strategist",
+  "attrs": [
+   "intellect",
+   "charisma"
+  ],
+  "domains": [
+   "work"
+  ]
+ },
+ {
+  "key": "inventor",
+  "ru": "Изобретатель",
+  "en": "Inventor",
+  "attrs": [
+   "creativity",
+   "dexterity"
+  ],
+  "domains": [
+   "tech",
+   "craft"
+  ]
+ },
+ {
+  "key": "artist",
+  "ru": "Художник",
+  "en": "Artist",
+  "attrs": [
+   "creativity",
+   "perception"
+  ],
+  "domains": [
+   "creative"
+  ]
+ },
+ {
+  "key": "bard",
+  "ru": "Бард",
+  "en": "Bard",
+  "attrs": [
+   "creativity",
+   "charisma"
+  ],
+  "domains": [
+   "creative",
+   "social"
+  ]
+ },
+ {
+  "key": "storyteller",
+  "ru": "Сказитель",
+  "en": "Storyteller",
+  "attrs": [
+   "creativity",
+   "empathy"
+  ],
+  "domains": [
+   "humanities",
+   "creative"
+  ]
+ },
+ {
+  "key": "guardian",
+  "ru": "Хранитель",
+  "en": "Guardian",
+  "attrs": [
+   "empathy",
+   "endurance"
+  ],
+  "domains": [
+   "care",
+   "home"
+  ]
+ },
+ {
+  "key": "healer",
+  "ru": "Лекарь",
+  "en": "Healer",
+  "attrs": [
+   "empathy",
+   "dexterity"
+  ],
+  "domains": [
+   "care"
+  ]
+ },
+ {
+  "key": "hearth_spirit",
+  "ru": "Дух очага",
+  "en": "Hearth Spirit",
+  "attrs": [
+   "empathy",
+   "will"
+  ],
+  "domains": [
+   "home"
+  ]
+ },
+ {
+  "key": "athlete",
+  "ru": "Атлет",
+  "en": "Athlete",
+  "attrs": [
+   "dexterity",
+   "endurance"
+  ],
+  "domains": [
+   "body"
+  ]
+ },
+ {
+  "key": "dancer",
+  "ru": "Танцор",
+  "en": "Dancer",
+  "attrs": [
+   "dexterity",
+   "creativity"
+  ],
+  "domains": [
+   "body",
+   "creative"
+  ]
+ },
+ {
+  "key": "warrior",
+  "ru": "Воин",
+  "en": "Warrior",
+  "attrs": [
+   "strength",
+   "will"
+  ],
+  "domains": [
+   "body"
+  ]
+ },
+ {
+  "key": "builder",
+  "ru": "Строитель",
+  "en": "Builder",
+  "attrs": [
+   "strength",
+   "dexterity"
+  ],
+  "domains": [
+   "craft",
+   "home",
+   "work"
+  ]
+ },
+ {
+  "key": "tracker",
+  "ru": "Следопыт",
+  "en": "Tracker",
+  "attrs": [
+   "perception",
+   "dexterity"
+  ],
+  "domains": [
+   "body",
+   "other"
+  ]
+ },
+ {
+  "key": "ascetic",
+  "ru": "Аскет",
+  "en": "Ascetic",
+  "attrs": [
+   "will",
+   "endurance"
+  ],
+  "domains": []
+ },
+ {
+  "key": "diplomat",
+  "ru": "Дипломат",
+  "en": "Diplomat",
+  "attrs": [
+   "charisma",
+   "empathy"
+  ],
+  "domains": [
+   "social",
+   "work"
+  ]
+ },
+ {
+  "key": "leader",
+  "ru": "Предводитель",
+  "en": "Leader",
+  "attrs": [
+   "charisma",
+   "will"
+  ],
+  "domains": [
+   "work",
+   "social"
+  ]
+ },
+ {
+  "key": "sage",
+  "ru": "Мудрец",
+  "en": "Sage",
+  "attrs": [
+   "intellect",
+   "empathy"
+  ],
+  "domains": [
+   "humanities",
+   "care"
+  ]
+ },
+ {
+  "key": "alchemist",
+  "ru": "Алхимик",
+  "en": "Alchemist",
+  "attrs": [
+   "intellect",
+   "dexterity"
+  ],
+  "domains": [
+   "science"
+  ]
+ },
+ {
+  "key": "navigator",
+  "ru": "Навигатор",
+  "en": "Navigator",
+  "attrs": [
+   "perception",
+   "will"
+  ],
+  "domains": [
+   "tech",
+   "work"
+  ]
+ },
+ {
+  "key": "craftsman",
+  "ru": "Ремесленник",
+  "en": "Craftsman",
+  "attrs": [
+   "dexterity",
+   "will"
+  ],
+  "domains": [
+   "craft"
+  ]
+ },
+ {
+  "key": "gardener",
+  "ru": "Садовник",
+  "en": "Gardener",
+  "attrs": [
+   "endurance",
+   "perception"
+  ],
+  "domains": [
+   "home",
+   "craft"
+  ]
+ },
+ {
+  "key": "cook",
+  "ru": "Кулинар",
+  "en": "Cook",
+  "attrs": [
+   "creativity",
+   "dexterity"
+  ],
+  "domains": [
+   "home"
+  ]
+ },
+ {
+  "key": "teacher",
+  "ru": "Учитель",
+  "en": "Teacher",
+  "attrs": [
+   "charisma",
+   "empathy"
+  ],
+  "domains": [
+   "humanities",
+   "care",
+   "science"
+  ]
+ },
+ {
+  "key": "polymath",
+  "ru": "Эрудит",
+  "en": "Polymath",
+  "attrs": [
+   "intellect",
+   "creativity"
+  ],
+  "domains": [
+   "humanities",
+   "science"
+  ]
+ },
+ {
+  "key": "sentinel",
+  "ru": "Страж",
+  "en": "Sentinel",
+  "attrs": [
+   "perception",
+   "endurance"
+  ],
+  "domains": [
+   "work"
+  ]
+ },
+ {
+  "key": "smith",
+  "ru": "Кузнец своего дела",
+  "en": "Smith of the Trade",
+  "attrs": [
+   "strength",
+   "will"
+  ],
+  "domains": [
+   "craft",
+   "work"
+  ]
+ },
+ {
+  "key": "lifekeeper",
+  "ru": "Хранитель жизни",
+  "en": "Lifekeeper",
+  "attrs": [
+   "endurance",
+   "empathy"
+  ],
+  "domains": [
+   "care"
+  ]
+ }
+]
