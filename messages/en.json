@@ -231,8 +231,8 @@
       "because": "Why:"
     },
     "name": {
-      "title": "Character name",
-      "hint": "How the System will address you.",
+      "title": "Character",
+      "hint": "Build the look and pick a name. You can change everything later.",
       "label": "Game name",
       "placeholder": "e.g. Ann the Researcher",
       "finish": "Enter the world",
@@ -288,7 +288,8 @@
       "plus": "Increase: {attr}",
       "done": "Done"
     },
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "editCharacter": "Edit character"
   },
   "skills": {
     "title": "Skills",
@@ -392,7 +393,73 @@
     "condXp": "Experience in the attribute {now}/{need}",
     "condDays": "Active days {now}/{need}",
     "partOf": "Part of {parent}",
-    "bonus": "Gives: +2% experience to skills where it is primary, per point above 10 (up to +30%).",
+    "bonus": "Gives: +2% experience to skills where this attribute is primary, per point above 10 (up to +30%).",
     "hpBonus": "Gives: +10 max HP per point above 10."
+  },
+  "avatar": {
+    "preview": "Your character",
+    "tabs": "Appearance parts",
+    "tab": {
+      "face": "Face",
+      "hair": "Hair",
+      "eyes": "Eyes",
+      "outfit": "Outfit",
+      "extras": "Details"
+    },
+    "skin": "Skin tone",
+    "expression": "Expression",
+    "expressions": {
+      "smile": "Smile",
+      "calm": "Calm",
+      "grin": "Joy"
+    },
+    "hairStyle": "Hairstyle",
+    "hairStyles": {
+      "short": "Short",
+      "bob": "Bob",
+      "long": "Long",
+      "ponytail": "Ponytail",
+      "bun": "Bun",
+      "curly": "Curly",
+      "buzz": "Buzz cut",
+      "sidepart": "Side part",
+      "bald": "Bald"
+    },
+    "hairColor": "Hair colour",
+    "eyeShape": "Eye shape",
+    "eyeShapes": {
+      "round": "Round",
+      "almond": "Almond"
+    },
+    "eyeColor": "Eye colour",
+    "outfit": "Outfit",
+    "outfits": {
+      "tee": "T-shirt",
+      "hoodie": "Hoodie",
+      "shirt": "Shirt",
+      "sweater": "Turtleneck",
+      "jacket": "Blazer",
+      "dress": "Dress",
+      "labcoat": "Lab coat",
+      "sport": "Track jacket"
+    },
+    "outfitColor": "Outfit colour",
+    "accessories": "Accessories",
+    "accessoryNames": {
+      "glasses_round": "Round glasses",
+      "glasses_square": "Glasses",
+      "earrings": "Earrings",
+      "headphones": "Headphones",
+      "cap": "Cap",
+      "headband": "Headband",
+      "freckles": "Freckles",
+      "blush": "Blush"
+    },
+    "aura": "Aura colour"
+  },
+  "character": {
+    "title": "Character",
+    "name": "Game name",
+    "save": "Save"
   }
 }

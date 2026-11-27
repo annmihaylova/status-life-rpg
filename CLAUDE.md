@@ -50,7 +50,9 @@
 - `lib/server/game/queries.ts` — данные для экранов: `getGameView` (движок «на лету» + имена из таблиц), `getJournal`, `getOnboardingState`.
 - `app/actions/` — серверные действия (`onboarding.ts`, `game.ts`, `log.ts`), вход валидируется zod, ошибки — ключи `common.errors.*`.
 - UI: `app/(app)/` — экраны с нижней навигацией (Статус, Навыки, Записать, Журнал), проверка онбординга в `layout.tsx`; `app/onboarding/` — мастер из 8 шагов. `components/game/system-messages.tsx` — провайдер «окна Системы»: `useSystem().run(action)` вызывает действие и показывает сообщения построчно. `components/ui/primitives.tsx` — Button, Chip, Panel, Bar, Stars (свои, в стиле shadcn).
-- `lib/game/onboarding.ts` + `data/presets.json` — опросник, 23 группы, ~50 обобщённых навыков, оценка прошлых часов и стартовая оценка характеристик (формула, без LLM).
+- `lib/game/avatar.ts` + `components/game/avatar.tsx` / `avatar-editor.tsx` — 2D-персонаж (SVG-слои), конфиг в `characters.avatar_config`, `parseAvatar` защищает от битых данных. Страница `/character`, шаг внешности в онбординге.
+- `components/game/attribute-card.tsx` — карточка характеристики с панелью описания (тексты `game.attrInfo.*`, `attrSheet.*`).
+- `lib/game/onboarding.ts` + `data/presets.json` — опросник, 14 категорий, 63 группы, 103 обобщённых навыка с описаниями и тегами, подсказки по возрасту, оценка прошлых часов и стартовая оценка характеристик (формула, без LLM).
 - `lib/db/client.ts` — подключение без `server-only` (для скриптов и тестов); `lib/db/index.ts` — серверные `adminDb()` и `withUser()`.
 - `lib/db/schema.ts` — Drizzle-схема и RLS-политики (попадают в миграции). Миграции — `supabase/migrations/` (drizzle-kit с префиксом supabase); ручные SQL — через `drizzle-kit generate --custom`.
 - Доступ к данным:

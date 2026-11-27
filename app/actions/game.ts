@@ -3,7 +3,7 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import type { Tx } from "@/lib/db";
+import { withUser, type Tx } from "@/lib/db";
 import {
   characters,
   gameDecisions,
@@ -13,6 +13,7 @@ import {
   skills,
 } from "@/lib/db/schema";
 import { GENERAL_KEYS, isPartKey, PART_KEYS } from "@/lib/game/attributes";
+import { avatarSchema } from "@/lib/game/avatar";
 import { GAME_CONFIG } from "@/lib/game/config";
 import { isIsoDate } from "@/lib/game/dates";
 import { mainSlots, secondarySlots } from "@/lib/game/formulas";
@@ -225,4 +226,23 @@ export async function setSkillTags(input: z.input<typeof tagsSchema>): Promise<A
       .set({ primaryAttrKey: v.primary, secondaryAttrKey: v.secondary === v.primary ? null : v.secondary })
       .where(and(eq(skills.id, v.skillId), eq(skills.userId, userId)));
   });
+}
+
+const characterSchema = z.object({
+  avatar: avatarSchema,
+  gameName: z.string().trim().min(1).max(40).optional(),
+});
+
+/** Внешность и имя персонажа. На игру не влияют, пересчёт не нужен. */
+export async function saveCharacter(input: z.input<typeof characterSchema>): Promise<ActionResult> {
+  const userId = await requireUserId();
+  const v = characterSchema.parse(input);
+  await withUser(userId, async (tx) => {
+    await tx
+      .update(characters)
+      .set({ avatarConfig: v.avatar, ...(v.gameName ? { gameName: v.gameName } : {}), updatedAt: new Date() })
+      .where(eq(characters.userId, userId));
+  });
+  revalidatePath("/", "layout");
+  return { messages: [] };
 }

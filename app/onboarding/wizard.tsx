@@ -14,9 +14,11 @@ import {
   saveOnboardingAnswers,
   takeStarterSkills,
 } from "@/app/actions/onboarding";
+import { AvatarEditor } from "@/components/game/avatar-editor";
 import { useSystem } from "@/components/game/system-messages";
 import { Button, Chip, Panel, cn } from "@/components/ui/primitives";
 import { GENERAL_KEYS, PART_KEYS, type AttributeKey, type GeneralKey, type PartKey } from "@/lib/game/attributes";
+import type { AvatarConfig } from "@/lib/game/avatar";
 import { mainSlots, secondarySlots } from "@/lib/game/formulas";
 import {
   AGE_BANDS,
@@ -53,6 +55,7 @@ export interface WizardData {
     rules: { pointsTotal: number; min: number; max: number };
   } | null;
   gameName: string;
+  avatar: AvatarConfig;
 }
 
 const STEPS = ["age", "occupation", "groups", "skills", "goals", "starter", "assessment", "name"] as const;
@@ -171,15 +174,19 @@ export function OnboardingWizard({ data }: { data: WizardData }) {
 
   function NameStep({ initial }: { initial: string }) {
     const [name, setName] = useState(initial);
+    const [avatar, setAvatar] = useState<AvatarConfig>(data.avatar);
     return (
       <form
         className="space-y-4"
         onSubmit={async (e) => {
           e.preventDefault();
-          const r = await run(() => finishOnboarding({ gameName: name.trim() || t("name.default") }));
+          const r = await run(() => finishOnboarding({ gameName: name.trim() || t("name.default"), avatar }));
           if (r && !r.error) router.push("/");
         }}
       >
+        <Panel>
+          <AvatarEditor value={avatar} onChange={setAvatar} />
+        </Panel>
         <label className="block space-y-2">
           <span className="text-sm">{t("name.label")}</span>
           <input

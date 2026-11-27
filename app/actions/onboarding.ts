@@ -13,6 +13,7 @@ import {
   skills,
 } from "@/lib/db/schema";
 import { PART_KEYS } from "@/lib/game/attributes";
+import { avatarSchema } from "@/lib/game/avatar";
 import { mainSlots, secondarySlots } from "@/lib/game/formulas";
 import {
   AGE_BANDS,
@@ -217,13 +218,16 @@ export async function finishCalibration(input: { kind: "start" | "unfold"; gener
   return res;
 }
 
-const finishSchema = z.object({ gameName: z.string().trim().min(1).max(40) });
+const finishSchema = z.object({ gameName: z.string().trim().min(1).max(40), avatar: avatarSchema });
 
 export async function finishOnboarding(input: z.input<typeof finishSchema>): Promise<MutationResult> {
   const userId = await requireUserId();
   const f = finishSchema.parse(input);
   const res = await mutateAndRecompute(userId, async (tx) => {
-    await tx.update(characters).set({ gameName: f.gameName }).where(eq(characters.userId, userId));
+    await tx
+      .update(characters)
+      .set({ gameName: f.gameName, avatarConfig: f.avatar })
+      .where(eq(characters.userId, userId));
     await tx
       .insert(onboardingProfiles)
       .values({ userId, completedAt: new Date() })

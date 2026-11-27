@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { withUser } from "@/lib/db";
 import { attributeAssessment } from "@/lib/db/schema";
+import { parseAvatar } from "@/lib/game/avatar";
 import type { AssessmentReason, Locale } from "@/lib/game/onboarding";
 import { getGameView, getOnboardingState } from "@/lib/server/game/queries";
 import { requireUserId } from "@/lib/server/session";
@@ -52,6 +53,7 @@ export default async function OnboardingPage() {
       ? { base: start.base, keys: start.keys, closed: start.closed, rules: start.rules }
       : null,
     gameName: character?.gameName ?? "",
+    avatar: parseAvatar(character?.avatarConfig),
   };
 
   return (
