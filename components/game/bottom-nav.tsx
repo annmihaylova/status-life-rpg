@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, LayoutDashboard, Plus, Sparkles } from "lucide-react";
+import { BookOpen, LayoutDashboard, Mic, Plus, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -10,6 +10,7 @@ const items = [
   { href: "/", key: "status", Icon: LayoutDashboard },
   { href: "/skills", key: "skills", Icon: Sparkles },
   { href: "/log", key: "log", Icon: Plus },
+  { href: "/checkin", key: "checkin", Icon: Mic },
   { href: "/journal", key: "journal", Icon: BookOpen },
 ] as const;
 
@@ -30,7 +31,7 @@ export function BottomNav() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 min-w-16 flex-col items-center justify-center gap-0.5 text-xs",
+                  "flex min-h-14 min-w-14 flex-col items-center justify-center gap-0.5 text-xs",
                   active ? "text-accent" : "text-muted",
                 )}
               >

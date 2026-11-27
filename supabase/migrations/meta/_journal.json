@@ -29,6 +29,13 @@
       "when": 1795735738941,
       "tag": "20261126232858_engine_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795740910314,
+      "tag": "20261127005510_checkin_merge",
+      "breakpoints": true
     }
   ]
 }

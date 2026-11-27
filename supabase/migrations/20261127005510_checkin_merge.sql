@@ -1,0 +1,2 @@
+ALTER TABLE "activity_entries" ADD COLUMN "merge_with" uuid;--> statement-breakpoint
+ALTER TABLE "activity_entries" ADD CONSTRAINT "activity_entries_merge_with_activity_entries_id_fk" FOREIGN KEY ("merge_with") REFERENCES "public"."activity_entries"("id") ON DELETE cascade ON UPDATE no action;

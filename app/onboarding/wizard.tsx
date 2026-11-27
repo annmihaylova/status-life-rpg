@@ -15,6 +15,7 @@ import {
   takeStarterSkills,
 } from "@/app/actions/onboarding";
 import { AvatarEditor } from "@/components/game/avatar-editor";
+import { StorySuggest } from "./story-suggest";
 import { useSystem } from "@/components/game/system-messages";
 import { Button, Chip, Panel, cn } from "@/components/ui/primitives";
 import { GENERAL_KEYS, PART_KEYS, type AttributeKey, type GeneralKey, type PartKey } from "@/lib/game/attributes";
@@ -56,6 +57,8 @@ export interface WizardData {
   } | null;
   gameName: string;
   avatar: AvatarConfig;
+  /** есть ли ключ LLM для разбора свободного текста */
+  llm: boolean;
 }
 
 const STEPS = ["age", "occupation", "groups", "skills", "goals", "starter", "assessment", "name"] as const;
@@ -343,6 +346,8 @@ function SleepingStep({ data }: { data: WizardData }) {
           ))}
         </ul>
       )}
+
+      {data.llm && <StorySuggest />}
 
       <Panel title={t("skills.add")}>
         <form

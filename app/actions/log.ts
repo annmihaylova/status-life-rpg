@@ -6,8 +6,10 @@ import { z } from "zod";
 import { activityEntries, entrySkillAllocations, profiles, skillCandidates, skills } from "@/lib/db/schema";
 import { GAME_CONFIG } from "@/lib/game/config";
 import { addDays, localDate } from "@/lib/game/dates";
+import { confirmDrafts } from "@/lib/server/game/drafts";
 import { mutateAndRecompute } from "@/lib/server/game/mutate";
 import { requireUserId } from "@/lib/server/session";
+import { clusterKeyOf } from "@/lib/checkin/normalize";
 import type { ActionResult } from "./game";
 
 const { intensity, novelty, focusMinutes } = GAME_CONFIG.entry;
@@ -26,15 +28,6 @@ const logSchema = z
   })
   .refine((v) => Boolean(v.skillId) !== Boolean(v.newActivity), { message: "skill_or_activity" });
 
-/** Ключ кластера из названия активности: стабильный и читаемый. */
-function clusterKeyOf(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFKC")
-    .replace(/[^\p{L}\p{N}]+/gu, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80);
-}
 
 export async function logActivity(input: z.input<typeof logSchema>): Promise<ActionResult> {
   const userId = await requireUserId();
@@ -105,18 +98,7 @@ export async function deleteEntry(entryId: string): Promise<ActionResult> {
 export async function confirmEntry(entryId: string): Promise<ActionResult> {
   const userId = await requireUserId();
   z.uuid().parse(entryId);
-  const res = await mutateAndRecompute(userId, async (tx) => {
-    await tx
-      .update(activityEntries)
-      .set({ status: "confirmed", confirmedAt: new Date() })
-      .where(
-        and(
-          eq(activityEntries.id, entryId),
-          eq(activityEntries.userId, userId),
-          eq(activityEntries.status, "draft"),
-        ),
-      );
-  });
+  const res = await mutateAndRecompute(userId, (tx) => confirmDrafts(tx, userId, [entryId]));
   revalidatePath("/", "layout");
   return res;
 }

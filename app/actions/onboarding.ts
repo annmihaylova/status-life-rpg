@@ -27,6 +27,8 @@ import {
 } from "@/lib/game/onboarding";
 import { getLocale } from "next-intl/server";
 import { mutateAndRecompute, type MutationResult } from "@/lib/server/game/mutate";
+import { LlmError } from "@/lib/server/llm/checkin";
+import { suggestSleepingSkillsWithLlm, type SleepingSuggestion } from "@/lib/server/llm/sleeping";
 import { requireUserId } from "@/lib/server/session";
 
 const part = z.enum(PART_KEYS);
@@ -243,5 +245,22 @@ function isValidTimeZone(tz: string): boolean {
     return true;
   } catch {
     return false;
+  }
+}
+
+const storySchema = z.string().trim().min(5).max(2000);
+
+/** Свободный рассказ «что я уже умею» → предложения спящих навыков (ничего не сохраняет). */
+export async function suggestSleepingSkills(
+  text: string,
+): Promise<{ suggestions?: SleepingSuggestion[]; error?: string }> {
+  await requireUserId();
+  const v = storySchema.safeParse(text);
+  if (!v.success) return { error: "checkin_too_short" };
+  try {
+    return { suggestions: await suggestSleepingSkillsWithLlm(v.data) };
+  } catch (e) {
+    if (e instanceof LlmError) return { error: `llm_${e.code}` };
+    throw e;
   }
 }

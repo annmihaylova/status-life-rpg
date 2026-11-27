@@ -409,6 +409,8 @@ export const activityEntries = pgTable(
     evidence: text("evidence"),
     clientRef: text("client_ref"),
     checkinId: uuid("checkin_id").references(() => checkins.id, { onDelete: "set null" }),
+    /** черновик предлагает обновить уже существующую запись вместо дубля (SPEC 4.2) */
+    mergeWith: uuid("merge_with").references((): AnyPgColumn => activityEntries.id, { onDelete: "cascade" }),
     /** id MCP-токена/клиента, создавшего запись: агент правит только свои черновики */
     createdByToken: uuid("created_by_token"),
     createdAt: createdAt(),

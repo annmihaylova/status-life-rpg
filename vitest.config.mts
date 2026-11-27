@@ -7,6 +7,6 @@ export default defineConfig({
   },
   test: {
     include: ["**/*.test.ts"],
-    exclude: ["node_modules/**", ".next/**", "tests/db/**"],
+    exclude: ["node_modules/**", ".next/**", "tests/db/**", "tests/llm/**"],
   },
 });

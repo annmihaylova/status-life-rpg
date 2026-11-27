@@ -153,7 +153,8 @@
     "status": "Status",
     "skills": "Skills",
     "log": "Log",
-    "journal": "Journal"
+    "journal": "Journal",
+    "checkin": "Report"
   },
   "common": {
     "systemWindow": "System window",
@@ -163,7 +164,13 @@
       "slots_full": "No free slots. Move or archive another skill first.",
       "slot_cooldown": "A skill can change slots once every 7 days.",
       "not_found": "Not found. Refresh the page.",
-      "bad_milestone": "This specialization milestone is not available."
+      "bad_milestone": "This specialization milestone is not available.",
+      "checkin_too_short": "The report is too short: write at least a couple of sentences.",
+      "llm_limit": "Monthly parsing limit reached.",
+      "llm_refusal": "The System could not parse this report. Try rephrasing.",
+      "llm_unparsed": "The System returned an unclear answer. Try again.",
+      "llm_unavailable": "Report parsing is unavailable right now.",
+      "llm_rate_limited": "Too many requests. Try again in a minute."
     }
   },
   "onboarding": {
@@ -201,7 +208,12 @@
       "estimate": "≈ {hours} h of practice → target level {level}",
       "primary": "Primary attribute",
       "secondary": "Secondary attribute",
-      "addButton": "Add"
+      "addButton": "Add",
+      "storyTitle": "Tell it in your own words",
+      "storyPlaceholder": "e.g. I have skated for 10 years, 3 times a week; I have been programming for 2 years; I teach physics.",
+      "storyButton": "Recognise skills",
+      "storyParsing": "The System is reading…",
+      "added": "Added"
     },
     "goals": {
       "title": "What do you want to level up?",
@@ -289,7 +301,8 @@
       "done": "Done"
     },
     "signOut": "Sign out",
-    "editCharacter": "Edit character"
+    "editCharacter": "Edit character",
+    "dailyReport": "Daily report"
   },
   "skills": {
     "title": "Skills",
@@ -343,7 +356,8 @@
     "draft": "draft",
     "confirm": "Confirm",
     "delete": "Delete",
-    "deleteConfirm": "Delete this entry? Experience will be recalculated."
+    "deleteConfirm": "Delete this entry? Experience will be recalculated.",
+    "review": "Review report"
   },
   "log": {
     "title": "Log activity",
@@ -461,5 +475,40 @@
     "title": "Character",
     "name": "Game name",
     "save": "Save"
+  },
+  "checkin": {
+    "title": "Report to the System",
+    "prompt": "[System] Ready to receive your report.",
+    "hint": "Tell your day in your own words: what you did, roughly how long, how hard it was, what was new. You can dictate with your phone keyboard. The System sorts it into skills and you confirm.",
+    "placeholder": "e.g. Spent two hours in a biology lecture, then an hour on a hard calculus assignment. In the evening tutored a student in physics and read a book.",
+    "label": "Report text",
+    "today": "For today",
+    "yesterday": "For yesterday",
+    "submit": "Send to the System",
+    "parsing": "The System is reading your report…",
+    "parsingHint": "This usually takes up to half a minute.",
+    "unavailable": "Report parsing is not connected yet: the server has no Anthropic API key. Meanwhile you can log activities manually.",
+    "recent": "Recent reports",
+    "draftsLeft": "drafts: {n}",
+    "status": {
+      "pending": "not parsed",
+      "parsed": "parsed",
+      "confirmed": "confirmed"
+    },
+    "reviewTitle": "Drafts from your report",
+    "yourReport": "Your report",
+    "questions": "The System asks",
+    "questionsHint": "If it matters, adjust the time on the cards or send a short follow-up report.",
+    "noDrafts": "No drafts left: everything is confirmed or deleted.",
+    "lowConfidence": "The System is unsure about the time. Please check.",
+    "merge": "Will update the entry {description}: {from} → {to} min, no duplicate.",
+    "less": "15 minutes less",
+    "more": "15 minutes more",
+    "minutes": "{n} min",
+    "newSkill": "new:",
+    "confirm": "Confirm",
+    "split": "Split",
+    "delete": "Delete",
+    "confirmAll": "Confirm all ({n})"
   }
 }

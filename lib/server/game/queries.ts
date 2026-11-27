@@ -4,6 +4,7 @@ import { adminDb, withUser } from "@/lib/db";
 import {
   activityEntries,
   characters,
+  checkins,
   entrySkillAllocations,
   gameDecisions,
   onboardingProfiles,
@@ -110,6 +111,7 @@ export interface JournalEntry {
   source: string;
   status: string;
   isRest: boolean;
+  checkinId: string | null;
   skills: { name: string; share: number }[];
 }
 
@@ -156,7 +158,31 @@ export async function getJournal(userId: string, days = 60): Promise<JournalEntr
       source: r.source,
       status: r.status,
       isRest: r.isRest,
+      checkinId: r.checkinId,
       skills: byEntry.get(r.id) ?? [],
+    }));
+  });
+}
+
+/** Отчёты за последние 14 дней и сколько черновиков в каждом ещё ждёт подтверждения. */
+export async function getRecentCheckins(userId: string) {
+  const since = new Date(Date.now() - 14 * 86_400_000);
+  return withUser(userId, async (tx) => {
+    const rows = await tx
+      .select()
+      .from(checkins)
+      .where(and(eq(checkins.userId, userId), gte(checkins.createdAt, since)))
+      .orderBy(desc(checkins.createdAt))
+      .limit(10);
+    const drafts = await tx
+      .select({ checkinId: activityEntries.checkinId })
+      .from(activityEntries)
+      .where(and(eq(activityEntries.userId, userId), eq(activityEntries.status, "draft")));
+    return rows.map((r) => ({
+      id: r.id,
+      date: r.date,
+      status: r.status,
+      drafts: drafts.filter((d) => d.checkinId === r.id).length,
     }));
   });
 }

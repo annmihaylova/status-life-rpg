@@ -222,6 +222,13 @@ export default async function StatusPage() {
           </ul>
         )}
       </Panel>
+      <Link
+        href="/checkin"
+        className="system-panel flex min-h-14 items-center justify-center gap-2 font-mono text-accent hover:brightness-125"
+      >
+        {t("dailyReport")}
+      </Link>
+
       <footer className="flex items-center justify-between text-xs text-muted">
         <span>{new Date().toLocaleDateString(locale)}</span>
         <form action="/auth/signout" method="post">

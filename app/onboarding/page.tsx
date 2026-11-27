@@ -6,6 +6,7 @@ import { attributeAssessment } from "@/lib/db/schema";
 import { parseAvatar } from "@/lib/game/avatar";
 import type { AssessmentReason, Locale } from "@/lib/game/onboarding";
 import { getGameView, getOnboardingState } from "@/lib/server/game/queries";
+import { llmAvailable } from "@/lib/server/llm/checkin";
 import { requireUserId } from "@/lib/server/session";
 import { OnboardingWizard, type WizardData } from "./wizard";
 
@@ -54,6 +55,7 @@ export default async function OnboardingPage() {
       : null,
     gameName: character?.gameName ?? "",
     avatar: parseAvatar(character?.avatarConfig),
+    llm: llmAvailable(),
   };
 
   return (

@@ -1,4 +1,5 @@
 import { Bot, Hand, Mic, Timer } from "lucide-react";
+import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { EntryActions } from "@/components/game/skill-actions";
 import { Panel, cn } from "@/components/ui/primitives";
@@ -64,7 +65,13 @@ export default async function JournalPage() {
                         )}
                       </div>
                     </div>
-                    <EntryActions entryId={e.id} draft={draft} />
+                    {draft && e.checkinId ? (
+                      <Link href={`/checkin/${e.checkinId}`} className="inline-block text-sm text-accent underline underline-offset-4">
+                        {t("review")}
+                      </Link>
+                    ) : (
+                      <EntryActions entryId={e.id} draft={draft} />
+                    )}
                   </li>
                 );
               })}
