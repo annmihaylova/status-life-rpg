@@ -20,7 +20,13 @@
     "verifying": "Checking…",
     "linkFailed": "the link did not work or has expired. Request a new one.",
     "finishing": "[System] Signing in…",
-    "sentWithCode": "[System] Email sent. Enter the code from it or click the link."
+    "sentWithCode": "[System] Email sent. Enter the code from it or click the link.",
+    "errors": {
+      "rateLimit": "too many emails in the last hour — the mail limit is used up. Try again in an hour or continue with Google.",
+      "notAuthorized": "the System cannot email this address yet: access is invite-only for now. Ask for an invite.",
+      "tooOften": "an email was sent recently. Wait a minute and try again.",
+      "invalidCode": "the code is wrong or expired. Request a new email."
+    }
   },
   "system": {
     "xpGained": "[System] Experience gained: {amount}",

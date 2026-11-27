@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { createClient as createSupabaseJsClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { publicEnv } from "@/lib/env";
+import { authErrorKey, type AuthErrorLike } from "@/lib/supabase/auth-errors";
 
 type State =
   | { kind: "idle" }
@@ -40,6 +41,10 @@ function emailClient() {
 
 export function LoginForm({ initialError }: { initialError: string | null }) {
   const t = useTranslations("login");
+  const authError = (error: AuthErrorLike) => {
+    const key = authErrorKey(error);
+    return key ? t(key) : error.message;
+  };
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -58,7 +63,7 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
       options: { emailRedirectTo: `${window.location.origin}/auth/finish` },
     });
     if (error) {
-      setState({ kind: "error", message: error.message });
+      setState({ kind: "error", message: authError(error) });
       return;
     }
     setCodeSent(true);
@@ -76,7 +81,7 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
       type: "email",
     });
     if (error) {
-      setState({ kind: "error", message: error.message });
+      setState({ kind: "error", message: authError(error) });
       return;
     }
     router.replace("/");
@@ -88,7 +93,7 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
       provider: "google",
       options: { redirectTo: callbackUrl() },
     });
-    if (error) setState({ kind: "error", message: error.message });
+    if (error) setState({ kind: "error", message: authError(error) });
   }
 
   const input =
