@@ -74,7 +74,9 @@
   - Письмо отправляется implicit-клиентом → ссылка возвращает на `/auth/finish#access_token=…`, страница ставит сессию в браузере. Так ссылка работает в любом браузере/на телефоне (PKCE ломался, если письмо открыто не там, где запрошено).
   - В облаке шаблоны писем стандартные (менять можно только со своим SMTP): в письме только ссылка. Локально шаблон `supabase/templates/sign-in.html` с кодом и ссылкой на `/auth/confirm` (token_hash); поле кода включается `NEXT_PUBLIC_AUTH_EMAIL_CODE=true`.
   - Встроенная почта Supabase шлёт письма только на адреса участников организации и с жёстким лимитом в час. Для других людей нужен свой SMTP (Resend, фаза 3/5).
-  - Google: кнопка скрыта, пока `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED` не `true`; `/auth/callback` (PKCE) остаётся для OAuth.
+  - Google: кнопка скрыта, пока `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED` не `true` (на проде `true` с 2026-11-26; локально провайдер не настроен); `/auth/callback` (PKCE) остаётся для OAuth. OAuth-клиент «Status web» в Google Cloud (проект `status-516001`, аккаунт владелицы), redirect URI — `https://jfrkugrsfiehgxvtckyb.supabase.co/auth/v1/callback`; Client ID и секрет вписаны в Supabase → Sign In / Providers → Google.
+  - Ошибки Supabase Auth на форме входа переводятся в понятный текст (`lib/supabase/auth-errors.ts`: часовой лимит почты, повтор раньше минуты, адрес не разрешён, код устарел).
+  - `/privacy` — публичная политика конфиденциальности (тексты `privacy.*`), нужна Google для экрана согласия; ссылка со страницы входа.
 - i18n: next-intl без префикса в URL, локаль из куки `NEXT_LOCALE`, по умолчанию `ru`. Тексты — `messages/{ru,en}.json`.
 - `cacheComponents` выключен: страницы персональные. Вернуться к нему для публичных страниц (фаза 5).
 
