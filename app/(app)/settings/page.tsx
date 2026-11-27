@@ -5,6 +5,7 @@ import { Panel } from "@/components/ui/primitives";
 import { withUser } from "@/lib/db";
 import { apiTokens, notificationSettings, profiles, pushSubscriptions, userSettings } from "@/lib/db/schema";
 import { requireUserId } from "@/lib/server/session";
+import { DevicesPanel } from "./devices";
 import { ReminderSettings } from "./reminders";
 import { AiSettings, LocaleSwitch, TokenManager } from "./settings-client";
 
@@ -74,6 +75,10 @@ export default async function SettingsPage() {
             lastUsed: x.lastUsedAt ? fmt.format(x.lastUsedAt) : null,
           }))}
         />
+      </Panel>
+
+      <Panel title={t("devices")}>
+        <DevicesPanel ingestUrl={mcpUrl.replace(/\/api\/mcp$/, "/api/ingest")} />
       </Panel>
 
       <Panel title={t("autoTitle")}>

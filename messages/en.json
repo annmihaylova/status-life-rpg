@@ -189,7 +189,10 @@
       "bad_timer": "The timer shows an odd duration. Reset it and start again.",
       "side_class_not_available": "This adjacent class is not available right now.",
       "push_failed": "Could not send the notification. Try turning notifications off and on again on this device.",
-      "bad_reminder": "Check the time and time zone."
+      "bad_reminder": "Check the time and time zone.",
+      "measurement_bad_value": "The value does not fit the scale. For example: B2, 1450, 24:10.",
+      "measurement_skill_not_found": "Skill not found.",
+      "measurement_future_date": "The date cannot be in the future."
     }
   },
   "onboarding": {
@@ -370,7 +373,8 @@
       "mcp_other": "AI agent",
       "checkin": "Evening report",
       "manual": "Manual",
-      "timer": "Timer"
+      "timer": "Timer",
+      "device": "Watch and phone"
     },
     "line": "{minutes} min · x{intensity}",
     "rest": "rest",
@@ -563,7 +567,7 @@
       "step5": "Enable the connector in a chat and write \"log my day\".",
       "instructionsTitle": "Text for Claude instructions",
       "instructionsHint": "Add this to Claude Settings → Profile → instructions so that \"log my day\" works reliably.",
-      "instructions": "I have the Status connector (a levelling tracker). When I write \"log my day\":\n1) find today's conversations; 2) call list_skills and get_day;\n3) make a list of activities with an honest estimate of focused time (not chat length)\nand show it to me; 4) after my \"ok\", call log_activities.\nDuring normal conversations, log activity only when I ask.",
+      "instructions": "I have the Status connector (a levelling tracker). When I write \"log my day\":\n1) find today's conversations and, if connected, calendar events, Canvas assignments and grades, Anki reviews;\n2) call list_skills and get_day so you don't duplicate what already came from the watch or was logged by hand;\n3) make a list of activities with an honest estimate of focused time (not chat length or calendar event length) and show it to me;\n4) after my \"ok\", call log_activities.\nIf I name a test result (language level, rating, race time), save it with record_measurement.\nDuring normal conversations, log activity only when I ask.",
       "chatgptTitle": "ChatGPT",
       "chatgpt": "In ChatGPT, connectors are added in Developer mode in the apps settings. The address is the same; sign-in also goes through the Status page.",
       "connected": "Connected AIs and tokens",
@@ -575,7 +579,8 @@
     "autoOn": "Confirm right away",
     "autoHint": "By default entries from Claude arrive as drafts and wait for your confirmation in the Journal.",
     "language": "Language",
-    "reminders": "Check-in reminder"
+    "reminders": "Check-in reminder",
+    "devices": "Watch and phone"
   },
   "oauth": {
     "title": "[System] Access request",
@@ -742,5 +747,88 @@
     "unsupported": "This browser cannot recognise speech. You can dictate with the phone keyboard: the microphone icon on the keyboard.",
     "denied": "No access to the microphone. Allow it in the browser settings for this site.",
     "failed": "Recognition stopped. Try again or dictate with the keyboard."
+  },
+  "measure": {
+    "add": "+ Measurement: test or score",
+    "about": "A measurement is a result on an external scale: language level, rating, a test. It can go down too: that is information, not a penalty. It does not affect experience.",
+    "scaleLabel": "Scale",
+    "value": "Value",
+    "unit": "unit",
+    "date": "Date",
+    "note": "Where and how it was measured (optional)",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "delete",
+    "deleteConfirm": "Delete this measurement?",
+    "lastMeasured": "measured {date}",
+    "trend": {
+      "better": "better than last time",
+      "worse": "lower than last time",
+      "same": "same as last time"
+    },
+    "scale": {
+      "cefr": "Language (CEFR)",
+      "elo": "Elo rating",
+      "wpm": "Words per minute",
+      "cpm": "Characters per minute",
+      "cooper": "Cooper test, m",
+      "vo2max": "VO₂max",
+      "time": "Time",
+      "grade": "Grade",
+      "custom": "Custom metric"
+    },
+    "placeholder": {
+      "cefr": "B2",
+      "elo": "1450",
+      "wpm": "60",
+      "cpm": "300",
+      "cooper": "2300",
+      "vo2max": "44",
+      "time": "24:10",
+      "grade": "5 / A / 92",
+      "custom": "number"
+    }
+  },
+  "devices": {
+    "title": "Watch and phone",
+    "intro": "Sleep, workouts and steps can reach Status by themselves: sleep goes to wellbeing and HP, workouts and walking arrive as drafts in the Journal. Sending again does not create duplicates.",
+    "url": "Address for data",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyHeader": "Copy header",
+    "createToken": "Create a key for Shortcuts",
+    "tokenLabel": "iPhone Shortcuts",
+    "tokenOnce": "The key is shown once: copy the \"Bearer …\" line and paste it into each automation as the Authorization header.",
+    "iphoneTitle": "iPhone and Apple Watch: Shortcuts → Automation",
+    "iphoneIntro": "For each recipe: Shortcuts → Automation → + → pick the trigger → Run Immediately → New Blank Shortcut and add the actions step by step.",
+    "requestStep": "Get Contents of URL: the address above, method POST, header Authorization with the value \"Bearer …\", JSON body with the fields below (values in <> are variables from earlier steps).",
+    "sleep": {
+      "title": "Sleep: every morning",
+      "steps": [
+        "Trigger Time of Day, e.g. 10:00, daily.",
+        "Find Health Samples: type Sleep Analysis, start date in the last 1 day, value is not In Bed and not Awake.",
+        "Get Details of Health Samples: Duration.",
+        "Calculate Statistics: Sum. If the number turns out to be seconds, send seconds instead of minutes."
+      ]
+    },
+    "workout": {
+      "title": "Workout: when it ends",
+      "steps": [
+        "Trigger Apple Watch Workout → Ends (iOS 17 or later).",
+        "Find Health Samples: type Workouts, sort by start date, latest first, limit 1.",
+        "Get Details of Health Samples three times: Type, Duration (in minutes), Start Date."
+      ]
+    },
+    "walking": {
+      "title": "Steps: every evening",
+      "steps": [
+        "Trigger Time of Day, e.g. 22:00, daily.",
+        "Find Health Samples: type Steps, start date today.",
+        "Calculate Statistics: Sum."
+      ]
+    },
+    "after": "To check, run the shortcut by hand: Status replies with what it accepted. Entries appear in the Journal with a watch icon, sleep in HP on Status.",
+    "androidTitle": "Android",
+    "android": "A web app cannot read Health Connect. Until the native app, you can send the same requests from an automation app (for example HTTP Shortcuts or Tasker): same address, header and body."
   }
 }
