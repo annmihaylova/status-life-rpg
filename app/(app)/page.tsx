@@ -7,10 +7,18 @@ import {
   UnfoldCard,
   WellbeingWidget,
 } from "@/components/game/status-widgets";
-import { Bar, Panel, Stars } from "@/components/ui/primitives";
-import { GENERAL_KEYS, partsOf, type AttributeKey, type GeneralKey } from "@/lib/game/attributes";
+import { AttributeCard } from "@/components/game/attribute-card";
+import { Bar, Panel } from "@/components/ui/primitives";
+import { GENERAL_KEYS, isPartKey, parentOf, partsOf, type AttributeKey, type GeneralKey } from "@/lib/game/attributes";
 import { GAME_CONFIG } from "@/lib/game/config";
-import { characterLevelFromXp, skillLevelFromXp, skillRank, unfoldValues } from "@/lib/game/formulas";
+import {
+  characterLevelFromXp,
+  daysRequired,
+  skillLevelFromXp,
+  skillRank,
+  unfoldValues,
+  xpToNextPoint,
+} from "@/lib/game/formulas";
 import { getGameView } from "@/lib/server/game/queries";
 import { requireUserId } from "@/lib/server/session";
 import { attrColor, tagLabel } from "@/lib/ui/game";
@@ -143,24 +151,39 @@ export default async function StatusPage() {
       <Panel title={t("attributes")}>
         <ul className="grid grid-cols-3 gap-2">
           {attrCards.map((a) => {
-            const color = attrColor(a.key);
             const general = a.state === "general";
-            const ready = general
-              ? [level >= u.minCharacterLevel, a.xpTotal >= u.minXpSinceStart, a.activeDaysTotal >= u.minActiveDays].filter(Boolean).length
-              : 0;
+            const feeding = view.skills
+              .filter((s) => s.status === "active" || s.status === "sleeping")
+              .filter((s) =>
+                [s.primaryAttrKey, s.secondaryAttrKey].some(
+                  (tag) => tag && isPartKey(tag) && (tag === a.key || (general && parentOf(tag) === a.key)),
+                ),
+              )
+              .map((s) => s.name);
             return (
-              <li key={a.key} className="rounded-xl border p-2" style={{ borderColor: `color-mix(in oklab, ${color} 45%, transparent)` }}>
-                <p className="truncate text-xs" style={{ color }}>
-                  {attrName(a.key)}
-                </p>
-                <p className="font-mono text-2xl">{a.value}</p>
-                <Stars count={a.stars} label={t("stars", { stars: a.stars })} />
-                {general && (
-                  <p className="mt-1 font-mono text-[10px] text-muted" title={t("unfoldReadinessHint")}>
-                    {t("unfoldReadiness", { ready, total: 3 })}
-                  </p>
-                )}
-              </li>
+              <AttributeCard
+                key={a.key}
+                a={{
+                  key: a.key,
+                  value: a.value,
+                  stars: a.stars,
+                  state: a.state,
+                  color: attrColor(a.key),
+                  xpToPoint: xpToNextPoint(a.value) - a.pool,
+                  daysToPoint: Math.max(0, daysRequired(a.value) - a.activeDaysSincePoint),
+                  unfold: general
+                    ? {
+                        level,
+                        levelNeed: u.minCharacterLevel,
+                        xp: a.xpTotal,
+                        xpNeed: u.minXpSinceStart,
+                        days: a.activeDaysTotal,
+                        daysNeed: u.minActiveDays,
+                      }
+                    : null,
+                  skills: feeding,
+                }}
+              />
             );
           })}
         </ul>

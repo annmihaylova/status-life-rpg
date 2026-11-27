@@ -96,6 +96,56 @@
       "home": "Home",
       "work": "Work",
       "other": "Other"
+    },
+    "attrInfo": {
+      "body": {
+        "about": "The physical side of the character: strength, precise movement and energy for long effort.",
+        "grows": "Grows from anything done with the body: sport and training, work on your feet and with your hands, dance, walks, repairs, gardening, cooking, caring for children and family."
+      },
+      "mind": {
+        "about": "How the character thinks: knowledge, attention and the ability to stay focused on hard things.",
+        "grows": "Grows from study and reading hard texts, working with information and code, problem solving, languages, driving and observation, and long focused sessions."
+      },
+      "spirit": {
+        "about": "Connection with people and with yourself: leading, empathising and creating.",
+        "grows": "Grows from teaching and public speaking, negotiation and sales, caring for people and animals, raising children, art, music, writing and any creative work."
+      },
+      "strength": {
+        "about": "Muscle strength and the ability to handle heavy physical work.",
+        "grows": "Strength training, athletics, carrying loads, construction, warehouse and field work."
+      },
+      "dexterity": {
+        "about": "Precision and coordination: body and hands do what you intend.",
+        "grows": "Technical sports, dance, figure skating, musical instruments, handicraft, manual repair, cooking, lab work."
+      },
+      "endurance": {
+        "about": "Stamina for long effort. Raises max HP.",
+        "grows": "Cardio and walks, shifts on your feet, long physical work, patient care, housekeeping."
+      },
+      "intellect": {
+        "about": "Knowledge and the ability to make sense of complex things.",
+        "grows": "Study, science, programming, languages, reading hard texts, analysis, medicine, finance."
+      },
+      "perception": {
+        "about": "Attention to detail and to what happens around you.",
+        "grows": "Driving, diagnostics and observation, quality control, drawing from life, lab experiments, security work."
+      },
+      "will": {
+        "about": "Discipline and focus: doing hard things for long and regularly.",
+        "grows": "Long focused sessions, hard tasks, consistency, project management, job search, self-learning."
+      },
+      "charisma": {
+        "about": "Talking to people, persuading and leading.",
+        "grows": "Teaching, public speaking, negotiation, sales, leading people, customer work."
+      },
+      "empathy": {
+        "about": "Understanding others and caring for them.",
+        "grows": "Psychology, nursing, raising children, supporting family, volunteering, caring for animals."
+      },
+      "creativity": {
+        "about": "Inventing and making new things.",
+        "grows": "Drawing, music, writing, design, photography, handicraft, invention, creative cooking."
+      }
     }
   },
   "nav": {
@@ -172,10 +222,11 @@
       "done": "[System] Character assessment complete.",
       "minus": "Decrease: {attr}",
       "plus": "Increase: {attr}",
-      "base": "Base",
+      "base": "no experience yet, base 10",
       "balance": "The total must stay the same: take a point from another attribute.",
       "calibrate": "Points you can still move: {left}. Or keep it as is.",
-      "confirm": "Done"
+      "confirm": "Done",
+      "because": "Why:"
     },
     "name": {
       "title": "Character name",
@@ -319,5 +370,26 @@
     },
     "rest": "This is rest",
     "description": "Description (optional)"
+  },
+  "attrSheet": {
+    "open": "Details: {attr}",
+    "close": "Close",
+    "value": "Value {value}",
+    "about": "What it is",
+    "grows": "What raises it",
+    "yourSkills": "Your skills that train it",
+    "noSkills": "No skill trains it yet.",
+    "progress": "To the next point",
+    "progressLine": "{stars}/10 stars · {xp} more XP and {days} more active days",
+    "rules": "Attributes grow slowly and only from real activity: skill experience is split between the skill primary (2/3) and secondary (1/3) attribute. 10 stars give +1 point, but a point also needs several different active days: one marathon is not enough.",
+    "unfoldsInto": "Unfolds into",
+    "unfoldTitle": "Unfolding",
+    "unfoldText": "When the conditions are met, the System offers to unfold the attribute into three. Their values depend on what you actually invested in. Unfolding is optional: you can keep the general attribute forever.",
+    "condLevel": "Character level {now}/{need}",
+    "condXp": "Experience in the attribute {now}/{need}",
+    "condDays": "Active days {now}/{need}",
+    "partOf": "Part of {parent}",
+    "bonus": "Gives: +2% experience to skills where it is primary, per point above 10 (up to +30%).",
+    "hpBonus": "Gives: +10 max HP per point above 10."
   }
 }

@@ -543,7 +543,9 @@ function AssessmentStep({ data, onDone }: { data: WizardData; onDone: () => void
                 )}
               </span>
             </div>
+            <p className="mt-1 text-xs">{tg(`attrInfo.${g}.about`)}</p>
             <p className="mt-1 text-xs text-muted">
+              {t("assessment.because")}{" "}
               {(data.reasons?.[g] ?? []).map((r) => r.label).join(" · ") || t("assessment.base")}
             </p>
           </motion.li>
