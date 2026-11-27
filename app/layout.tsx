@@ -11,6 +11,9 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin",
 export const metadata: Metadata = {
   title: "Status",
   description: "LitRPG-прокачка реальной жизни",
+  applicationName: "Status",
+  appleWebApp: { capable: true, title: "Status", statusBarStyle: "black-translucent" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {

@@ -3,8 +3,9 @@ import { headers } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Panel } from "@/components/ui/primitives";
 import { withUser } from "@/lib/db";
-import { apiTokens, userSettings } from "@/lib/db/schema";
+import { apiTokens, notificationSettings, profiles, pushSubscriptions, userSettings } from "@/lib/db/schema";
 import { requireUserId } from "@/lib/server/session";
+import { ReminderSettings } from "./reminders";
 import { AiSettings, LocaleSwitch, TokenManager } from "./settings-client";
 
 export default async function SettingsPage() {
@@ -21,13 +22,25 @@ export default async function SettingsPage() {
       .where(and(eq(apiTokens.userId, userId), isNull(apiTokens.revokedAt)))
       .orderBy(desc(apiTokens.createdAt));
     const [s] = await tx.select({ auto: userSettings.autoConfirmAi }).from(userSettings).where(eq(userSettings.userId, userId));
-    return { tokens, autoConfirm: s?.auto ?? false };
+    const [n] = await tx.select().from(notificationSettings).where(eq(notificationSettings.userId, userId));
+    const [p] = await tx.select({ tz: profiles.timezone }).from(profiles).where(eq(profiles.id, userId));
+    const devices = await tx.select({ id: pushSubscriptions.id }).from(pushSubscriptions).where(eq(pushSubscriptions.userId, userId));
+    return {
+      tokens,
+      autoConfirm: s?.auto ?? false,
+      reminder: { enabled: n?.enabled ?? true, time: n?.checkinLocalTime ?? "21:00", timeZone: p?.tz || "UTC" },
+      devices: devices.length,
+    };
   });
   const fmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
   return (
     <>
       <h1 className="text-lg font-semibold">{t("title")}</h1>
+
+      <Panel title={t("reminders")}>
+        <ReminderSettings {...data.reminder} devices={data.devices} />
+      </Panel>
 
       <Panel title={t("ai.title")} className="space-y-3 text-sm">
         <p className="text-muted">{t("ai.intro")}</p>

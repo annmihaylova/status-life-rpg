@@ -576,6 +576,25 @@ export const mcpRate = pgTable("mcp_rate", {
   count: integer("count").notNull().default(0),
 }).enableRLS();
 
+/**
+ * Служебные секреты, которые сервер создаёт сам (ключи VAPID для web push).
+ * RLS без политик и без прав: читает только сервер.
+ */
+export const appSecrets = pgTable("app_secrets", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  createdAt: createdAt(),
+}).enableRLS();
+
+/**
+ * Одноразовые токены планировщика: pg_cron кладёт токен сюда и передаёт его в запросе
+ * к /api/cron/*, сервер проверяет и удаляет. Общий секрет вручную вводить не нужно.
+ */
+export const cronTokens = pgTable("cron_tokens", {
+  token: text("token").primaryKey(),
+  createdAt: createdAt(),
+}).enableRLS();
+
 /** Таблицы с данными пользователя — для теста RLS и экспорта. */
 export const USER_TABLES = {
   profiles,

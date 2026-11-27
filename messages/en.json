@@ -187,7 +187,9 @@
       "oauth_failed": "Could not answer the access request. Start connecting in Claude again.",
       "title_not_earned": "This title is not earned yet.",
       "bad_timer": "The timer shows an odd duration. Reset it and start again.",
-      "side_class_not_available": "This adjacent class is not available right now."
+      "side_class_not_available": "This adjacent class is not available right now.",
+      "push_failed": "Could not send the notification. Try turning notifications off and on again on this device.",
+      "bad_reminder": "Check the time and time zone."
     }
   },
   "onboarding": {
@@ -568,7 +570,8 @@
     "autoOff": "As drafts (I confirm)",
     "autoOn": "Confirm right away",
     "autoHint": "By default entries from Claude arrive as drafts and wait for your confirmation in the Journal.",
-    "language": "Language"
+    "language": "Language",
+    "reminders": "Check-in reminder"
   },
   "oauth": {
     "title": "[System] Access request",
@@ -704,5 +707,28 @@
     "take": "+ {name}",
     "drop": "Drop",
     "about": "The System recalculates the main class on Mondays. You choose the adjacent one yourself and can change it any time."
+  },
+  "reminders": {
+    "intro": "The System will remind you about the evening report at the chosen time in your time zone. If the day's report already exists, there is no reminder.",
+    "on": "Remind me",
+    "off": "Don't remind",
+    "time": "Time",
+    "timeZone": "Time zone",
+    "useDeviceTz": "Use this device's: {tz}",
+    "saved": "Saved.",
+    "thisDevice": "Push on this device",
+    "unsupported": "This browser does not support push notifications. Try Chrome, Edge, Firefox or Safari.",
+    "iosTitle": "On iPhone, notifications only reach an app added to the Home Screen (iOS 16.4 or later):",
+    "ios1": "Open Status in Safari.",
+    "ios2": "Tap Share → Add to Home Screen.",
+    "ios3": "Open Status from the Home Screen and come back here to Settings.",
+    "enableDevice": "Turn on notifications here",
+    "deviceOn": "Notifications are on.",
+    "deviceOff": "Turn off here",
+    "test": "Send a test",
+    "testSent": "Sent to {count, plural, one {# device} other {# devices}}.",
+    "subscribed": "Done: reminders will come to this device.",
+    "denied": "Notifications are blocked for this site in the browser settings. Allow them there and try again.",
+    "devices": "Connected devices: {count}"
   }
 }

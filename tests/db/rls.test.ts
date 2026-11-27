@@ -41,7 +41,7 @@ const OWNER_COL: Record<string, string> = {
 const READ_ONLY = new Set(["xp_events", "user_titles", "api_tokens"]);
 const REFERENCE = new Set(["attributes", "titles"]);
 /** служебные таблицы: RLS без политик и без прав для anon/authenticated */
-const SYSTEM = new Set(["mcp_rate"]);
+const SYSTEM = new Set(["mcp_rate", "app_secrets", "cron_tokens"]);
 
 class Rollback extends Error {}
 

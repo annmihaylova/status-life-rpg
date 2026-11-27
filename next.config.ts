@@ -10,6 +10,19 @@ const nextConfig: NextConfig = {
   experimental: { memoryBasedWorkersCount: true },
   // локальный Supabase (site_url) возвращает на 127.0.0.1:3000, а dev-сервер по умолчанию пускает только localhost
   allowedDevOrigins: ["127.0.0.1"],
+  // service worker не кэшируется, чтобы обновления доходили сразу
+  async headers() {
+    return [
+      {
+        source: "/sw.js",
+        headers: [
+          { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self'" },
+        ],
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.css": {
