@@ -56,6 +56,9 @@
 - `lib/game/onboarding.ts` + `data/presets.json` — опросник, 14 категорий, 63 группы, 103 обобщённых навыка с описаниями и тегами, подсказки по возрасту, оценка прошлых часов и стартовая оценка характеристик (формула, без LLM).
 - Вечерний отчёт (фаза 1c): `app/(app)/checkin/` (форма и разбор `/checkin/[id]`), `app/actions/checkin.ts`. Поток: текст → `parseCheckinWithLlm` (`lib/server/llm/checkin.ts`, Claude через structured outputs + серверный fallback при отказе) → `normalizeCheckin` (`lib/checkin/normalize.ts`, чистая, с тестами) → черновики `activity_entries` (source `checkin`, status `draft`) + кандидаты + самочувствие в `hp_days`. В модель уходят только текст, названия навыков и записи дня с локальными метками `s1/e1`, без id из БД. Черновик с `merge_with` при подтверждении обновляет существующую запись (`lib/server/game/drafts.ts`). Промпт — `lib/checkin/prompt.ts`; модель и лимиты — `lib/server/llm/config.ts` (`LLM_MODEL`, `LLM_MONTHLY_LIMIT`).
   - ТЗ просило structured output через tool use; у Claude Opus 5.5 принудительный `tool_choice` запрещён, документация рекомендует `output_config.format` — сделано так.
+- MCP (фаза 2): `app/api/mcp/route.ts` → `lib/server/mcp/server.ts` (`handleMcpRequest`: токен → лимит → `McpServer` без сессий, JSON-ответы) и `tools.ts` (7 инструментов SPEC 7.3, всё через `withUserTx`, пересчёт при автоподтверждении). Токены: `tokens.ts` (`sts_…`, SHA-256 в `api_tokens`, создаёт/отзывает сервер в `app/actions/settings.ts`). Лимит 60/мин — `rate-limit.ts` + служебная `mcp_rate` (RLS без политик и прав). Источник записи — по User-Agent (`mcp_claude`/`mcp_chatgpt`/`mcp_other`).
+  - Claude custom connector: статические заголовки (Request headers) — бета не у всех; OAuth с DCR поддерживается у всех. Сейчас только токен в заголовке; если у владелицы нет Request headers — следующим шагом OAuth (перенос из фазы 5).
+- `/settings` — токены и инструкции подключения, автоподтверждение записей от ИИ, язык.
 - `lib/server/llm/sleeping.ts` — онбординг: свободный рассказ → предложения спящих навыков с оценкой часов.
 - `lib/db/client.ts` — подключение без `server-only` (для скриптов и тестов); `lib/db/index.ts` — серверные `adminDb()` и `withUser()`.
 - `lib/db/schema.ts` — Drizzle-схема и RLS-политики (попадают в миграции). Миграции — `supabase/migrations/` (drizzle-kit с префиксом supabase); ручные SQL — через `drizzle-kit generate --custom`.
@@ -77,7 +80,7 @@
 - Vercel: проект `status-life-rpg` (команда ann-mikhailova, Hobby), деплой на каждый пуш в `main`. Env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Production + Preview) и `DATABASE_URL` (только Production; Supabase transaction pooler, порт 6543; вписала владелица). Превью-деплои без `DATABASE_URL` не работают с данными.
 - `GET /api/health` — `{ ok, db }`: проверка, что прод видит базу.
 - `ANTHROPIC_API_KEY` (Production) нужен для отчёта и разбора текста в онбординге; без него экраны показывают, что разбор не подключён.
-- Миграции в облако: Supabase CLI (`supabase link --project-ref jfrkugrsfiehgxvtckyb`, затем `supabase db push`) требует входа владелицы (`supabase login`, в отдельном окне PowerShell — CLI не работает без TTY). Пока CLI не подключён, миграции применяются вручную через SQL Editor и записываются в `supabase_migrations.schema_migrations` (применены все 5, до `checkin_merge` включительно).
+- Миграции в облако: Supabase CLI (`supabase link --project-ref jfrkugrsfiehgxvtckyb`, затем `supabase db push`) требует входа владелицы (`supabase login`, в отдельном окне PowerShell — CLI не работает без TTY). Пока CLI не подключён, миграции применяются вручную через SQL Editor и записываются в `supabase_migrations.schema_migrations` (применены все 6, до `mcp_rate` включительно).
 - Облачный Supabase не выдаёт права на новые таблицы автоматически: каждую новую таблицу явно добавляй в миграцию с GRANT (см. `*_table_grants.sql`).
 
 ## Сделано
@@ -88,4 +91,4 @@
 - Отложено до 1c (нужен `ANTHROPIC_API_KEY`): разбор свободного текста в спящие навыки, оценка характеристик через LLM, варианты специализаций, теги для навыков из кандидатов.
 - Отзыв после 1b: 2D-редактор персонажа, описания характеристик, каталог на все возрасты и профессии (PLAN 2в).
 - Фаза 1c: вечерний отчёт → черновики через Claude, разбор с правкой/разделением/слиянием дублей, распознавание спящих навыков из текста. Поток проверен в браузере на имитированном разборе; живой вызов Claude и фикстура SPEC 8 (`pnpm test:llm`) ждут ключа API.
-- Следующее: фаза 2 (MCP-сервер для Claude/ChatGPT).
+- Фаза 2: MCP-сервер `/api/mcp` с токенами, 7 инструментов, идемпотентность, лимит, страница настроек с инструкциями. Тесты: 115 на БД (вкл. MCP). Проверено HTTP-вызовом локально. Подключение в Claude — проверяет владелица.
