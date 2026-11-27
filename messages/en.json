@@ -234,7 +234,8 @@
       "minus": "Decrease: {attr}",
       "plus": "Increase: {attr}",
       "done": "Done"
-    }
+    },
+    "signOut": "Sign out"
   },
   "skills": {
     "title": "Skills",

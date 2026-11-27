@@ -7,5 +7,6 @@ const serverSchema = z.object({
 });
 
 export function serverEnv() {
-  return serverSchema.parse({ DATABASE_URL: process.env.DATABASE_URL });
+  // POSTGRES_URL — так переменную называет интеграция Supabase ↔ Vercel
+  return serverSchema.parse({ DATABASE_URL: process.env.DATABASE_URL ?? process.env.POSTGRES_URL });
 }

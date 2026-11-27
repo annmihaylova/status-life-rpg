@@ -195,7 +195,14 @@ export default async function StatusPage() {
           </ul>
         )}
       </Panel>
-      <p className="text-center text-xs text-muted">{new Date().toLocaleDateString(locale)}</p>
+      <footer className="flex items-center justify-between text-xs text-muted">
+        <span>{new Date().toLocaleDateString(locale)}</span>
+        <form action="/auth/signout" method="post">
+          <button type="submit" className="underline underline-offset-4 hover:text-foreground">
+            {t("signOut")}
+          </button>
+        </form>
+      </footer>
     </>
   );
 }
