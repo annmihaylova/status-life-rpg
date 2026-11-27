@@ -102,3 +102,54 @@ export async function confirmEntry(entryId: string): Promise<ActionResult> {
   revalidatePath("/", "layout");
   return res;
 }
+
+const timerSchema = z.object({
+  skillId: z.uuid(),
+  startedAt: z.iso.datetime(),
+  endedAt: z.iso.datetime(),
+  /** «сколько из этого времени ты реально была в фокусе» (SPEC 4.3), по умолчанию 85 */
+  focusPercent: z.number().int().min(10).max(100),
+  intensity: z.number().min(intensity.min).max(intensity.max),
+  novelty: z.number().min(novelty.min).max(novelty.max),
+});
+
+/** Запись по таймеру: длительность считает сервер по меткам, фокус — доля от неё. */
+export async function logTimer(input: z.input<typeof timerSchema>): Promise<ActionResult> {
+  const userId = await requireUserId();
+  const v = timerSchema.parse(input);
+  const start = new Date(v.startedAt);
+  const end = new Date(v.endedAt);
+  const elapsed = (end.getTime() - start.getTime()) / 60_000;
+  if (end.getTime() > Date.now() + 60_000 || elapsed < 1 || elapsed > focusMinutes.max) {
+    return { messages: [], error: "bad_timer" };
+  }
+  const minutes = Math.min(focusMinutes.max, Math.max(focusMinutes.min, Math.round((elapsed * v.focusPercent) / 100)));
+  const res = await mutateAndRecompute(userId, async (tx) => {
+    const [p] = await tx.select({ tz: profiles.timezone }).from(profiles).where(eq(profiles.id, userId));
+    const [s] = await tx
+      .select({ name: skills.name, isRest: skills.isRest })
+      .from(skills)
+      .where(and(eq(skills.id, v.skillId), eq(skills.userId, userId)));
+    if (!s) throw new Error("skill_not_found");
+    const [entry] = await tx
+      .insert(activityEntries)
+      .values({
+        userId,
+        date: localDate(start, p?.tz || "UTC"),
+        startedAt: start,
+        focusMinutes: minutes,
+        intensity: v.intensity,
+        novelty: v.novelty,
+        description: s.name,
+        source: "timer",
+        status: "confirmed",
+        confirmedAt: new Date(),
+        isRest: s.isRest,
+        evidence: `таймер ${Math.round(elapsed)} мин, фокус ${v.focusPercent}%`,
+      })
+      .returning({ id: activityEntries.id });
+    await tx.insert(entrySkillAllocations).values({ entryId: entry.id, userId, skillId: v.skillId, share: 1 });
+  });
+  revalidatePath("/", "layout");
+  return res;
+}

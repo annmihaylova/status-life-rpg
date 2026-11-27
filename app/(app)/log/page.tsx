@@ -2,6 +2,8 @@ import { getTranslations } from "next-intl/server";
 import { getGameView } from "@/lib/server/game/queries";
 import { requireUserId } from "@/lib/server/session";
 import { LogForm } from "./log-form";
+import { LogModes } from "./log-modes";
+import { Timer } from "./timer";
 
 export default async function LogPage() {
   const userId = await requireUserId();
@@ -20,7 +22,10 @@ export default async function LogPage() {
   return (
     <>
       <h1 className="text-lg font-semibold">{t("title")}</h1>
-      <LogForm skills={skills} candidates={candidates} />
+      <LogModes
+        manual={<LogForm skills={skills} candidates={candidates} />}
+        timer={<Timer skills={skills.map((s) => ({ id: s.id, name: s.name }))} />}
+      />
     </>
   );
 }
