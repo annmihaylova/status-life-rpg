@@ -17,14 +17,20 @@ export function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 
-/** Токен из заголовков: `Authorization: Bearer …`, либо `x-api-key` / `x-auth-token`. */
+/**
+ * Токен из заголовков: `Authorization: Bearer …`, либо `x-api-key` / `x-auth-token`.
+ * Терпим к тому, что приходит из «Команд» и ручной вставки: пробелы и кавычки по краям,
+ * перенос строки, ключ `sts_…` без слова Bearer.
+ */
 export function tokenFromHeaders(h: Headers): string | null {
-  const auth = h.get("authorization");
+  const clean = (v: string | null) => (v ? v.trim().replace(/^["'«]+|["'»]+$/g, "").trim() : "");
+  const auth = clean(h.get("authorization"));
   if (auth) {
     const m = auth.match(/^Bearer\s+(\S+)$/i);
     if (m) return m[1];
+    if (/^sts_\S+$/.test(auth)) return auth;
   }
-  return h.get("x-api-key") ?? h.get("x-auth-token");
+  return clean(h.get("x-api-key")) || clean(h.get("x-auth-token")) || null;
 }
 
 export interface TokenOwner {
