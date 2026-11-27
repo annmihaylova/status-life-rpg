@@ -15,15 +15,18 @@ import {
   skillCandidates,
   skills,
   userSettings,
+  weeklyChronicles,
 } from "@/lib/db/schema";
 import { clusterKeyOf } from "@/lib/checkin/normalize";
 import { GENERAL_KEYS, PART_KEYS, type AttributeKey } from "@/lib/game/attributes";
 import { GAME_CONFIG } from "@/lib/game/config";
-import { isIsoDate, localDate } from "@/lib/game/dates";
+import { addDays, isIsoDate, localDate } from "@/lib/game/dates";
 import { replay } from "@/lib/game/engine/replay";
 import type { EngineResult } from "@/lib/game/engine/types";
 import { characterLevelFromXp, normalizeShares, skillRank } from "@/lib/game/formulas";
 import { eventToMessage, xpMessage } from "@/lib/game/messages";
+import { letterWeekStart, periodSummary } from "@/lib/game/chronicle";
+import { className, titleName, weekStartOf } from "@/lib/game/progression";
 import { loadEngineInput } from "@/lib/server/game/load";
 import { recomputeUser } from "@/lib/server/game/recompute";
 import { confirmDrafts } from "@/lib/server/game/drafts";
@@ -54,6 +57,7 @@ async function profileOf(ctx: McpContext) {
 
 export async function getStatus(ctx: McpContext) {
   const { input } = await loadEngineInput(ctx.db, ctx.userId, new Date());
+  const { locale } = await profileOf(ctx);
   const r = replay(input);
   const lp = characterLevelFromXp(r.character.totalXp);
   const names = await withUserTx(ctx.db, ctx.userId, (tx) =>
@@ -82,7 +86,79 @@ export async function getStatus(ctx: McpContext) {
       .sort((a, b) => b.xp - a.xp)
       .slice(0, 8)
       .map((s) => ({ name: safe(nameOf.get(s.id), 60), level: s.level, rank: skillRank(s.level) })),
+    class: r.characterClass ? className(r.characterClass.key, locale) : null,
+    titles: r.titles.map((t) => titleName(t.key, locale)),
   };
+}
+
+// ───────── get_week_summary / save_week_letter (письмо Системы, PLAN 2г) ─────────
+
+export const weekSchema = z.object({
+  week_start: z.string().optional().describe("YYYY-MM-DD, понедельник недели; по умолчанию — неделя для письма"),
+});
+
+/** Цифры недели для письма: часы по навыкам и областям, рост, титулы, сравнение с прошлой неделей. */
+export async function getWeekSummary(ctx: McpContext, weekStart?: string) {
+  const { input } = await loadEngineInput(ctx.db, ctx.userId, new Date());
+  const r = replay(input);
+  const { locale } = await profileOf(ctx);
+  const dict = locale === "en" ? en : ru;
+  const ws = weekStart && isIsoDate(weekStart) ? weekStartOf(weekStart) : letterWeekStart(input.today);
+  const week = periodSummary(input, r, ws, addDays(ws, 6));
+  const prev = periodSummary(input, r, addDays(ws, -7), addDays(ws, -1));
+  const names = await withUserTx(ctx.db, ctx.userId, (tx) =>
+    tx.select({ id: skills.id, name: skills.name }).from(skills).where(eq(skills.userId, ctx.userId)),
+  );
+  const nameOf = new Map(names.map((n) => [n.id, safe(n.name, 60)]));
+  const domain = (d: string) => dict.game.domains[d as keyof typeof dict.game.domains] ?? d;
+  const hours = (m: number) => Math.round((m / 60) * 10) / 10;
+  return {
+    week_start: ws,
+    week_end: addDays(ws, 6),
+    language: locale,
+    focus_hours: hours(week.minutes),
+    days_with_entries: week.activeDays,
+    entries: week.entries,
+    by_skill: week.skills.slice(0, 10).map((x) => ({ skill: nameOf.get(x.skillId) ?? "?", hours: hours(x.minutes) })),
+    by_domain: week.domains.map((x) => ({ domain: domain(x.domain), hours: hours(x.minutes) })),
+    level: { from: week.levelFrom, to: week.levelTo },
+    new_skills: week.newSkills.map((id) => nameOf.get(id) ?? "?"),
+    rank_ups: week.rankUps.map((x) => ({
+      skill: nameOf.get(x.skillId) ?? "?",
+      rank: dict.game.ranks[x.rank as keyof typeof dict.game.ranks] ?? x.rank,
+    })),
+    skill_level_ups: week.skillLevelUps,
+    attribute_points: week.attributePoints.map((x) => ({ attribute: dict.game.attributes[x.attribute], to: x.to })),
+    titles: week.titles.map((k) => titleName(k, locale)),
+    previous_week_focus_hours: hours(prev.minutes),
+    note:
+      "Письмо: 80–180 слов на языке language, тёпло и конкретно, с цифрами из этих данных. Без лести, без упрёков за пропуски и без советов работать больше. Отдых и тихие недели — нормально.",
+  };
+}
+
+export const letterSchema = z.object({
+  week_start: z.string().describe("YYYY-MM-DD, понедельник недели из get_week_summary"),
+  text: z.string().min(20).max(3000).describe("Текст письма"),
+});
+
+/** Сохраняет письмо недели; показывается в Хронике вместо шаблона. */
+export async function saveWeekLetter(ctx: McpContext, args: z.infer<typeof letterSchema>) {
+  if (!isIsoDate(args.week_start)) return { ok: false, error: "bad_week_start" };
+  const ws = weekStartOf(args.week_start);
+  const text = args.text.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, "").trim();
+  const { input } = await loadEngineInput(ctx.db, ctx.userId, new Date());
+  if (ws > input.today) return { ok: false, error: "future_week" };
+  const stats = periodSummary(input, replay(input), ws, addDays(ws, 6));
+  await withUserTx(ctx.db, ctx.userId, (tx) =>
+    tx
+      .insert(weeklyChronicles)
+      .values({ userId: ctx.userId, weekStart: ws, stats, letterText: text })
+      .onConflictDoUpdate({
+        target: [weeklyChronicles.userId, weeklyChronicles.weekStart],
+        set: { stats, letterText: text },
+      }),
+  );
+  return { ok: true, week_start: ws, shown_in: "Status → Хроника" };
 }
 
 // ───────── list_skills ─────────
@@ -308,6 +384,8 @@ async function renderMessages(ctx: McpContext, before: EngineResult, after: Engi
       cluster: (c) => c,
       attribute: (k: AttributeKey) => dict.game.attributes[k],
       rank: (r) => dict.game.ranks[r as keyof typeof dict.game.ranks] ?? r,
+      title: (k) => titleName(k, locale),
+      className: (k) => className(k, locale),
     });
     out.push(fmt(m.key, m.values));
   }

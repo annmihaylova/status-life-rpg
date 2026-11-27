@@ -127,11 +127,21 @@ describe("MCP: доступ", () => {
     expect(r.body.result.instructions).toContain("ФОКУСНОЕ время");
   });
 
-  it("семь инструментов из SPEC 7.3", async () => {
+  it("семь инструментов из SPEC 7.3 и два для письма недели", async () => {
     const r = await rpc(tokenA, "tools/list");
     const names = r.body.result.tools.map((t: { name: string }) => t.name).sort();
     expect(names).toEqual(
-      ["delete_activity", "get_day", "get_status", "list_skills", "log_activities", "request_skill", "update_activity"].sort(),
+      [
+        "delete_activity",
+        "get_day",
+        "get_status",
+        "list_skills",
+        "log_activities",
+        "request_skill",
+        "update_activity",
+        "get_week_summary",
+        "save_week_letter",
+      ].sort(),
     );
   });
 });
@@ -208,6 +218,21 @@ describe("MCP: инструменты", () => {
     expect(fresh).toMatchObject({ created: true, activity_cluster: "фотография" });
     const [c] = await sql`select requested, attribute_tags from skill_candidates where user_id = ${A} and cluster_key = 'фотография'`;
     expect(c.requested).toBe(true);
+  });
+
+  it("итоги недели и письмо: письмо сохраняется в Хронику только своему пользователю", async () => {
+    const s = await call(tokenA, "get_week_summary", { week_start: TODAY });
+    expect(s.week_start <= TODAY).toBe(true);
+    expect(s.focus_hours).toBeGreaterThan(0);
+    expect(s.by_skill[0].skill).toBe("Научная работа");
+    const text = "Неделя получилась насыщенной: " + "x".repeat(30) + "\u0000";
+    expect(await call(tokenA, "save_week_letter", { week_start: s.week_start, text })).toMatchObject({ ok: true });
+    const rows = await sql`select user_id, letter_text from weekly_chronicles where week_start = ${s.week_start}`;
+    expect(rows).toHaveLength(1);
+    expect(rows[0].user_id).toBe(A);
+    expect(rows[0].letter_text).not.toMatch(/\u0000/);
+    const future = await call(tokenA, "save_week_letter", { week_start: "2999-01-07", text });
+    expect(future).toMatchObject({ ok: false, error: "future_week" });
   });
 
   it("описания в ответах обрезаются и чистятся от управляющих символов", async () => {
