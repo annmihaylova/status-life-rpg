@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
+import { safeNext } from "@/lib/safe-next";
 
 /**
  * Возврат из письма входа (implicit flow): Supabase кладёт токены во фрагмент URL (#access_token=…).
@@ -18,6 +19,7 @@ export default function AuthFinishPage() {
     const params = new URLSearchParams(window.location.hash.slice(1));
     const accessToken = params.get("access_token");
     const refreshToken = params.get("refresh_token");
+    const next = safeNext(new URLSearchParams(window.location.search).get("next"));
     // убираем токены из адресной строки и истории
     window.history.replaceState(null, "", window.location.pathname);
 
@@ -32,7 +34,7 @@ export default function AuthFinishPage() {
           setFailed(true);
           router.replace("/login?error=link");
         } else {
-          router.replace("/");
+          router.replace(next);
           router.refresh();
         }
       });

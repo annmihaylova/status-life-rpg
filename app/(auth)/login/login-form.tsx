@@ -39,7 +39,7 @@ function emailClient() {
   );
 }
 
-export function LoginForm({ initialError }: { initialError: string | null }) {
+export function LoginForm({ initialError, next = "/" }: { initialError: string | null; next?: string }) {
   const t = useTranslations("login");
   const authError = (error: AuthErrorLike) => {
     const key = authErrorKey(error);
@@ -53,14 +53,20 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
     initialError ? { kind: "error", message: initialError } : { kind: "idle" },
   );
 
-  const callbackUrl = () => `${window.location.origin}/auth/callback`;
+  const callbackUrl = () =>
+    `${window.location.origin}/auth/callback${next === "/" ? "" : `?next=${encodeURIComponent(next)}`}`;
 
   async function sendLink(e: React.FormEvent) {
     e.preventDefault();
     setState({ kind: "sending" });
     const { error } = await emailClient().auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo: `${window.location.origin}/auth/finish` },
+      options: {
+        emailRedirectTo:
+          next === "/"
+            ? `${window.location.origin}/auth/finish`
+            : `${window.location.origin}/auth/finish?next=${encodeURIComponent(next)}`,
+      },
     });
     if (error) {
       setState({ kind: "error", message: authError(error) });
@@ -84,7 +90,7 @@ export function LoginForm({ initialError }: { initialError: string | null }) {
       setState({ kind: "error", message: authError(error) });
       return;
     }
-    router.replace("/");
+    router.replace(next);
     router.refresh();
   }
 

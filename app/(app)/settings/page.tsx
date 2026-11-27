@@ -29,30 +29,17 @@ export default async function SettingsPage() {
     <>
       <h1 className="text-lg font-semibold">{t("title")}</h1>
 
-      <Panel title={t("ai.title")} className="space-y-4">
-        <p className="text-sm text-muted">{t("ai.intro")}</p>
-        <TokenManager
-          mcpUrl={mcpUrl}
-          tokens={data.tokens.map((x) => ({
-            id: x.id,
-            label: x.label,
-            created: fmt.format(x.createdAt),
-            lastUsed: x.lastUsedAt ? fmt.format(x.lastUsedAt) : null,
-          }))}
-        />
-      </Panel>
-
-      <Panel title={t("ai.how")} className="space-y-3 text-sm">
+      <Panel title={t("ai.title")} className="space-y-3 text-sm">
+        <p className="text-muted">{t("ai.intro")}</p>
         <ol className="list-inside list-decimal space-y-2">
           <li>{t("ai.step1")}</li>
-          <li>{t("ai.step2")}</li>
           <li>
-            {t("ai.step3")} <code className="break-all rounded bg-black/40 px-1 font-mono text-xs">{mcpUrl}</code>
+            {t("ai.step2")} <code className="break-all rounded bg-black/40 px-1 font-mono text-xs">{mcpUrl}</code>
           </li>
+          <li>{t("ai.step3")}</li>
           <li>{t("ai.step4")}</li>
           <li>{t("ai.step5")}</li>
         </ol>
-        <p className="text-xs text-muted">{t("ai.noHeaders")}</p>
         <details>
           <summary className="cursor-pointer text-muted">{t("ai.instructionsTitle")}</summary>
           <p className="mt-2 text-xs text-muted">{t("ai.instructionsHint")}</p>
@@ -62,6 +49,18 @@ export default async function SettingsPage() {
           <summary className="cursor-pointer text-muted">{t("ai.chatgptTitle")}</summary>
           <p className="mt-2 text-xs">{t("ai.chatgpt")}</p>
         </details>
+      </Panel>
+
+      <Panel title={t("ai.connected")} className="space-y-4">
+        <TokenManager
+          mcpUrl={mcpUrl}
+          tokens={data.tokens.map((x) => ({
+            id: x.id,
+            label: x.label,
+            created: fmt.format(x.createdAt),
+            lastUsed: x.lastUsedAt ? fmt.format(x.lastUsedAt) : null,
+          }))}
+        />
       </Panel>
 
       <Panel title={t("autoTitle")}>

@@ -3,9 +3,11 @@
  * идемпотентность client_ref, права агента на свои черновики, лимит запросов.
  */
 import { randomUUID } from "node:crypto";
+import { exportJWK, generateKeyPair, createLocalJWKSet, SignJWT } from "jose";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createDb } from "@/lib/db/client";
 import { takeMcpSlot } from "@/lib/server/mcp/rate-limit";
+import { grantOAuthClient, oauthTokenKey, type OAuthConfig } from "@/lib/server/mcp/oauth";
 import { handleMcpRequest } from "@/lib/server/mcp/server";
 import { generateToken, hashToken } from "@/lib/server/mcp/tokens";
 
@@ -20,6 +22,9 @@ let tokenA2 = "";
 let tokenB = "";
 let skillA = "";
 let rpcId = 0;
+const ISSUER = "http://auth.test/auth/v1";
+let oauthCfg: OAuthConfig;
+let signKey: CryptoKey;
 const TODAY = new Date().toISOString().slice(0, 10);
 
 async function user(id: string) {
@@ -47,9 +52,10 @@ async function rpc(tok: string | null, method: string, params: unknown = {}, ua 
       headers,
       body: JSON.stringify({ jsonrpc: "2.0", id: ++rpcId, method, params }),
     }),
+    { oauth: () => oauthCfg },
   );
   const text = await res.text();
-  return { status: res.status, body: text ? JSON.parse(text) : null };
+  return { status: res.status, body: text ? JSON.parse(text) : null, headers: res.headers };
 }
 
 async function call(tok: string, name: string, args: unknown = {}) {
@@ -72,7 +78,21 @@ const activity = (over: Record<string, unknown> = {}) => ({
   ...over,
 });
 
+/** Access token как у OAuth-сервера Supabase (ES256, issuer …/auth/v1, client_id). */
+async function oauthJwt(sub: string, claims: Record<string, unknown> = { client_id: "claude-client" }, key = signKey, exp = "1h") {
+  return new SignJWT({ role: "authenticated", aud: "authenticated", ...claims })
+    .setProtectedHeader({ alg: "ES256", kid: "test" })
+    .setSubject(sub)
+    .setIssuer(ISSUER)
+    .setIssuedAt()
+    .setExpirationTime(exp)
+    .sign(key);
+}
+
 beforeAll(async () => {
+  const { publicKey, privateKey } = await generateKeyPair("ES256");
+  signKey = privateKey;
+  oauthCfg = { issuer: ISSUER, jwks: createLocalJWKSet({ keys: [{ ...(await exportJWK(publicKey)), kid: "test", alg: "ES256" }] }) };
   await user(A);
   await user(B);
   [skillA] = (await sql`insert into skills (user_id, name, primary_attr_key, secondary_attr_key, slot)
@@ -197,6 +217,53 @@ describe("MCP: инструменты", () => {
       expect(e.description.length).toBeLessThanOrEqual(200);
       expect(e.description).not.toMatch(/\u0000/);
     }
+  });
+});
+
+describe("MCP: OAuth", () => {
+  it("401 указывает, где метаданные защищённого ресурса", async () => {
+    const r = await rpc(null, "tools/list");
+    expect(r.status).toBe(401);
+    expect(r.headers.get("www-authenticate")).toBe(
+      'Bearer resource_metadata="http://localhost/.well-known/oauth-protected-resource/api/mcp"',
+    );
+  });
+
+  it("access token Supabase OAuth даёт доступ к своим данным и помечает записи клиентом", async () => {
+    const jwt = await oauthJwt(A);
+    const r = await rpc(jwt, "tools/call", { name: "list_skills", arguments: {} });
+    expect(r.status).toBe(200);
+    expect(JSON.parse(r.body.result.content[0].text).skills.map((s: { skill_id: string }) => s.skill_id)).toEqual([skillA]);
+
+    const logged = await rpc(jwt, "tools/call", { name: "log_activities", arguments: { activities: [activity()] } });
+    const id = JSON.parse(logged.body.result.content[0].text).results[0].id;
+    const [row] = await sql`select t.label, t.token_hash from activity_entries e join api_tokens t on t.id = e.created_by_token where e.id = ${id}`;
+    expect(row.token_hash).toBe(oauthTokenKey(A, "claude-client"));
+    expect(row.label).toBe("Claude (OAuth)");
+    // тот же клиент может править свой черновик, личный токен — нет
+    expect(JSON.parse((await rpc(jwt, "tools/call", { name: "delete_activity", arguments: { id } })).body.result.content[0].text)).toMatchObject({ ok: true });
+  });
+
+  it("чужая подпись, другой issuer, истёкший токен и JWT без client_id — 401", async () => {
+    const other = (await generateKeyPair("ES256")).privateKey;
+    expect((await rpc(await oauthJwt(A, { client_id: "x" }, other), "tools/list")).status).toBe(401);
+    expect((await rpc(await oauthJwt(A, {}), "tools/list")).status).toBe(401);
+    expect((await rpc(await oauthJwt(A, { client_id: "x" }, signKey, "-1m"), "tools/list")).status).toBe(401);
+    const wrongIss = await new SignJWT({ client_id: "x" }).setProtectedHeader({ alg: "ES256", kid: "test" })
+      .setSubject(A).setIssuer("http://evil.test/auth/v1").setExpirationTime("1h").sign(signKey);
+    expect((await rpc(wrongIss, "tools/list")).status).toBe(401);
+    expect((await rpc("not-a-token", "tools/list")).status).toBe(401);
+  });
+
+  it("отозванный в Настройках клиент получает 401, новое согласие возвращает доступ", async () => {
+    const jwt = await oauthJwt(B, { client_id: "revoke-me" });
+    expect((await rpc(jwt, "tools/list")).status).toBe(200);
+    await sql`update api_tokens set revoked_at = now() where token_hash = ${oauthTokenKey(B, "revoke-me")}`;
+    expect((await rpc(jwt, "tools/list")).status).toBe(401);
+    await grantOAuthClient(db, B, "revoke-me", "Claude");
+    expect((await rpc(jwt, "tools/list")).status).toBe(200);
+    const [t] = await sql`select label, revoked_at from api_tokens where token_hash = ${oauthTokenKey(B, "revoke-me")}`;
+    expect(t).toMatchObject({ label: "Claude", revoked_at: null });
   });
 });
 

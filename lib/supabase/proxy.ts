@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { publicEnv } from "@/lib/env";
 
-const PUBLIC_PATHS = ["/login", "/auth"];
+const PUBLIC_PATHS = ["/login", "/auth", "/.well-known"];
 
 /** Обновляет сессию Supabase и отправляет неавторизованных на /login. */
 export async function updateSession(request: NextRequest) {
@@ -36,6 +36,9 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.search = "";
+    // вернуть туда, куда шли (например, на страницу согласия OAuth)
+    const back = request.nextUrl.pathname + request.nextUrl.search;
+    if (back !== "/") url.searchParams.set("next", back);
     return NextResponse.redirect(url);
   }
   return response;

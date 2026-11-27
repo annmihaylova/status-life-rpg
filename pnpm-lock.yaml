@@ -200,6 +200,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.4
         version: 0.45.4(@opentelemetry/api@1.10.0)(postgres@4.1.1)
+      jose:
+        specifier: ^6.2.18
+        version: 6.2.18
       lucide-react:
         specifier: ^1.80.0
         version: 1.80.0(@types/react@19.3.3)(react@19.3.0)

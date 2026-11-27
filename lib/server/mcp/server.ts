@@ -7,7 +7,15 @@ import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/
 import { z } from "zod";
 import type { Db } from "@/lib/db/client";
 import { takeMcpSlot } from "./rate-limit";
-import { tokenFromHeaders, verifyToken } from "./tokens";
+import {
+  defaultOAuthConfig,
+  looksLikeJwt,
+  oauthClientToken,
+  resourceMetadataUrl,
+  verifyOAuthToken,
+  type OAuthConfig,
+} from "./oauth";
+import { tokenFromHeaders, verifyToken, type TokenOwner } from "./tokens";
 import {
   deleteActivity,
   getDay,
@@ -130,19 +138,52 @@ function sourceFrom(req: Request): McpSource {
   return "mcp_other";
 }
 
-function unauthorized(message: string): Response {
+function unauthorized(req: Request, message: string): Response {
+  const origin = new URL(req.url).origin;
   return new Response(JSON.stringify({ error: "unauthorized", message }), {
     status: 401,
-    headers: { "content-type": "application/json", "www-authenticate": 'Bearer realm="status"' },
+    headers: {
+      "content-type": "application/json",
+      // RFC 9728: где искать сервер авторизации (по этому заголовку Claude запускает OAuth)
+      "www-authenticate": `Bearer resource_metadata="${resourceMetadataUrl(origin)}"`,
+    },
   });
 }
 
-/** Обработчик HTTP-запроса MCP: токен → лимит → сервер с инструментами пользователя. */
-export async function handleMcpRequest(db: Db, req: Request): Promise<Response> {
+const OAUTH_LABELS: Record<McpSource, string> = {
+  mcp_claude: "Claude (OAuth)",
+  mcp_chatgpt: "ChatGPT (OAuth)",
+  mcp_other: "OAuth",
+};
+
+async function authenticate(
+  db: Db,
+  token: string,
+  source: McpSource,
+  oauth: () => OAuthConfig,
+): Promise<TokenOwner | null> {
+  if (token.startsWith("sts_")) return verifyToken(db, token);
+  if (!looksLikeJwt(token)) return null;
+  const claims = await verifyOAuthToken(token, oauth());
+  if (!claims) return null;
+  const t = await oauthClientToken(db, claims.userId, claims.clientId, OAUTH_LABELS[source]);
+  return t ? { userId: claims.userId, tokenId: t.tokenId } : null;
+}
+
+/**
+ * Обработчик HTTP-запроса MCP: токен (личный `sts_…` или OAuth access token Supabase)
+ * → лимит → сервер с инструментами пользователя.
+ */
+export async function handleMcpRequest(
+  db: Db,
+  req: Request,
+  opts: { oauth?: () => OAuthConfig } = {},
+): Promise<Response> {
+  const source = sourceFrom(req);
   const token = tokenFromHeaders(req.headers);
-  if (!token) return unauthorized("Missing token: send Authorization: Bearer <token>");
-  const owner = await verifyToken(db, token);
-  if (!owner) return unauthorized("Invalid or revoked token");
+  if (!token) return unauthorized(req, "Missing token: sign in with OAuth or send Authorization: Bearer <token>");
+  const owner = await authenticate(db, token, source, opts.oauth ?? defaultOAuthConfig);
+  if (!owner) return unauthorized(req, "Invalid, expired or revoked token");
 
   if (req.method === "POST" && !(await takeMcpSlot(db, owner.userId))) {
     return new Response(JSON.stringify({ error: "rate_limited", message: "Too many calls: 60 per minute" }), {
@@ -151,7 +192,7 @@ export async function handleMcpRequest(db: Db, req: Request): Promise<Response> 
     });
   }
 
-  const server = buildMcpServer({ db, userId: owner.userId, tokenId: owner.tokenId, source: sourceFrom(req) });
+  const server = buildMcpServer({ db, userId: owner.userId, tokenId: owner.tokenId, source });
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,

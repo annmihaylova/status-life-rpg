@@ -40,49 +40,6 @@ export function TokenManager({
         </div>
       </div>
 
-      {fresh && (
-        <div className="space-y-2 rounded-xl border border-star/60 bg-star/5 p-3">
-          <p className="text-sm text-star">{t("freshWarning")}</p>
-          <code className="block break-all rounded bg-black/40 px-2 py-1.5 font-mono text-xs">Bearer {fresh}</code>
-          <Button variant="outline" onClick={() => copy(`Bearer ${fresh}`, "token")}>
-            {copied === "token" ? t("copied") : t("copyHeader")}
-          </Button>
-        </div>
-      )}
-
-      <form
-        className="flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          start(async () => {
-            setError(null);
-            const r = await createApiToken(label);
-            if (r.error) setError(tc(`errors.${r.error}`));
-            else if (r.token) {
-              setFresh(r.token);
-              router.refresh();
-            }
-          });
-        }}
-      >
-        <input
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          maxLength={40}
-          aria-label={t("label")}
-          placeholder={t("label")}
-          className="min-w-0 flex-1 rounded-xl border border-panel-border bg-black/30 px-3 py-2 outline-none focus:border-accent"
-        />
-        <Button type="submit" disabled={pending || !label.trim()}>
-          {t("create")}
-        </Button>
-      </form>
-      {error && (
-        <p role="alert" className="text-sm text-hp">
-          {error}
-        </p>
-      )}
-
       {tokens.length > 0 && (
         <ul className="space-y-2">
           {tokens.map((tk) => (
@@ -106,6 +63,52 @@ export function TokenManager({
           ))}
         </ul>
       )}
+      <details className="space-y-3">
+        <summary className="cursor-pointer text-sm text-muted">{t("manualTitle")}</summary>
+        <p className="mt-2 text-xs text-muted">{t("manualHint")}</p>
+        {fresh && (
+          <div className="space-y-2 rounded-xl border border-star/60 bg-star/5 p-3">
+            <p className="text-sm text-star">{t("freshWarning")}</p>
+            <code className="block break-all rounded bg-black/40 px-2 py-1.5 font-mono text-xs">Bearer {fresh}</code>
+            <Button variant="outline" onClick={() => copy(`Bearer ${fresh}`, "token")}>
+              {copied === "token" ? t("copied") : t("copyHeader")}
+            </Button>
+          </div>
+        )}
+
+        <form
+          className="flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            start(async () => {
+              setError(null);
+              const r = await createApiToken(label);
+              if (r.error) setError(tc(`errors.${r.error}`));
+              else if (r.token) {
+                setFresh(r.token);
+                router.refresh();
+              }
+            });
+          }}
+        >
+          <input
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            maxLength={40}
+            aria-label={t("label")}
+            placeholder={t("label")}
+            className="min-w-0 flex-1 rounded-xl border border-panel-border bg-black/30 px-3 py-2 outline-none focus:border-accent"
+          />
+          <Button type="submit" disabled={pending || !label.trim()}>
+            {t("create")}
+          </Button>
+        </form>
+        {error && (
+          <p role="alert" className="text-sm text-hp">
+            {error}
+          </p>
+        )}
+      </details>
     </div>
   );
 }

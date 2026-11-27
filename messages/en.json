@@ -178,7 +178,8 @@
       "llm_unavailable": "Report parsing is unavailable right now.",
       "llm_rate_limited": "Too many requests. Try again in a minute.",
       "bad_label": "Token name cannot be empty.",
-      "too_many_tokens": "Too many active tokens: revoke the ones you do not need."
+      "too_many_tokens": "Too many active tokens: revoke the ones you do not need.",
+      "oauth_failed": "Could not answer the access request. Start connecting in Claude again."
     }
   },
   "onboarding": {
@@ -524,7 +525,7 @@
     "title": "Settings",
     "ai": {
       "title": "Connect Claude and ChatGPT",
-      "intro": "Claude can log your activity into Status itself: on the command \"log my day\" or during a conversation. It needs the server address and a token.",
+      "intro": "Claude can log your activity into Status itself: on the command \"log my day\" or during a conversation. You connect by signing in to Status, no manual token needed.",
       "serverUrl": "MCP server address",
       "copy": "Copy",
       "copied": "Copied",
@@ -537,22 +538,39 @@
       "revoke": "Revoke",
       "revokeConfirm": "Revoke this token? The AI connected with it will stop logging activity.",
       "how": "How to connect Claude",
-      "step1": "Create a token above and copy the \"Bearer …\" line.",
-      "step2": "In Claude open Settings → Connectors → Add custom connector.",
-      "step3": "Name: Status. Address:",
-      "step4": "In the authentication block choose No sign-in and under Request headers add the header authorization with the value \"Bearer …\".",
+      "step1": "In Claude open Settings → Connectors → Add custom connector.",
+      "step2": "Name: Status. Address:",
+      "step3": "Leave Advanced settings (OAuth Client ID and Secret) empty, click Add, then Connect.",
+      "step4": "A Status page opens: sign in if asked and click Allow.",
       "step5": "Enable the connector in a chat and write \"log my day\".",
-      "noHeaders": "If the dialog has no Request headers section, this option is not enabled for your Claude account yet. Then the connection will use OAuth sign-in, which we add next.",
       "instructionsTitle": "Text for Claude instructions",
       "instructionsHint": "Add this to Claude Settings → Profile → instructions so that \"log my day\" works reliably.",
       "instructions": "I have the Status connector (a levelling tracker). When I write \"log my day\":\n1) find today's conversations; 2) call list_skills and get_day;\n3) make a list of activities with an honest estimate of focused time (not chat length)\nand show it to me; 4) after my \"ok\", call log_activities.\nDuring normal conversations, log activity only when I ask.",
       "chatgptTitle": "ChatGPT",
-      "chatgpt": "In ChatGPT, connectors are added in Developer mode in the apps settings. The address is the same; header token auth is not supported in every version, in which case OAuth is needed."
+      "chatgpt": "In ChatGPT, connectors are added in Developer mode in the apps settings. The address is the same; sign-in also goes through the Status page.",
+      "connected": "Connected AIs and tokens",
+      "manualTitle": "Manual token",
+      "manualHint": "For clients that let you set request headers: create a token and add the header authorization with the value \"Bearer …\"."
     },
     "autoTitle": "Entries from AI",
     "autoOff": "As drafts (I confirm)",
     "autoOn": "Confirm right away",
     "autoHint": "By default entries from Claude arrive as drafts and wait for your confirmation in the Journal.",
     "language": "Language"
+  },
+  "oauth": {
+    "title": "[System] Access request",
+    "question": "<b>{client}</b> asks for access to your Status character.",
+    "unknownClient": "Unknown app",
+    "canRead": "see your level, skills, attributes and activity entries;",
+    "canWrite": "add activity entries (as drafts unless auto-confirm is on) and suggest skills;",
+    "cannot": "it cannot take skills or change attributes and settings.",
+    "account": "Account: {email}",
+    "returnTo": "After you answer we return to {host}",
+    "approve": "Allow",
+    "deny": "Deny",
+    "working": "One moment…",
+    "invalid": "The access request was not found or has expired. Start connecting in Claude again.",
+    "revokeHint": "You can revoke access any time: Settings → Connect Claude."
   }
 }
