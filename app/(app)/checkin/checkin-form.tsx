@@ -1,32 +1,47 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useCallback, useState, useTransition } from "react";
 import { submitCheckin } from "@/app/actions/checkin";
+import { VoiceInput } from "@/components/game/voice-input";
 import { Button, Chip, Panel } from "@/components/ui/primitives";
+import { appendTranscript, claudePrompt } from "@/lib/checkin/voice";
 
+/**
+ * Вечерний отчёт (SPEC 4.2): текст или голос. Если разбор через API подключён — Система
+ * разбирает отчёт сама; если нет — текст одной кнопкой уходит Claude, и он записывает день
+ * через коннектор Status.
+ */
 export function CheckinForm({ available, maxChars }: { available: boolean; maxChars: number }) {
   const t = useTranslations("checkin");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const router = useRouter();
   const [text, setText] = useState("");
   const [day, setDay] = useState<"today" | "yesterday">("today");
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const [pending, start] = useTransition();
 
-  if (!available) {
-    return (
-      <Panel>
-        <p className="text-sm text-muted">{t("unavailable")}</p>
-      </Panel>
-    );
-  }
+  const onVoice = useCallback((chunk: string) => setText((prev) => appendTranscript(prev, chunk, maxChars)), [maxChars]);
+  const ready = text.trim().length >= 10;
+
+  const copyForClaude = async () => {
+    try {
+      await navigator.clipboard.writeText(claudePrompt(text.trim(), day, locale));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setError(tc("errors.generic"));
+    }
+  };
 
   return (
     <Panel className="space-y-3">
       <p className="font-mono text-sm text-accent">{t("prompt")}</p>
       <p className="text-xs text-muted">{t("hint")}</p>
+      <VoiceInput lang={locale} onFinal={onVoice} />
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value.slice(0, maxChars))}
@@ -46,25 +61,38 @@ export function CheckinForm({ available, maxChars }: { available: boolean; maxCh
           {t("yesterday")}
         </Chip>
       </div>
-      <Button
-        className="w-full"
-        disabled={pending || text.trim().length < 10}
-        onClick={() =>
-          start(async () => {
-            setError(null);
-            try {
-              const r = await submitCheckin({ day, transcript: text });
-              if (r.error) setError(tc(`errors.${r.error}`));
-              else if (r.checkinId) router.push(`/checkin/${r.checkinId}`);
-            } catch {
-              setError(tc("errors.generic"));
+
+      {available ? (
+        <>
+          <Button
+            className="w-full"
+            disabled={pending || !ready}
+            onClick={() =>
+              start(async () => {
+                setError(null);
+                try {
+                  const r = await submitCheckin({ day, transcript: text });
+                  if (r.error) setError(tc(`errors.${r.error}`));
+                  else if (r.checkinId) router.push(`/checkin/${r.checkinId}`);
+                } catch {
+                  setError(tc("errors.generic"));
+                }
+              })
             }
-          })
-        }
-      >
-        {pending ? t("parsing") : t("submit")}
-      </Button>
-      {pending && <p className="text-center text-xs text-muted">{t("parsingHint")}</p>}
+          >
+            {pending ? t("parsing") : t("submit")}
+          </Button>
+          {pending && <p className="text-center text-xs text-muted">{t("parsingHint")}</p>}
+        </>
+      ) : (
+        <div className="space-y-2 rounded-xl border border-panel-border p-3">
+          <p className="text-xs text-muted">{t("viaClaude")}</p>
+          <Button className="w-full" disabled={!ready} onClick={copyForClaude}>
+            {copied ? t("copiedForClaude") : t("copyForClaude")}
+          </Button>
+          {copied && <p className="text-xs text-accent">{t("pasteInClaude")}</p>}
+        </div>
+      )}
       {error && (
         <p role="alert" className="text-sm text-hp">
           {error}
