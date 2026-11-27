@@ -49,3 +49,20 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Цвета характеристик (контраст ≥ 4.5:1 на тёмном фоне) */
+:root {
+  --attr-body: #ff9b5c;
+  --attr-mind: #6fb4ff;
+  --attr-spirit: #c38bff;
+  --xp: #8b93ff;
+  --star: #ffd46b;
+}
+
+@theme inline {
+  --color-attr-body: var(--attr-body);
+  --color-attr-mind: var(--attr-mind);
+  --color-attr-spirit: var(--attr-spirit);
+  --color-xp: var(--xp);
+  --color-star: var(--star);
+}

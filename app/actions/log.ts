@@ -3,7 +3,6 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { withUser } from "@/lib/db";
 import { activityEntries, entrySkillAllocations, profiles, skillCandidates, skills } from "@/lib/db/schema";
 import { GAME_CONFIG } from "@/lib/game/config";
 import { addDays, localDate } from "@/lib/game/dates";

@@ -42,6 +42,7 @@ import {
 import { computeHp, isRestDay, secondWindBonus, type HpDayEntry } from "../hp";
 import type {
   AttributeState,
+  CalibrationState,
   CandidateState,
   EngineDecision,
   EngineEntry,
@@ -65,16 +66,7 @@ interface CandidateInternal extends CandidateState {
   requested: boolean;
 }
 
-interface CalibrationWindow {
-  kind: "start" | "unfold";
-  general?: GeneralKey;
-  keys: AttributeKey[];
-  base: number[];
-  opened: IsoDate;
-  expires: IsoDate;
-  closed: boolean;
-  rules: { pointsTotal: number; min: number; max: number };
-}
+type CalibrationWindow = CalibrationState;
 
 type GameEventInput = GameEvent extends infer E ? (E extends GameEvent ? Omit<E, "id"> : never) : never;
 
@@ -710,6 +702,7 @@ export function replay(input: EngineInput): EngineResult {
     hpDays,
     ledger,
     events,
+    calibrations: windows.map((w) => ({ ...w, base: [...w.base], keys: [...w.keys] })),
     rejectedDecisions: rejected,
   };
 }

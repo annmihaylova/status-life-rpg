@@ -12,7 +12,7 @@ import {
   skillSpecializations,
   skills,
 } from "@/lib/db/schema";
-import { GENERAL_KEYS, isPartKey } from "@/lib/game/attributes";
+import { GENERAL_KEYS, isPartKey, PART_KEYS } from "@/lib/game/attributes";
 import { GAME_CONFIG } from "@/lib/game/config";
 import { isIsoDate } from "@/lib/game/dates";
 import { mainSlots, secondarySlots } from "@/lib/game/formulas";
@@ -208,3 +208,21 @@ export async function setWellbeing(input: z.input<typeof wellbeingSchema>): Prom
   });
 }
 
+
+const tagsSchema = z.object({
+  skillId: z.uuid(),
+  primary: z.enum(PART_KEYS),
+  secondary: z.enum(PART_KEYS).nullable(),
+});
+
+/** Теги характеристик навыка. Применяются ко всей истории навыка (пересчёт). */
+export async function setSkillTags(input: z.input<typeof tagsSchema>): Promise<ActionResult> {
+  const userId = await requireUserId();
+  const v = tagsSchema.parse(input);
+  return run(userId, async (tx) => {
+    await tx
+      .update(skills)
+      .set({ primaryAttrKey: v.primary, secondaryAttrKey: v.secondary === v.primary ? null : v.secondary })
+      .where(and(eq(skills.id, v.skillId), eq(skills.userId, userId)));
+  });
+}

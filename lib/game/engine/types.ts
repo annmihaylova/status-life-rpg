@@ -158,6 +158,19 @@ export interface HpDayState extends HpResult {
   restDay: boolean;
 }
 
+export interface CalibrationState {
+  kind: "start" | "unfold";
+  general?: GeneralKey;
+  keys: AttributeKey[];
+  /** значения на момент открытия окна */
+  base: number[];
+  opened: IsoDate;
+  /** последний день, когда можно переносить очки */
+  expires: IsoDate;
+  closed: boolean;
+  rules: { pointsTotal: number; min: number; max: number };
+}
+
 export interface EngineResult {
   character: { totalXp: number; level: number; xpIntoLevel: number; xpForLevel: number };
   skills: Record<string, SkillState>;
@@ -168,6 +181,7 @@ export interface EngineResult {
   hpDays: Record<IsoDate, HpDayState>;
   ledger: XpLedgerEvent[];
   events: GameEvent[];
+  calibrations: CalibrationState[];
   /** решения, которые движок не смог применить (некорректная калибровка и т.п.) */
   rejectedDecisions: { id: string; reason: string }[];
 }

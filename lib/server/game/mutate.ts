@@ -21,6 +21,8 @@ export interface UiSystemMessage {
 
 export interface MutationResult {
   messages: UiSystemMessage[];
+  /** ключ ошибки из common.errors.* */
+  error?: string;
 }
 
 /**

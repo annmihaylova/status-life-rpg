@@ -22,12 +22,6 @@
     "finishing": "[System] Signing in…",
     "sentWithCode": "[System] Email sent. Enter the code from it or click the link."
   },
-  "home": {
-    "greeting": "[System] Character registered.",
-    "level": "Level {level}",
-    "soon": "The status window opens in the next phase.",
-    "signOut": "Sign out"
-  },
   "system": {
     "xpGained": "[System] Experience gained: {amount}",
     "levelUp": "[System] Character level up: {from} → {to}",
@@ -75,6 +69,254 @@
       "unwell": "Unwell",
       "recovery": "Recovery",
       "second_wind": "Second wind"
+    },
+    "short": {
+      "body": "Body",
+      "mind": "Mind",
+      "spirit": "Spirit",
+      "strength": "Str",
+      "dexterity": "Dex",
+      "endurance": "End",
+      "intellect": "Int",
+      "perception": "Per",
+      "will": "Wil",
+      "charisma": "Cha",
+      "empathy": "Emp",
+      "creativity": "Cre"
+    },
+    "domains": {
+      "science": "Science",
+      "tech": "Technology",
+      "humanities": "Humanities",
+      "body": "Body and sport",
+      "craft": "Craft",
+      "care": "Caring for people",
+      "social": "Social",
+      "creative": "Creative",
+      "home": "Home",
+      "work": "Work",
+      "other": "Other"
     }
+  },
+  "nav": {
+    "label": "Sections",
+    "status": "Status",
+    "skills": "Skills",
+    "log": "Log",
+    "journal": "Journal"
+  },
+  "common": {
+    "systemWindow": "System window",
+    "ok": "Acknowledged",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "slots_full": "No free slots. Move or archive another skill first.",
+      "slot_cooldown": "A skill can change slots once every 7 days.",
+      "not_found": "Not found. Refresh the page.",
+      "bad_milestone": "This specialization milestone is not available."
+    }
+  },
+  "onboarding": {
+    "progress": "Step {step} of {total}",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "age": {
+      "title": "How old are you?",
+      "hint": "Only a range: it sets the tone and limits."
+    },
+    "occupation": {
+      "title": "What do you mostly do right now?",
+      "hint": "Pick as many as fit."
+    },
+    "groups": {
+      "title": "What field are you in?",
+      "hint": "Pick several if needed. The System suggests starter skills from them.",
+      "search": "Search fields",
+      "other": "Other: describe in your words"
+    },
+    "skills": {
+      "title": "What can you already do?",
+      "hint": "These are dormant skills: experience from before the app. They take no slot until they wake up, then catch up with x5 XP.",
+      "none": "None",
+      "sleepingLine": "dormant: ~{hours} h → target {level}",
+      "remove": "Remove {name}",
+      "add": "Add a dormant skill",
+      "name": "Skill",
+      "namePlaceholder": "e.g. Figure skating",
+      "broad": "Name it broadly, like a CV skill: Programming, not Python.",
+      "years": "Years",
+      "perWeek": "Times a week",
+      "hoursPer": "Hours each",
+      "estimate": "≈ {hours} h of practice → target level {level}",
+      "primary": "Primary attribute",
+      "secondary": "Secondary attribute",
+      "addButton": "Add"
+    },
+    "goals": {
+      "title": "What do you want to level up?",
+      "hint": "Up to three goals. They shape the System hints."
+    },
+    "starter": {
+      "title": "Starter skills",
+      "hint": "Tap: main slot. Tap again: secondary. Third tap: remove.",
+      "counter": "Main {main}/{maxMain} · secondary {secondary}/{maxSecondary}",
+      "main": "main",
+      "secondary": "secondary",
+      "showAll": "Show all skills"
+    },
+    "assessment": {
+      "title": "Character assessment",
+      "hint": "The System rates Body, Mind and Spirit from your experience. Then you can move up to 5 points.",
+      "run": "Run assessment",
+      "done": "[System] Character assessment complete.",
+      "minus": "Decrease: {attr}",
+      "plus": "Increase: {attr}",
+      "base": "Base",
+      "balance": "The total must stay the same: take a point from another attribute.",
+      "calibrate": "Points you can still move: {left}. Or keep it as is.",
+      "confirm": "Done"
+    },
+    "name": {
+      "title": "Character name",
+      "hint": "How the System will address you.",
+      "label": "Game name",
+      "placeholder": "e.g. Ann the Researcher",
+      "finish": "Enter the world",
+      "default": "Nameless hero"
+    }
+  },
+  "status": {
+    "portrait": "Character portrait",
+    "noName": "Nameless hero",
+    "classLocked": "Class unlocks at level 10",
+    "classPending": "Class will be revealed in the next version",
+    "level": "Level {level}",
+    "xpLabel": "Experience to next level",
+    "today": "Today +{xp} XP",
+    "hp": "HP",
+    "restAdvice": "[System] HP is low. Rest is recommended.",
+    "attributes": "Attributes",
+    "stars": "{stars} of 10 stars to the next point",
+    "unfoldReadiness": "unfold {ready}/{total}",
+    "unfoldReadinessHint": "Unfold requires: level 20, 6000 XP in the attribute, 30 active days",
+    "mainSkills": "Main skills",
+    "noSkills": "No main skills yet.",
+    "wellbeing": {
+      "sleep": "How long did you sleep last night?",
+      "sick": "I am sick",
+      "rest": "Rest day today"
+    },
+    "offer": {
+      "text": "[System] Recurring activity detected. Skill available: {name}. Take it?",
+      "takeMain": "Take as main",
+      "takeSecondary": "As secondary",
+      "later": "Later",
+      "never": "Do not offer"
+    },
+    "specialization": {
+      "text": "[System] Skill {skill} reached level {milestone}. Choose a specialization.",
+      "hint": "A specialization labels the skill and gives +10% XP to matching activities. The System will suggest options in the next version.",
+      "label": "Specialization name",
+      "placeholder": "e.g. Molecular biology",
+      "choose": "Choose"
+    },
+    "unfold": {
+      "ready": "[System] {attribute} is ready to unfold.",
+      "preview": "Result: {values}",
+      "irreversible": "Unfolding is permanent. For 7 days after you can move 2 points.",
+      "unfold": "Unfold",
+      "notNow": "Not now"
+    },
+    "calibration": {
+      "title": "Calibration after unfolding",
+      "hint": "Points left: {points}. The total stays the same.",
+      "minus": "Decrease: {attr}",
+      "plus": "Increase: {attr}",
+      "done": "Done"
+    }
+  },
+  "skills": {
+    "title": "Skills",
+    "sortLabel": "Sort",
+    "sortLevel": "By level",
+    "sortRecent": "By activity",
+    "slots": "Main {main} of {maxMain} · secondary {secondary} of {maxSecondary}",
+    "empty": "No skills yet. Log your first activity.",
+    "sleeping": "Dormant skills",
+    "candidates": "Skill candidates",
+    "candidateProgress": "{minutes}/{need} min · {days}/{needDays} d",
+    "archive": "Archive",
+    "sleepingTarget": "dormant: ~{level}",
+    "hours": "{hours} h total",
+    "sparkline": "Activity over 30 days",
+    "slot": {
+      "main": "main",
+      "secondary": "secondary",
+      "none": "no slot"
+    },
+    "actions": {
+      "restore": "Restore",
+      "toMain": "To main",
+      "toSecondary": "To secondary",
+      "archive": "Archive"
+    },
+    "tags": {
+      "set": "Set attributes",
+      "hint": "Which attributes does this skill train? Experience is recalculated for its whole history.",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "none": "None",
+      "save": "Save"
+    }
+  },
+  "journal": {
+    "title": "Journal",
+    "empty": "No entries yet.",
+    "dayTotal": "{minutes} min of focus",
+    "source": {
+      "mcp_claude": "Claude",
+      "mcp_chatgpt": "ChatGPT",
+      "mcp_other": "AI agent",
+      "checkin": "Evening report",
+      "manual": "Manual",
+      "timer": "Timer"
+    },
+    "line": "{minutes} min · x{intensity}",
+    "rest": "rest",
+    "draft": "draft",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this entry? Experience will be recalculated."
+  },
+  "log": {
+    "title": "Log activity",
+    "step1": "1 · What did you do",
+    "search": "Find a skill or name something new",
+    "new": "+ {name}",
+    "noSkills": "No skills yet. Just name the activity.",
+    "newHint": "A new activity becomes a candidate: when it repeats, the System will offer a skill.",
+    "step2": "2 · Time in focus",
+    "min": "{n} min",
+    "hours": "{n} h",
+    "customMin": "min",
+    "focusHint": "Count the time you were actually focused, not the whole span.",
+    "step3": "3 · How hard: tap to save",
+    "intensity": {
+      "light": "Light, in the background",
+      "normal": "Normal",
+      "hard": "Hard",
+      "max": "At the limit"
+    },
+    "more": "More options",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "novelty": {
+      "routine": "Routine",
+      "usual": "Usual",
+      "new": "Lots of new"
+    },
+    "rest": "This is rest",
+    "description": "Description (optional)"
   }
 }
