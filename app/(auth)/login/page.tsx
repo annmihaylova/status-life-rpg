@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { safeNext } from "@/lib/safe-next";
 import { LoginForm } from "./login-form";
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const t = await getTranslations("login");
+  const tp = await getTranslations("privacy");
   const { error, next } = await searchParams;
   const initialError = typeof error === "string" ? t("linkFailed") : null;
 
@@ -13,6 +15,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         <h1 className="font-mono text-lg tracking-wide text-accent">{t("title")}</h1>
         <p className="mt-2 text-sm text-muted">{t("subtitle")}</p>
         <LoginForm initialError={initialError} next={safeNext(next)} />
+        <Link href="/privacy" className="mt-4 block text-center text-xs text-muted underline">
+          {tp("link")}
+        </Link>
       </section>
     </main>
   );

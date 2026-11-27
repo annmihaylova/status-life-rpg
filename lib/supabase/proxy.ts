@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { publicEnv } from "@/lib/env";
 
-const PUBLIC_PATHS = ["/login", "/auth", "/.well-known"];
+const PUBLIC_PATHS = ["/login", "/auth", "/.well-known", "/privacy"];
 
 /** Обновляет сессию Supabase и отправляет неавторизованных на /login. */
 export async function updateSession(request: NextRequest) {

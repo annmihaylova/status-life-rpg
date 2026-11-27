@@ -572,5 +572,41 @@
     "working": "One moment…",
     "invalid": "The access request was not found or has expired. Start connecting in Claude again.",
     "revokeHint": "You can revoke access any time: Settings → Connect Claude."
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "updated": "Updated November 26, 2026",
+    "back": "← Home",
+    "link": "Privacy",
+    "sections": [
+      {
+        "h": "What this is",
+        "p": "Status is a personal app that turns your activities, sleep and well-being into character progress. This page explains what data it keeps and why."
+      },
+      {
+        "h": "Data we store",
+        "p": "Your email and name from your Google account (if you sign in with Google). What you enter yourself: activity entries, skills, sleep, well-being, evening report texts, settings and your character’s look. Technical data: sign-in times and tokens for connected AI assistants."
+      },
+      {
+        "h": "Why",
+        "p": "Only to run the app: to compute experience, levels and attributes and show them to you. We do not sell data, show ads, or share data for advertising."
+      },
+      {
+        "h": "Who else processes data",
+        "p": "Supabase (database and sign-in, servers in Canada), Vercel (website hosting), Anthropic (Claude parses the text of your evening report and onboarding story; only that text and skill names are sent). If you connect Claude or ChatGPT via MCP yourself, the assistant reads and writes your Status data on your behalf."
+      },
+      {
+        "h": "Google",
+        "p": "When you sign in with Google we receive only your email, name and avatar (openid, email, profile). The app has no access to Gmail, Drive or other Google services. Use of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements."
+      },
+      {
+        "h": "Cookies",
+        "p": "Only essential ones: your sign-in session and chosen language. No analytics or advertising cookies."
+      },
+      {
+        "h": "Deletion",
+        "p": "You can revoke AI assistant tokens in Settings. To delete your account and all data, email the support address shown on the Google sign-in screen; we delete it within 30 days."
+      }
+    ]
   }
 }
