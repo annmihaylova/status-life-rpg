@@ -20,11 +20,12 @@ export function hashToken(token: string): string {
 /**
  * Токен из заголовков: `Authorization: Bearer …`, либо `x-api-key` / `x-auth-token`.
  * Терпим к тому, что приходит из «Команд» и ручной вставки: пробелы и кавычки по краям,
- * перенос строки, ключ `sts_…` без слова Bearer.
+ * перенос строки, ключ `sts_…` без слова Bearer, заголовок «Authorisation».
  */
 export function tokenFromHeaders(h: Headers): string | null {
   const clean = (v: string | null) => (v ? v.trim().replace(/^["'«]+|["'»]+$/g, "").trim() : "");
-  const auth = clean(h.get("authorization"));
+  // «Authorisation» — британское написание, которое подставляет автокоррекция на iPhone
+  const auth = clean(h.get("authorization") ?? h.get("authorisation"));
   if (auth) {
     const m = auth.match(/^Bearer\s+(\S+)$/i);
     if (m) return m[1];

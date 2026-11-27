@@ -10,6 +10,7 @@ describe("ключ из заголовков", () => {
     expect(tokenFromHeaders(h({ authorization: "sts_abc" }))).toBe("sts_abc");
     expect(tokenFromHeaders(h({ authorization: '"Bearer sts_abc"' }))).toBe("sts_abc");
     expect(tokenFromHeaders(h({ "x-api-key": " sts_abc " }))).toBe("sts_abc");
+    expect(tokenFromHeaders(h({ authorisation: "Bearer sts_abc" }))).toBe("sts_abc");
     expect(tokenFromHeaders(h({}))).toBeNull();
     expect(tokenFromHeaders(h({ authorization: "Basic xyz" }))).toBeNull();
   });
