@@ -46,6 +46,11 @@
   - Теги навыков и эксперименты применяются ко всей истории (текущее значение).
 - `lib/game/messages.ts` — события движка → ключи `system.*` в `messages/*.json` (+ тон: normal / rare / epic).
 - `lib/server/game/` — `loadEngineInput` (БД → вход движка, часовой пояс из профиля), `persistEngineResult` (кэши + леджер), `recomputeUser(db, userId)` — всё в одной транзакции с advisory lock. После любого изменения записей или решений пользователя вызывай `recomputeUser`.
+- `lib/server/game/mutate.ts` — `mutateAndRecompute(userId, fn)`: изменение через `withUser` → пересчёт → системные сообщения о новых событиях (diff событий до/после). Все серверные действия, меняющие игру, идут через него.
+- `lib/server/game/queries.ts` — данные для экранов: `getGameView` (движок «на лету» + имена из таблиц), `getJournal`, `getOnboardingState`.
+- `app/actions/` — серверные действия (`onboarding.ts`, `game.ts`, `log.ts`), вход валидируется zod, ошибки — ключи `common.errors.*`.
+- UI: `app/(app)/` — экраны с нижней навигацией (Статус, Навыки, Записать, Журнал), проверка онбординга в `layout.tsx`; `app/onboarding/` — мастер из 8 шагов. `components/game/system-messages.tsx` — провайдер «окна Системы»: `useSystem().run(action)` вызывает действие и показывает сообщения построчно. `components/ui/primitives.tsx` — Button, Chip, Panel, Bar, Stars (свои, в стиле shadcn).
+- `lib/game/onboarding.ts` + `data/presets.json` — опросник, 23 группы, ~50 обобщённых навыков, оценка прошлых часов и стартовая оценка характеристик (формула, без LLM).
 - `lib/db/client.ts` — подключение без `server-only` (для скриптов и тестов); `lib/db/index.ts` — серверные `adminDb()` и `withUser()`.
 - `lib/db/schema.ts` — Drizzle-схема и RLS-политики (попадают в миграции). Миграции — `supabase/migrations/` (drizzle-kit с префиксом supabase); ручные SQL — через `drizzle-kit generate --custom`.
 - Доступ к данным:
@@ -63,7 +68,8 @@
 
 ## Прод
 - Supabase: проект `status`, ref `jfrkugrsfiehgxvtckyb`, регион ca-central-1, бесплатный тариф. URL `https://jfrkugrsfiehgxvtckyb.supabase.co`.
-- Vercel: проект `status-life-rpg` (команда ann-mikhailova, Hobby), деплой на каждый пуш в `main`. В env только `NEXT_PUBLIC_SUPABASE_URL` и `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; `DATABASE_URL` добавит владелица, когда серверу понадобится прямой доступ к БД (фаза 1).
+- Vercel: проект `status-life-rpg` (команда ann-mikhailova, Hobby), деплой на каждый пуш в `main`. Env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Production + Preview) и `DATABASE_URL` (только Production; Supabase transaction pooler, порт 6543; вписала владелица). Превью-деплои без `DATABASE_URL` не работают с данными.
+- `GET /api/health` — `{ ok, db }`: проверка, что прод видит базу.
 - Миграции в облако: Supabase CLI (`supabase link --project-ref jfrkugrsfiehgxvtckyb`, затем `supabase db push`) требует входа владелицы (`supabase login`, в отдельном окне PowerShell — CLI не работает без TTY). Пока CLI не подключён, миграции применяются вручную через SQL Editor и записываются в `supabase_migrations.schema_migrations` (применены все 4, до `engine_fields` включительно).
 - Облачный Supabase не выдаёт права на новые таблицы автоматически: каждую новую таблицу явно добавляй в миграцию с GRANT (см. `*_table_grants.sql`).
 
@@ -71,4 +77,6 @@
 - Подготовка: SPEC, план (`docs/PLAN.md`), эталон баланса.
 - Фаза 0 (закрыта 2026-11-26, вход на проде проверен владелицей): Next.js 16 + Tailwind 4, `lib/game` с тестами, схема БД со всеми таблицами, RLS и явными GRANT, тест RLS (95), auth, i18n, CI. Прод: https://status-life-rpg.vercel.app (Supabase Auth: Site URL и redirect URLs для прода, localhost и превью Vercel настроены).
 - Фаза 1a: игровой движок `replay()` (24 сценарных теста), системные сообщения ru/en, загрузка/запись в БД, `pnpm game:recompute` с `--verify`, интеграционный тест пересчёта (повтор и порядок строк не меняют результат).
-- Следующее: фаза 1b (онбординг, Status, Skills, Journal, ручной лог, системные сообщения в UI).
+- Фаза 1b: онбординг (8 шагов, спящие навыки с калькулятором часов, стартовые навыки по слотам, оценка + калибровка), экраны Статус / Навыки / Журнал / Записать, окно Системы с анимацией, ввод сна и самочувствия, предложения навыков, специализации (название вручную), раскрытие и калибровка после него, теги для навыков без тегов. Проверено вручную в браузере на тестовом пользователе. Lighthouse пока не мерили.
+- Отложено до 1c (нужен `ANTHROPIC_API_KEY`): разбор свободного текста в спящие навыки, оценка характеристик через LLM, варианты специализаций, теги для навыков из кандидатов.
+- Следующее: фаза 1c (вечерний чек-ин текстом + разбор LLM, карточки-черновики, `merge_with`, фикстура из SPEC 8).
