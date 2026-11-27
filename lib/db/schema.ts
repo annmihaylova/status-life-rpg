@@ -98,6 +98,8 @@ export const entrySourceEnum = pgEnum("entry_source", [
   "checkin",
   "manual",
   "timer",
+  /** часы и телефон через /api/ingest (фаза 3d) */
+  "device",
 ]);
 export const entryStatusEnum = pgEnum("entry_status", ["draft", "confirmed", "rejected"]);
 export const xpTargetEnum = pgEnum("xp_target", ["character", "skill", "candidate", "attribute"]);
@@ -326,6 +328,35 @@ export const skills = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("skills_user_idx").on(t.userId), ...ownRows("skills", t.userId)],
+).enableRLS();
+
+/**
+ * Замеры навыка по внешней шкале (фаза 3d): CEFR, Elo, тест Купера… Второй вид прогресса
+ * рядом с опытом: может понизиться, на XP не влияет (lib/game/measurements.ts).
+ */
+export const skillMeasurements = pgTable(
+  "skill_measurements",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: userId(),
+    skillId: uuid("skill_id")
+      .notNull()
+      .references(() => skills.id, { onDelete: "cascade" }),
+    scale: text("scale").notNull(),
+    /** число для сравнения: уровень CEFR как индекс, время — в секундах; у оценок — null */
+    valueNum: doublePrecision("value_num"),
+    valueText: text("value_text").notNull(),
+    /** единица своего показателя */
+    unit: text("unit"),
+    note: text("note"),
+    measuredOn: date("measured_on").notNull(),
+    source: text("source").notNull().default("manual"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("skill_measurements_skill_idx").on(t.skillId, t.measuredOn),
+    ...ownRows("skill_measurements", t.userId),
+  ],
 ).enableRLS();
 
 export const skillSpecializations = pgTable(
@@ -619,4 +650,5 @@ export const USER_TABLES = {
   push_subscriptions: pushSubscriptions,
   api_tokens: apiTokens,
   weekly_chronicles: weeklyChronicles,
+  skill_measurements: skillMeasurements,
 } as const;

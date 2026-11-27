@@ -64,6 +64,13 @@
       "when": 1795746737765,
       "tag": "20261127023217_push_cron",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795750141178,
+      "tag": "20261127032901_measurements_device",
+      "breakpoints": true
     }
   ]
 }

@@ -37,6 +37,7 @@ const OWNER_COL: Record<string, string> = {
   push_subscriptions: "user_id",
   api_tokens: "user_id",
   weekly_chronicles: "user_id",
+  skill_measurements: "user_id",
 };
 const READ_ONLY = new Set(["xp_events", "user_titles", "api_tokens"]);
 const REFERENCE = new Set(["attributes", "titles"]);
@@ -100,6 +101,7 @@ async function seedUser(u: string) {
   await sql`insert into calibrations (user_id, kind, points_total, expires_at) values (${u}, 'start', 5, now() + interval '7 days')`;
   await sql`insert into attribute_assessment (user_id, values, explanations) values (${u}, '{}', '{}')`;
   await sql`insert into skills (id, user_id, name) values (${skillId}, ${u}, 'Книжный червь')`;
+  await sql`insert into skill_measurements (user_id, skill_id, scale, value_num, value_text, measured_on) values (${u}, ${skillId}, 'elo', 1400, '1400', current_date)`;
   await sql`insert into skill_specializations (skill_id, user_id, milestone_level, name) values (${skillId}, ${u}, 10, 'Научные статьи')`;
   await sql`insert into skill_candidates (user_id, cluster_key) values (${u}, 'chess')`;
   await sql`insert into checkins (user_id, date, transcript) values (${u}, current_date, 'день')`;

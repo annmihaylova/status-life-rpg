@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
+import { SkillMeasurement } from "@/components/game/measurement";
 import { SkillActions, SkillTagPicker } from "@/components/game/skill-actions";
 import { Bar, Panel, cn } from "@/components/ui/primitives";
 import { GENERAL_KEYS, type AttributeKey, type GeneralKey } from "@/lib/game/attributes";
 import { GAME_CONFIG } from "@/lib/game/config";
 import { addDays } from "@/lib/game/dates";
 import { characterLevelFromXp, mainSlots, secondarySlots, skillLevelFromXp, skillRank } from "@/lib/game/formulas";
+import { withUser } from "@/lib/db";
+import { latestMeasurements } from "@/lib/server/game/measurements";
 import { getGameView } from "@/lib/server/game/queries";
 import { requireUserId } from "@/lib/server/session";
 import { formatHours, tagLabel } from "@/lib/ui/game";
@@ -20,6 +23,8 @@ export default async function SkillsPage({ searchParams }: PageProps<"/skills">)
     getTranslations("game"),
     getLocale(),
   ]);
+  const measured = await withUser(userId, (tx) => latestMeasurements(tx, userId));
+  const dateFmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
   const r = view.result;
   const level = characterLevelFromXp(r.character.totalXp).level;
   const unfolded = new Set(GENERAL_KEYS.filter((g) => r.attributes[g]?.state === "unfolded")) as Set<GeneralKey>;
@@ -96,6 +101,18 @@ export default async function SkillsPage({ searchParams }: PageProps<"/skills">)
           <p className="text-xs text-muted">{x.state.specializations.map((s) => s.name).join(" · ")}</p>
         )}
         {!x.row.primaryAttrKey && x.state.status !== "sleeping" && <SkillTagPicker skillId={x.row.id} />}
+        {x.state.status !== "archived" && (
+          <SkillMeasurement
+            skillId={x.row.id}
+            today={view.today}
+            latest={(() => {
+              const m = measured.get(x.row.id);
+              return m
+                ? { id: m.id, scale: m.scale, text: m.text, unit: m.unit, date: dateFmt.format(new Date(`${m.measuredOn}T00:00:00Z`)), note: m.note, trend: m.trend }
+                : null;
+            })()}
+          />
+        )}
         <SkillActions skillId={x.row.id} slot={x.state.slot} status={x.state.status} />
       </li>
     );
