@@ -453,6 +453,11 @@
       "outfit": "Outfit",
       "extras": "Details"
     },
+    "look": "Character",
+    "looks": {
+      "feminine": "Girl",
+      "masculine": "Guy"
+    },
     "skin": "Skin tone",
     "expression": "Expression",
     "expressions": {

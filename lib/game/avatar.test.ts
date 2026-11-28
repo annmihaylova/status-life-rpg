@@ -18,6 +18,12 @@ describe("внешность персонажа", () => {
     expect(a.outfit).toBe(DEFAULT_AVATAR.outfit);
   });
 
+  it("девушка или парень: старые конфиги без поля — девушка, мусор сбрасывается", () => {
+    expect(parseAvatar({ hairStyle: "short" }).look).toBe("feminine");
+    expect(parseAvatar({ look: "masculine", hairStyle: "sidepart" })).toMatchObject({ look: "masculine", hairStyle: "sidepart" });
+    expect(parseAvatar({ look: "robot" }).look).toBe("feminine");
+  });
+
   it("цвета: затемнение, осветление и яркость", () => {
     expect(shade("#808080", -0.5)).toBe("#404040");
     expect(shade("#000000", 1)).toBe("#ffffff");

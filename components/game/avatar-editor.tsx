@@ -11,6 +11,7 @@ import {
   EYE_SHAPES,
   HAIR_COLORS,
   HAIR_STYLES,
+  LOOKS,
   OUTFIT_COLORS,
   OUTFITS,
   SKIN_TONES,
@@ -64,6 +65,13 @@ export function AvatarEditor({ value, onChange }: { value: AvatarConfig; onChang
       <div role="tabpanel" className="space-y-4">
         {tab === "face" && (
           <>
+            <Options
+              label={t("look")}
+              items={LOOKS}
+              value={value.look}
+              render={(k) => t(`looks.${k}`)}
+              onPick={(v) => set("look", v)}
+            />
             <Swatches label={t("skin")} colors={SKIN_TONES} value={value.skin} onPick={(v) => set("skin", v)} />
             <Options
               label={t("expression")}
