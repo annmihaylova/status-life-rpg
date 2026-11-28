@@ -3,7 +3,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { withUser } from "@/lib/db";
+import { adminDb, withUser } from "@/lib/db";
 import {
   attributeAssessment,
   characters,
@@ -29,6 +29,7 @@ import { getLocale } from "next-intl/server";
 import { mutateAndRecompute, type MutationResult } from "@/lib/server/game/mutate";
 import { LlmError } from "@/lib/server/llm/checkin";
 import { suggestSleepingSkillsWithLlm, type SleepingSuggestion } from "@/lib/server/llm/sleeping";
+import { takeLlmSlot } from "@/lib/server/rate-limit";
 import { requireUserId } from "@/lib/server/session";
 
 const part = z.enum(PART_KEYS);
@@ -254,9 +255,11 @@ const storySchema = z.string().trim().min(5).max(2000);
 export async function suggestSleepingSkills(
   text: string,
 ): Promise<{ suggestions?: SleepingSuggestion[]; error?: string }> {
-  await requireUserId();
+  const userId = await requireUserId();
   const v = storySchema.safeParse(text);
   if (!v.success) return { error: "checkin_too_short" };
+  const limited = await takeLlmSlot(adminDb(), userId);
+  if (limited) return { error: limited };
   try {
     return { suggestions: await suggestSleepingSkillsWithLlm(v.data) };
   } catch (e) {

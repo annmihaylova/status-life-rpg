@@ -6,7 +6,7 @@ import { randomUUID } from "node:crypto";
 import { exportJWK, generateKeyPair, createLocalJWKSet, SignJWT } from "jose";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createDb } from "@/lib/db/client";
-import { takeMcpSlot } from "@/lib/server/mcp/rate-limit";
+import { takeSlot } from "@/lib/server/rate-limit";
 import { grantOAuthClient, oauthTokenKey, type OAuthConfig } from "@/lib/server/mcp/oauth";
 import { handleMcpRequest } from "@/lib/server/mcp/server";
 import { generateToken, hashToken } from "@/lib/server/mcp/tokens";
@@ -307,7 +307,7 @@ describe("MCP: лимит запросов", () => {
     const U = randomUUID();
     await user(U);
     const results = [];
-    for (let i = 0; i < 4; i++) results.push(await takeMcpSlot(db, U, 3));
+    for (let i = 0; i < 4; i++) results.push((await takeSlot(db, U, "mcp", 3)).ok);
     expect(results).toEqual([true, true, true, false]);
     await sql`delete from auth.users where id = ${U}`;
   });

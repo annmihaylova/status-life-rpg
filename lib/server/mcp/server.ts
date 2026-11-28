@@ -6,7 +6,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { z } from "zod";
 import type { Db } from "@/lib/db/client";
-import { takeMcpSlot } from "./rate-limit";
+import { takeSlot, tooManyRequests } from "@/lib/server/rate-limit";
 import {
   defaultOAuthConfig,
   looksLikeJwt,
@@ -228,11 +228,9 @@ export async function handleMcpRequest(
   const owner = await authenticate(db, token, source, opts.oauth ?? defaultOAuthConfig);
   if (!owner) return unauthorized(req, "Invalid, expired or revoked token");
 
-  if (req.method === "POST" && !(await takeMcpSlot(db, owner.userId))) {
-    return new Response(JSON.stringify({ error: "rate_limited", message: "Too many calls: 60 per minute" }), {
-      status: 429,
-      headers: { "content-type": "application/json", "retry-after": "60" },
-    });
+  if (req.method === "POST") {
+    const slot = await takeSlot(db, owner.userId, "mcp");
+    if (!slot.ok) return tooManyRequests(slot.retryAfter, "en");
   }
 
   const server = buildMcpServer({ db, userId: owner.userId, tokenId: owner.tokenId, source });

@@ -598,14 +598,20 @@ export const weeklyChronicles = pgTable(
 ).enableRLS();
 
 /**
- * Счётчик вызовов MCP для лимита «N в минуту на пользователя» (SPEC 7.5).
+ * Счётчики лимитов запросов (SPEC 11, фаза 5b): одна строка на пользователя и «корзину»
+ * (mcp, ingest, llm, export, game…), фиксированное окно. Правила — lib/server/rate-limit.ts.
  * Служебная: RLS включена без политик и без прав — доступ только у сервера.
  */
-export const mcpRate = pgTable("mcp_rate", {
-  userId: userId().primaryKey(),
-  windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
-  count: integer("count").notNull().default(0),
-}).enableRLS();
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    userId: userId(),
+    bucket: text("bucket").notNull(),
+    windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+    count: integer("count").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.bucket] })],
+).enableRLS();
 
 /**
  * Служебные секреты, которые сервер создаёт сам (ключи VAPID для web push).

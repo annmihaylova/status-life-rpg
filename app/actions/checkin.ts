@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq, gte, inArray, ne, sql } from "drizzle-orm";
+import { and, eq, inArray, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { adminDb, withUser } from "@/lib/db";
@@ -22,6 +22,7 @@ import { mutateAndRecompute } from "@/lib/server/game/mutate";
 import { recomputeUser } from "@/lib/server/game/recompute";
 import { LlmError, parseCheckinWithLlm } from "@/lib/server/llm/checkin";
 import { LLM_CONFIG } from "@/lib/server/llm/config";
+import { takeLlmSlot } from "@/lib/server/rate-limit";
 import { requireUserId } from "@/lib/server/session";
 import type { ActionResult } from "./game";
 
@@ -41,18 +42,12 @@ export async function submitCheckin(
   const parsedInput = submitSchema.safeParse(input);
   if (!parsedInput.success) return { error: "checkin_too_short" };
   const v = parsedInput.data;
+  // лимит вызовов Claude: в минуту и в месяц (lib/server/rate-limit.ts)
+  const limited = await takeLlmSlot(adminDb(), userId);
+  if (limited) return { error: limited };
 
-  // контекст, лимит и запись отчёта — от имени пользователя (RLS)
+  // контекст и запись отчёта — от имени пользователя (RLS)
   const prep = await withUser(userId, async (tx) => {
-    const monthStart = new Date();
-    monthStart.setUTCDate(1);
-    monthStart.setUTCHours(0, 0, 0, 0);
-    const [{ n }] = await tx
-      .select({ n: sql<number>`count(*)::int` })
-      .from(checkins)
-      .where(and(eq(checkins.userId, userId), gte(checkins.createdAt, monthStart)));
-    if (n >= LLM_CONFIG.monthlyCallsPerUser) return { error: "llm_limit" as const };
-
     const [p] = await tx.select({ tz: profiles.timezone }).from(profiles).where(eq(profiles.id, userId));
     const today = localDate(new Date(), p?.tz || "UTC");
     const date = v.day === "today" ? today : addDays(today, -1);
@@ -110,7 +105,6 @@ export async function submitCheckin(
       .returning({ id: checkins.id });
     return { ctx, skillRefs, entryRefs, checkinId: row.id, date };
   });
-  if ("error" in prep) return { error: prep.error };
 
   let raw;
   try {

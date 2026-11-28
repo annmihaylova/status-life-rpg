@@ -10,6 +10,7 @@ import { eventToMessage, xpMessage, type MessageTone } from "@/lib/game/messages
 import { className, titleName } from "@/lib/game/progression";
 import { loadEngineInput } from "./load";
 import { recomputeUser } from "./recompute";
+import { takeSlot } from "@/lib/server/rate-limit";
 
 /** Готовая к показу строка «окна Системы». */
 export interface UiSystemMessage {
@@ -35,6 +36,7 @@ export async function mutateAndRecompute(
   mutation: (tx: Tx) => Promise<void>,
 ): Promise<MutationResult> {
   const db = adminDb();
+  if (!(await takeSlot(db, userId, "game")).ok) return { messages: [], error: "rate_limited" };
   const before = replay((await loadEngineInput(db, userId, new Date())).input);
   await withUser(userId, mutation);
   const { result: after } = await recomputeUser(db, userId);

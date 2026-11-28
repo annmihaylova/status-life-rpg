@@ -194,7 +194,8 @@
       "measurement_bad_value": "The value does not fit the scale. For example: B2, 1450, 24:10.",
       "measurement_skill_not_found": "Skill not found.",
       "measurement_future_date": "The date cannot be in the future.",
-      "delete_confirm": "Type the word “delete” to confirm."
+      "delete_confirm": "Type the word “delete” to confirm.",
+      "rate_limited": "Too many requests in a row. Wait a bit and try again."
     }
   },
   "onboarding": {
@@ -592,7 +593,8 @@
       "deleteType": "To confirm, type the word “delete”",
       "deleteForever": "Delete forever",
       "deleting": "Deleting…",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "exporting": "Preparing the archive…"
     }
   },
   "oauth": {

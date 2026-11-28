@@ -138,6 +138,8 @@ export function AccountPanel() {
   const t = useTranslations("settings.account");
   const tc = useTranslations("common");
   const [open, setOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
   const [word, setWord] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -146,14 +148,40 @@ export function AccountPanel() {
     <div className="space-y-4 text-sm">
       <div className="space-y-2">
         <p className="text-muted">{t("exportHint")}</p>
-        {/* обычная ссылка: браузер сам скачает файл из ответа с content-disposition */}
-        <a
-          href="/api/export"
-          download
-          className="inline-flex min-h-10 items-center rounded-xl border border-panel-border px-4 hover:border-accent"
+        <Button
+          variant="outline"
+          disabled={downloading}
+          onClick={async () => {
+            setExportError(null);
+            setDownloading(true);
+            try {
+              const res = await fetch("/api/export");
+              if (!res.ok) {
+                setExportError(tc(res.status === 429 ? "errors.rate_limited" : "errors.generic"));
+                return;
+              }
+              // имя файла — из content-disposition
+              const name = /filename="([^"]+)"/.exec(res.headers.get("content-disposition") ?? "")?.[1] ?? "status-export.zip";
+              const url = URL.createObjectURL(await res.blob());
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = name;
+              a.click();
+              URL.revokeObjectURL(url);
+            } catch {
+              setExportError(tc("errors.generic"));
+            } finally {
+              setDownloading(false);
+            }
+          }}
         >
-          {t("export")}
-        </a>
+          {downloading ? t("exporting") : t("export")}
+        </Button>
+        {exportError && (
+          <p role="alert" className="text-hp">
+            {exportError}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2 border-t border-panel-border pt-4">

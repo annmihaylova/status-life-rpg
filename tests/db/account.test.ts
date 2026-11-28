@@ -15,7 +15,7 @@ const sql = (db as unknown as { $client: import("postgres").Sql }).$client;
 const A = randomUUID();
 const B = randomUUID();
 /** служебные таблицы без пользовательского содержимого */
-const SYSTEM = new Set(["mcp_rate"]);
+const SYSTEM = new Set(["rate_limits"]);
 
 async function seed(id: string, label: string) {
   await sql`insert into auth.users (id, instance_id, aud, role, email, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
@@ -28,7 +28,7 @@ async function seed(id: string, label: string) {
   await sql`insert into game_decisions (user_id, kind, payload) values (${id}, 'take_skill', '{}')`;
   await sql`insert into api_tokens (user_id, token_hash, label) values (${id}, ${`hash-${id}`}, 'Claude')`;
   await sql`insert into push_subscriptions (user_id, endpoint, keys) values (${id}, ${`https://push.test/${id}`}, '{"p256dh":"x","auth":"y"}')`;
-  await sql`insert into mcp_rate (user_id, window_start, count) values (${id}, now(), 1)`;
+  await sql`insert into rate_limits (user_id, bucket, window_start, count) values (${id}, 'mcp', now(), 1)`;
 }
 
 async function countRows(userId: string): Promise<Record<string, number>> {
@@ -37,8 +37,8 @@ async function countRows(userId: string): Promise<Record<string, number>> {
     const [r] = await sql`select count(*)::int as n from ${sql(table)} where ${sql(owner)} = ${userId}`;
     out[table] = r.n;
   }
-  const [m] = await sql`select count(*)::int as n from mcp_rate where user_id = ${userId}`;
-  out.mcp_rate = m.n;
+  const [m] = await sql`select count(*)::int as n from rate_limits where user_id = ${userId}`;
+  out.rate_limits = m.n;
   return out;
 }
 

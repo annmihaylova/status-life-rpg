@@ -10,7 +10,7 @@ import { hpDays, profiles, skills } from "@/lib/db/schema";
 import { localDate } from "@/lib/game/dates";
 import { parseIngestBody, planIngest } from "@/lib/devices/ingest";
 import { recomputeUser } from "@/lib/server/game/recompute";
-import { takeMcpSlot } from "@/lib/server/mcp/rate-limit";
+import { takeSlot, tooManyRequests } from "@/lib/server/rate-limit";
 import { logActivities } from "@/lib/server/mcp/tools";
 import { tokenFromHeaders, verifyToken } from "@/lib/server/mcp/tokens";
 
@@ -20,7 +20,8 @@ export async function handleIngest(db: Db, req: Request): Promise<Response> {
   const token = tokenFromHeaders(req.headers);
   const owner = token ? await verifyToken(db, token) : null;
   if (!owner) return json({ error: "unauthorized", message: "Send Authorization: Bearer sts_… (Status → Settings → Devices)" }, 401);
-  if (!(await takeMcpSlot(db, owner.userId))) return json({ error: "rate_limited" }, 429);
+  const slot = await takeSlot(db, owner.userId, "ingest");
+  if (!slot.ok) return tooManyRequests(slot.retryAfter);
 
   let body: unknown;
   try {
