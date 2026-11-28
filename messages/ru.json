@@ -453,11 +453,6 @@
       "outfit": "Одежда",
       "extras": "Детали"
     },
-    "look": "Персонаж",
-    "looks": {
-      "feminine": "Девушка",
-      "masculine": "Парень"
-    },
     "skin": "Тон кожи",
     "expression": "Выражение",
     "expressions": {

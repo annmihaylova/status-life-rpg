@@ -16,9 +16,7 @@ export const OUTFIT_COLORS = [
 ] as const;
 export const AURA_COLORS = ["#8b93ff", "#ff9b5c", "#6fb4ff", "#c38bff", "#5fcdb4", "#ffd46b", "#ff5c7a", "#e8e8f2"] as const;
 
-/** Девушка или парень: форма лица, брови, шея и плечи. */
-export const LOOKS = ["feminine", "masculine"] as const;
-export const HAIR_STYLES =["short", "bob", "long", "ponytail", "bun", "curly", "buzz", "sidepart", "bald"] as const;
+export const HAIR_STYLES = ["short", "bob", "long", "ponytail", "bun", "curly", "buzz", "sidepart", "bald"] as const;
 export const EYE_SHAPES = ["round", "almond"] as const;
 export const EXPRESSIONS = ["smile", "calm", "grin"] as const;
 export const OUTFITS = ["tee", "hoodie", "shirt", "sweater", "jacket", "dress", "labcoat", "sport"] as const;
@@ -53,8 +51,6 @@ export function baseModelUrl(key: BaseModelKey): string {
 }
 
 export const avatarSchema = z.object({
-  /** старые конфиги без поля — девушка (так они и выглядели) */
-  look: z.enum(LOOKS).default("feminine"),
   skin: hex,
   hairStyle: z.enum(HAIR_STYLES),
   hairColor: hex,
@@ -72,7 +68,6 @@ export const avatarSchema = z.object({
 export type AvatarConfig = z.infer<typeof avatarSchema>;
 
 export const DEFAULT_AVATAR: AvatarConfig = {
-  look: "feminine",
   skin: SKIN_TONES[1],
   hairStyle: "bob",
   hairColor: HAIR_COLORS[1],

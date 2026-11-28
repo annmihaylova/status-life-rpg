@@ -5,26 +5,8 @@
 import { useId } from "react";
 import { isLight, shade, type AvatarConfig } from "@/lib/game/avatar";
 
-/** Девушка и парень отличаются формой лица, бровями, шеей и шириной плеч; остальное общее. */
-const SHAPES = {
-  feminine: {
-    face: "M70,82 C70,52 130,52 130,82 L130,98 C130,120 113,134 100,134 C87,134 70,120 70,98 Z",
-    chin: "M74,112 C80,128 92,134 100,134 C108,134 120,128 126,112 C118,124 108,128 100,128 C92,128 82,124 74,112 Z",
-    neck: "M89,122 L111,122 L113,152 C106,158 94,158 87,152 Z",
-    body: "M34,200 C34,164 62,148 100,148 C138,148 166,164 166,200 Z",
-    brows: ["M78,85 Q86,80 94,85", "M106,85 Q114,80 122,85"],
-    browWidth: 2.6,
-  },
-  // парень: лицо чуть длиннее, мягкие углы челюсти; брови гуще и прямее; шея и плечи шире
-  masculine: {
-    face: "M70,82 C70,52 130,52 130,82 L130,102 C130,114 124,124 114,131 C109,135 104,137 100,137 C96,137 91,135 86,131 C76,124 70,114 70,102 Z",
-    chin: "M74,116 C80,129 92,137 100,137 C108,137 120,129 126,116 C118,127 108,132 100,132 C92,132 82,127 74,116 Z",
-    neck: "M86,122 L114,122 L116,152 C108,158 92,158 84,152 Z",
-    body: "M26,200 C26,162 58,146 100,146 C142,146 174,162 174,200 Z",
-    brows: ["M77,86 Q86,82.5 95,84.5", "M105,84.5 Q114,82.5 123,86"],
-    browWidth: 3.4,
-  },
-} as const;
+const FACE = "M70,82 C70,52 130,52 130,82 L130,98 C130,120 113,134 100,134 C87,134 70,120 70,98 Z";
+const BODY = "M34,200 C34,164 62,148 100,148 C138,148 166,164 166,200 Z";
 
 export function Avatar({
   config: c,
@@ -45,7 +27,6 @@ export function Avatar({
   const cloth = c.outfitColor;
   const clothDark = shade(cloth, -0.25);
   const detail = isLight(cloth) ? "#2b2d42" : "#f2f2f5";
-  const s = SHAPES[c.look];
 
   return (
     <svg
@@ -85,19 +66,34 @@ export function Avatar({
           <HairBack style={c.hairStyle} fill={`url(#hair${uid})`} />
 
           {/* шея и тело */}
-          <path d={s.neck} fill={skinShade} />
-          <Outfit kind={c.outfit} body={s.body} fill={`url(#cloth${uid})`} dark={clothDark} detail={detail} />
+          <path d="M89,122 L111,122 L113,152 C106,158 94,158 87,152 Z" fill={skinShade} />
+          <Outfit kind={c.outfit} fill={`url(#cloth${uid})`} dark={clothDark} detail={detail} />
 
           {/* голова */}
           <ellipse cx="69" cy="98" rx="6" ry="9" fill={skinShade} />
           <ellipse cx="131" cy="98" rx="6" ry="9" fill={skinShade} />
-          <path d={s.face} fill={c.skin} />
-          <path d={s.chin} fill={skinShade} opacity="0.35" />
+          <path d={FACE} fill={c.skin} />
+          <path
+            d="M74,112 C80,128 92,134 100,134 C108,134 120,128 126,112 C118,124 108,128 100,128 C92,128 82,124 74,112 Z"
+            fill={skinShade}
+            opacity="0.35"
+          />
 
-          <Eyes shape={c.eyeShape} color={c.eyeColor} masculine={c.look === "masculine"} />
-          {s.brows.map((d) => (
-            <path key={d} d={d} stroke={hairDark} strokeWidth={s.browWidth} fill="none" strokeLinecap="round" />
-          ))}
+          <Eyes shape={c.eyeShape} color={c.eyeColor} />
+          <path
+            d="M78,85 Q86,80 94,85"
+            stroke={hairDark}
+            strokeWidth="2.6"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <path
+            d="M106,85 Q114,80 122,85"
+            stroke={hairDark}
+            strokeWidth="2.6"
+            fill="none"
+            strokeLinecap="round"
+          />
           <path
             d="M100,103 Q103,110 99,113"
             stroke={shade(c.skin, -0.3)}
@@ -185,11 +181,9 @@ export function Avatar({
   );
 }
 
-function Eyes({ shape, color, masculine }: { shape: AvatarConfig["eyeShape"]; color: string; masculine: boolean }) {
-  const ry = (shape === "round" ? 8 : 6) - (masculine ? 0.8 : 0);
+function Eyes({ shape, color }: { shape: AvatarConfig["eyeShape"]; color: string }) {
+  const ry = shape === "round" ? 8 : 6;
   const rx = shape === "round" ? 7 : 8;
-  // у парня линия века прямее
-  const arch = masculine ? 1.5 : 3;
   return (
     <g>
       {[86, 114].map((x) => (
@@ -200,7 +194,7 @@ function Eyes({ shape, color, masculine }: { shape: AvatarConfig["eyeShape"]; co
           <circle cx={x + 2} cy={96} r="1.7" fill="#fff" />
           <circle cx={x - 2} cy={101} r="0.9" fill="#fff" opacity="0.8" />
           <path
-            d={`M${x - rx - 1},${98 - ry + 3} Q${x},${98 - ry - arch} ${x + rx + 1},${98 - ry + 3}`}
+            d={`M${x - rx - 1},${98 - ry + 3} Q${x},${98 - ry - 3} ${x + rx + 1},${98 - ry + 3}`}
             stroke="#1b1a1f"
             strokeWidth="2.4"
             fill="none"
@@ -364,14 +358,11 @@ function HairFront({
 
 function Outfit({
   kind,
-  body: BODY,
   fill,
   dark,
   detail,
 }: {
   kind: AvatarConfig["outfit"];
-  /** силуэт плеч: у парня шире */
-  body: string;
   fill: string;
   dark: string;
   detail: string;
