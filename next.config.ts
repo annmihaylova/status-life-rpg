@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // базовые 3D-модели (~9 МБ) не меняются: при смене файла меняем имя
+        source: "/models/:file*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
         source: "/sw.js",
         headers: [
           { key: "Content-Type", value: "application/javascript; charset=utf-8" },
