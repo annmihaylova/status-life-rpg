@@ -192,12 +192,7 @@
       "bad_reminder": "Check the time and time zone.",
       "measurement_bad_value": "The value does not fit the scale. For example: B2, 1450, 24:10.",
       "measurement_skill_not_found": "Skill not found.",
-      "measurement_future_date": "The date cannot be in the future.",
-      "model_not_found": "Your model was not found: upload it again.",
-      "vrm_too_big": "The file is over 30 MB. Reduce texture size when exporting from VRoid Studio.",
-      "vrm_not_glb": "This is not a model file. You need a .vrm from VRoid Studio.",
-      "vrm_not_vrm": "This is a 3D model but not VRM. Export it from VRoid Studio as VRM.",
-      "vrm_upload_failed": "Could not upload the file. Check the connection and try again."
+      "measurement_future_date": "The date cannot be in the future."
     }
   },
   "onboarding": {
@@ -507,8 +502,7 @@
   "character": {
     "title": "Character",
     "name": "Game name",
-    "save": "Save",
-    "looks": "Appearance"
+    "save": "Save"
   },
   "checkin": {
     "title": "Report to the System",
@@ -841,30 +835,5 @@
     "androidTitle": "Android",
     "android": "A web app cannot read Health Connect. Until the native app, you can send the same requests from an automation app (for example HTTP Shortcuts or Tasker): same address, header and body.",
     "showStep": "Show Result (while testing): Status replies with what it accepted. Once everything works you can delete this step."
-  },
-  "model3d": {
-    "mode2d": "2D portrait",
-    "custom": "3D: my character",
-    "viewer": "3D character",
-    "rotateHint": "Drag to rotate",
-    "loadFailed": "The model did not load. Check the connection or pick another one.",
-    "baseNote": "Ready-made VRoid models (pixiv), shown as is. You can make your own character in the free VRoid Studio and upload it below.",
-    "ownTitle": "Your own character from VRoid Studio",
-    "howTo": "How to make one",
-    "steps": [
-      "Download the free VRoid Studio from vroid.com/studio (Windows or Mac) and create a model: face, eyes, hair, clothes. You can start from a ready-made preset.",
-      "Click Export → Export as VRM. If the file is larger than 30 MB, reduce the texture size in the export settings (for example to 1024).",
-      "Click Upload .vrm below and choose the file. Only you can see the model."
-    ],
-    "upload": "Upload .vrm",
-    "replace": "Replace model",
-    "delete": "Delete my model",
-    "deleteConfirm": "Delete your model? Your appearance goes back to the 2D portrait.",
-    "uploading": "Uploading…",
-    "uploaded": "Done: \"{title}\" is now your character.",
-    "look": {
-      "masculine": "3D: male {n}",
-      "feminine": "3D: female {n}"
-    }
   }
 }

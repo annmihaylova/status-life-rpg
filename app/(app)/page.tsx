@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
-import { Portrait } from "@/components/game/portrait";
+import { Avatar } from "@/components/game/avatar";
 import {
   SkillOfferCard,
   SpecializationCard,
@@ -21,7 +21,6 @@ import {
   xpToNextPoint,
 } from "@/lib/game/formulas";
 import { parseAvatar } from "@/lib/game/avatar";
-import { modelUrlFor } from "@/lib/server/avatar";
 import { className, titleName } from "@/lib/game/progression";
 import { getGameView } from "@/lib/server/game/queries";
 import { requireUserId } from "@/lib/server/session";
@@ -71,8 +70,6 @@ export default async function StatusPage() {
   const wellbeing = view.input.wellbeing[view.today];
   const u = GAME_CONFIG.attributes.unfold;
   const loc = locale === "en" ? "en" : "ru";
-  const avatar = parseAvatar(view.character.avatarConfig);
-  const modelUrl = await modelUrlFor(userId, avatar.model3d);
   const level = lp.level;
 
   return (
@@ -80,7 +77,7 @@ export default async function StatusPage() {
       <Panel>
         <div className="flex items-center gap-4">
           <Link href="/character" aria-label={t("editCharacter")} className="shrink-0 rounded-[22%] focus-visible:outline-2 focus-visible:outline-accent">
-            <Portrait config={avatar} modelUrl={modelUrl} size={88} label={t("portrait")} />
+            <Avatar config={parseAvatar(view.character.avatarConfig)} size={88} label={t("portrait")} />
           </Link>
           <div className="min-w-0 flex-1 space-y-1">
             <h1 className="truncate text-lg font-semibold">{view.character.gameName || t("noName")}</h1>

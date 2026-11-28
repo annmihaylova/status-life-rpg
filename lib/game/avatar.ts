@@ -24,32 +24,6 @@ export const ACCESSORIES = ["glasses_round", "glasses_square", "earrings", "head
 
 const hex = z.string().regex(/^#[0-9a-f]{6}$/i);
 
-/**
- * 3D-модели (фаза 4). Базовые — VRoidPreset A–C (лицензии: assets/avatars/LICENSES.md),
- * показываются как есть. Своя — .vrm из VRoid Studio, лежит в Storage (фаза 4b).
- */
-export const BASE_MODEL_KEYS = ["a", "b", "c", "z"] as const;
-export type BaseModelKey = (typeof BASE_MODEL_KEYS)[number];
-export const BASE_MODELS: readonly { key: BaseModelKey; url: string; look: "feminine" | "masculine" }[] = [
-  { key: "a", url: "/models/avatar-sample-a.vrm", look: "feminine" },
-  { key: "b", url: "/models/avatar-sample-b.vrm", look: "feminine" },
-  { key: "c", url: "/models/avatar-sample-c.vrm", look: "masculine" },
-  { key: "z", url: "/models/avatar-sample-z.vrm", look: "masculine" },
-];
-
-export const model3dSchema = z
-  .discriminatedUnion("source", [
-    z.object({ source: z.literal("base"), key: z.enum(BASE_MODEL_KEYS) }),
-    // путь в бакете vrm-user: <userId>/<версия>.vrm
-    z.object({ source: z.literal("custom"), path: z.string().regex(/^[0-9a-f-]{36}\/[0-9a-z-]{1,40}\.vrm$/) }),
-  ])
-  .nullable();
-export type Model3d = z.infer<typeof model3dSchema>;
-
-export function baseModelUrl(key: BaseModelKey): string {
-  return BASE_MODELS.find((m) => m.key === key)!.url;
-}
-
 export const avatarSchema = z.object({
   skin: hex,
   hairStyle: z.enum(HAIR_STYLES),
@@ -61,8 +35,6 @@ export const avatarSchema = z.object({
   outfitColor: hex,
   accessories: z.array(z.enum(ACCESSORIES)).max(4),
   aura: hex,
-  /** null — 2D-портрет */
-  model3d: model3dSchema.default(null),
 });
 
 export type AvatarConfig = z.infer<typeof avatarSchema>;
@@ -78,17 +50,13 @@ export const DEFAULT_AVATAR: AvatarConfig = {
   outfitColor: OUTFIT_COLORS[2],
   accessories: [],
   aura: AURA_COLORS[0],
-  model3d: null,
 };
 
 /** Сохранённая конфигурация или значения по умолчанию (старые/битые данные не ломают экран). */
 export function parseAvatar(raw: unknown): AvatarConfig {
   const merged = { ...DEFAULT_AVATAR, ...(typeof raw === "object" && raw ? raw : {}) };
   const r = avatarSchema.safeParse(merged);
-  if (r.success) return r.data;
-  // битая 3D-ссылка не должна сбрасывать 2D-внешность
-  const without = avatarSchema.safeParse({ ...merged, model3d: null });
-  return without.success ? without.data : DEFAULT_AVATAR;
+  return r.success ? r.data : DEFAULT_AVATAR;
 }
 
 /** Затемнить/осветлить цвет: amount от -1 до 1. */
