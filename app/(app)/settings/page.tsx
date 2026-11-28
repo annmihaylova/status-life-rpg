@@ -7,7 +7,7 @@ import { apiTokens, notificationSettings, profiles, pushSubscriptions, userSetti
 import { requireUserId } from "@/lib/server/session";
 import { DevicesPanel } from "./devices";
 import { ReminderSettings } from "./reminders";
-import { AiSettings, LocaleSwitch, TokenManager } from "./settings-client";
+import { AccountPanel, AiSettings, LocaleSwitch, TokenManager } from "./settings-client";
 
 export default async function SettingsPage() {
   const userId = await requireUserId();
@@ -87,6 +87,10 @@ export default async function SettingsPage() {
 
       <Panel title={t("language")}>
         <LocaleSwitch locale={locale} />
+      </Panel>
+
+      <Panel title={t("account.title")}>
+        <AccountPanel />
       </Panel>
     </>
   );

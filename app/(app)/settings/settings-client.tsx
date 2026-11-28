@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
+import { deleteAccount } from "@/app/actions/account";
 import { createApiToken, revokeApiToken, setAutoConfirmAi, setLocale } from "@/app/actions/settings";
 import { Button, Chip } from "@/components/ui/primitives";
 
@@ -128,6 +129,76 @@ export function AiSettings({ autoConfirm }: { autoConfirm: boolean }) {
         </Chip>
       </div>
       <p className="text-xs text-muted">{t("autoHint")}</p>
+    </div>
+  );
+}
+
+/** Мои данные: скачать архив и удалить аккаунт (SPEC 11). */
+export function AccountPanel() {
+  const t = useTranslations("settings.account");
+  const tc = useTranslations("common");
+  const [open, setOpen] = useState(false);
+  const [word, setWord] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+
+  return (
+    <div className="space-y-4 text-sm">
+      <div className="space-y-2">
+        <p className="text-muted">{t("exportHint")}</p>
+        {/* обычная ссылка: браузер сам скачает файл из ответа с content-disposition */}
+        <a
+          href="/api/export"
+          download
+          className="inline-flex min-h-10 items-center rounded-xl border border-panel-border px-4 hover:border-accent"
+        >
+          {t("export")}
+        </a>
+      </div>
+
+      <div className="space-y-2 border-t border-panel-border pt-4">
+        {!open ? (
+          <Button variant="danger" onClick={() => setOpen(true)}>
+            {t("delete")}
+          </Button>
+        ) : (
+          <form
+            className="space-y-3 rounded-xl border border-hp/50 bg-hp/5 p-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              start(async () => {
+                setError(null);
+                const r = await deleteAccount(word);
+                if (r?.error) setError(tc(`errors.${r.error}`));
+              });
+            }}
+          >
+            <p>{t("deleteWarning")}</p>
+            <label className="block space-y-1">
+              <span className="text-xs text-muted">{t("deleteType")}</span>
+              <input
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+                autoComplete="off"
+                className="w-full rounded-xl border border-panel-border bg-black/30 px-3 py-2 outline-none focus:border-hp"
+              />
+            </label>
+            {error && (
+              <p role="alert" className="text-hp">
+                {error}
+              </p>
+            )}
+            <div className="flex gap-2">
+              <Button type="submit" variant="danger" disabled={pending || !word.trim()}>
+                {pending ? t("deleting") : t("deleteForever")}
+              </Button>
+              <Button type="button" variant="outline" disabled={pending} onClick={() => (setOpen(false), setWord(""), setError(null))}>
+                {t("cancel")}
+              </Button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

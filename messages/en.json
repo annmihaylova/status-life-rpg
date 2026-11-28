@@ -26,7 +26,8 @@
       "notAuthorized": "the System cannot email this address yet: access is invite-only for now. Ask for an invite.",
       "tooOften": "an email was sent recently. Wait a minute and try again.",
       "invalidCode": "the code is wrong or expired. Request a new email."
-    }
+    },
+    "accountDeleted": "Your account and all data have been deleted."
   },
   "system": {
     "xpGained": "[System] Experience gained: {amount}",
@@ -192,7 +193,8 @@
       "bad_reminder": "Check the time and time zone.",
       "measurement_bad_value": "The value does not fit the scale. For example: B2, 1450, 24:10.",
       "measurement_skill_not_found": "Skill not found.",
-      "measurement_future_date": "The date cannot be in the future."
+      "measurement_future_date": "The date cannot be in the future.",
+      "delete_confirm": "Type the word “delete” to confirm."
     }
   },
   "onboarding": {
@@ -580,7 +582,18 @@
     "autoHint": "By default entries from Claude arrive as drafts and wait for your confirmation in the Journal.",
     "language": "Language",
     "reminders": "Check-in reminder",
-    "devices": "Watch and phone"
+    "devices": "Watch and phone",
+    "account": {
+      "title": "My data",
+      "exportHint": "All your data in one archive: JSON with every table plus CSV tables (journal, skills, wellbeing) that open in Excel and Google Sheets.",
+      "export": "Download my data",
+      "delete": "Delete account",
+      "deleteWarning": "Your account and all data will be deleted for good: entries, skills, character, reports, connected AIs. This can't be undone. You can download the archive first.",
+      "deleteType": "To confirm, type the word “delete”",
+      "deleteForever": "Delete forever",
+      "deleting": "Deleting…",
+      "cancel": "Cancel"
+    }
   },
   "oauth": {
     "title": "[System] Access request",
@@ -599,7 +612,7 @@
   },
   "privacy": {
     "title": "Privacy policy",
-    "updated": "Updated November 26, 2026",
+    "updated": "Updated November 27, 2026",
     "back": "← Home",
     "link": "Privacy",
     "sections": [
@@ -629,7 +642,7 @@
       },
       {
         "h": "Deletion",
-        "p": "You can revoke AI assistant tokens in Settings. To delete your account and all data, email the support address shown on the Google sign-in screen; we delete it within 30 days."
+        "p": "You can download all your data (JSON and CSV) and delete your account in Settings → My data. Deletion immediately and permanently erases the account and all data. AI assistant tokens can be revoked there too."
       }
     ]
   },
