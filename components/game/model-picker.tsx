@@ -32,18 +32,20 @@ export function ModelPicker({
         <Chip selected={value === null} onClick={() => onChange(null)}>
           {t("mode2d")}
         </Chip>
-        {BASE_MODELS.map((m) => (
-          <Chip
-            key={m.key}
-            selected={value?.source === "base" && value.key === m.key}
-            onClick={() => {
-              setError(false);
-              onChange({ source: "base", key: m.key });
-            }}
-          >
-            {t(`base.${m.key}`)}
-          </Chip>
-        ))}
+        {(["masculine", "feminine"] as const).flatMap((look) =>
+          BASE_MODELS.filter((m) => m.look === look).map((m, i) => (
+            <Chip
+              key={m.key}
+              selected={value?.source === "base" && value.key === m.key}
+              onClick={() => {
+                setError(false);
+                onChange({ source: "base", key: m.key });
+              }}
+            >
+              {t(`look.${look}`, { n: i + 1 })}
+            </Chip>
+          )),
+        )}
         {customUrl && value?.source !== "custom" && (
           <Chip onClick={() => onChange(customUrlToValue(customUrl))}>{t("custom")}</Chip>
         )}

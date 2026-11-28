@@ -5,6 +5,8 @@ spring bones и метаданные (лицензию) VRM. Нужно, что�
   python scripts/shrink-vrm.py <вход.vrm> <выход.vrm> [--max 1024]
 
 Картинки пережимаются в PNG (с прозрачностью) или JPEG (без неё) с максимальной стороной --max.
+--pixiv-preset: вписать в метаданные фактические условия pixiv для VRoidPreset A–Z (экспорт из VRoid Studio
+по умолчанию ставит «только автор / без распространения», это настройки экспорта, а не лицензия заготовки).
 Требуется Pillow.
 """
 import argparse
@@ -71,14 +73,42 @@ def shrink_image(raw, mime, max_side):
     return (data, new_mime) if len(data) < len(raw) or scale < 1.0 else (raw, mime)
 
 
+PIXIV_PRESET_URL = "https://vroid.pixiv.help/hc/en-us/articles/4402394424089"
+
+
+def apply_pixiv_preset_meta(doc):
+    ext = doc.get("extensions", {})
+    if "VRMC_vrm" in ext:
+        m = ext["VRMC_vrm"]["meta"]
+        m.update({
+            "avatarPermission": "everyone",
+            "commercialUsage": "corporation",
+            "creditNotation": "unnecessary",
+            "allowRedistribution": True,
+            "modification": "allowModificationRedistribution",
+            "otherLicenseUrl": PIXIV_PRESET_URL,
+        })
+    elif "VRM" in ext:
+        m = ext["VRM"]["meta"]
+        m.update({
+            "allowedUserName": "Everyone",
+            "commercialUssageName": "Allow",
+            "licenseName": "Other",
+            "otherLicenseUrl": PIXIV_PRESET_URL,
+        })
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("src")
     ap.add_argument("dst")
     ap.add_argument("--max", type=int, default=1024)
+    ap.add_argument("--pixiv-preset", action="store_true")
     a = ap.parse_args()
 
     doc, binary = read_glb(a.src)
+    if a.pixiv_preset:
+        apply_pixiv_preset_meta(doc)
     views = doc["bufferViews"]
     image_views = {img["bufferView"]: i for i, img in enumerate(doc.get("images", [])) if "bufferView" in img}
 

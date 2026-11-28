@@ -844,11 +844,6 @@
   },
   "model3d": {
     "mode2d": "2D portrait",
-    "base": {
-      "a": "3D: Character A",
-      "b": "3D: Character B",
-      "c": "3D: Character C"
-    },
     "custom": "3D: my character",
     "viewer": "3D character",
     "rotateHint": "Drag to rotate",
@@ -866,6 +861,10 @@
     "delete": "Delete my model",
     "deleteConfirm": "Delete your model? Your appearance goes back to the 2D portrait.",
     "uploading": "Uploading…",
-    "uploaded": "Done: \"{title}\" is now your character."
+    "uploaded": "Done: \"{title}\" is now your character.",
+    "look": {
+      "masculine": "3D: male {n}",
+      "feminine": "3D: female {n}"
+    }
   }
 }

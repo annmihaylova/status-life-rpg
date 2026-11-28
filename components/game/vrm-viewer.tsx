@@ -10,15 +10,17 @@ import { VRMLoaderPlugin, VRMUtils, type VRM } from "@pixiv/three-vrm";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 
-import type { Group } from "three";
+import { Box3, Vector3, type Group } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export type Framing = "bust" | "full";
 
+/** доли роста модели: на какой высоте смотрит камера и с какого расстояния */
 const FRAMES: Record<Framing, { y: number; dist: number; fov: number }> = {
-  bust: { y: 1.38, dist: 1.05, fov: 26 },
-  full: { y: 0.92, dist: 2.35, fov: 30 },
+  bust: { y: 0.9, dist: 0.7, fov: 26 },
+  full: { y: 0.55, dist: 1.6, fov: 30 },
 };
+const DEFAULT_HEIGHT = 1.5;
 
 interface Props {
   url: string;
@@ -57,13 +59,13 @@ export function VrmViewer({ url, framing = "full", interactive = true, className
       <Canvas
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: Boolean(onSnapshot) }}
-        camera={{ position: [0, f.y, f.dist], fov: f.fov, near: 0.05, far: 20 }}
-        onCreated={({ camera }) => camera.lookAt(0, f.y, 0)}
+        camera={{ position: [0, f.y * DEFAULT_HEIGHT, f.dist * DEFAULT_HEIGHT], fov: f.fov, near: 0.05, far: 20 }}
+        onCreated={({ camera }) => camera.lookAt(0, f.y * DEFAULT_HEIGHT, 0)}
       >
         <ambientLight intensity={0.6} />
         <directionalLight position={[1.2, 2.2, 2]} intensity={1.6} />
         <directionalLight position={[-1.5, 1.2, -1.5]} intensity={0.7} color="#a9b0ff" />
-        <Avatar url={url} yaw={yaw} onLoaded={onLoaded} onError={onError} onSnapshot={onSnapshot} />
+        <Avatar url={url} framing={framing} yaw={yaw} onLoaded={onLoaded} onError={onError} onSnapshot={onSnapshot} />
       </Canvas>
     </div>
   );
@@ -71,12 +73,14 @@ export function VrmViewer({ url, framing = "full", interactive = true, className
 
 function Avatar({
   url,
+  framing,
   yaw,
   onLoaded,
   onError,
   onSnapshot,
 }: {
   url: string;
+  framing: Framing;
   yaw: React.RefObject<number>;
   onLoaded?: (vrm: VRM) => void;
   onError?: (e: unknown) => void;
@@ -86,6 +90,8 @@ function Avatar({
   // для покадровой анимации: three-объекты меняются в useFrame, а не через состояние React
   const live = useRef<VRM | null>(null);
   const group = useRef<Group>(null);
+  const armSign = useRef(1);
+  const framingRef = useRef(framing);
   const { camera, gl } = useThree();
   const clock = useRef(0);
   const nextBlink = useRef(2);
@@ -113,16 +119,23 @@ function Avatar({
         VRMUtils.combineSkeletons(gltf.scene);
         VRMUtils.rotateVRM0(v);
         v.scene.traverse((o) => (o.frustumCulled = false));
-        // руки вниз из T-позы
+        // камера по росту модели: девушки ~1.5 м, парни выше
+        const height = new Box3().setFromObject(v.scene).getSize(new Vector3()).y || DEFAULT_HEIGHT;
+        const fr = FRAMES[framingRef.current];
+        camera.position.set(0, fr.y * height, fr.dist * height);
+        camera.lookAt(0, fr.y * height, 0);
+        // руки вниз из T-позы; у VRM 0.x после rotateVRM0 оси зеркальны относительно VRM 1.0
+        armSign.current = v.meta.metaVersion === "0" ? 1 : -1;
+        const sgn = armSign.current;
         const h = v.humanoid;
         const set = (bone: Parameters<typeof h.getNormalizedBoneNode>[0], z: number, x = 0) => {
           const n = h.getNormalizedBoneNode(bone);
           if (n) n.rotation.set(x, 0, z);
         };
-        set("leftUpperArm", 1.22);
-        set("rightUpperArm", -1.22);
-        set("leftLowerArm", 0.18);
-        set("rightLowerArm", -0.18);
+        set("leftUpperArm", 1.22 * sgn);
+        set("rightUpperArm", -1.22 * sgn);
+        set("leftLowerArm", 0.18 * sgn);
+        set("rightLowerArm", -0.18 * sgn);
         if (v.lookAt) v.lookAt.target = camera;
         loaded = v;
         live.current = v;
@@ -161,8 +174,9 @@ function Avatar({
       if (neck) neck.rotation.z = Math.sin(t * 0.35 + 1) * 0.02;
       const lUp = h.getNormalizedBoneNode("leftUpperArm");
       const rUp = h.getNormalizedBoneNode("rightUpperArm");
-      if (lUp) lUp.rotation.z = 1.22 - breathe * 0.012;
-      if (rUp) rUp.rotation.z = -1.22 + breathe * 0.012;
+      const sgn = armSign.current;
+      if (lUp) lUp.rotation.z = (1.22 - breathe * 0.012) * sgn;
+      if (rUp) rUp.rotation.z = (-1.22 + breathe * 0.012) * sgn;
     }
 
     // моргание раз в 2–6 секунд

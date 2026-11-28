@@ -8,6 +8,7 @@
 | `avatar-sample-a.vrm` | AvatarSample_A (VRoidPreset_A) | VRoid Project (pixiv Inc.) | [VRoid Hub](https://hub.vroid.com/en/characters/2843975675147313744/models/5644550979324015604) | см. ниже |
 | `avatar-sample-b.vrm` | AvatarSample_B (VRoidPreset_B) | VRoid Project (pixiv Inc.) | [VRoid Hub](https://hub.vroid.com/en/characters/7939147878897061040/models/2292219474373673889) | см. ниже |
 | `avatar-sample-c.vrm` | AvatarSample_C (VRoidPreset_C) | VRoid Project (pixiv Inc.) | [VRoid Hub](https://hub.vroid.com/en/characters/1248981995540129234/models/8640547963669442173) | см. ниже |
+| `avatar-sample-z.vrm` | AvatarSample_Z (VRoidPreset_Z) | pixiv VRoid Project | экспорт из VRoid Studio 2.17.0 (Sample Models), VRM 1.0 | см. ниже |
 
 ## Условия (проверено 2026-11-27)
 
@@ -24,6 +25,14 @@
 **Как мы их используем:** модели показываются как есть, как выбор базового аватара. Перекраски их материалов и
 выдачи изменённых моделей нет — чтобы не попасть под запрет «сервиса создания персонажей». Свои модели пользователь
 делает в VRoid Studio и загружает сам (фаза 4b).
+
+## Экспорт из VRoid Studio
+
+Заготовки D–Z есть только внутри VRoid Studio (Sample Models). VRoid Studio при экспорте по умолчанию пишет в
+метаданные VRM 1.0 строгие поля (`avatarPermission: onlyAuthor`, `allowRedistribution: false`,
+`modification: prohibited`, `creditNotation: required`) — это настройки диалога экспорта, а не условия заготовки.
+`scripts/shrink-vrm.py --pixiv-preset` заменяет их на фактические условия pixiv для VRoidPreset A–Z
+(можно всем, коммерчески, без указания автора) и ставит `otherLicenseUrl` на страницу этих условий.
 
 ## Не используем
 

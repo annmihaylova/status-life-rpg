@@ -38,6 +38,6 @@ describe("3D-модель в конфиге", () => {
     const bad = parseAvatar({ hairStyle: "long", model3d: { source: "custom", path: "../etc/passwd" } });
     expect(bad.model3d).toBeNull();
     expect(bad.hairStyle).toBe("long");
-    expect(parseAvatar({ model3d: { source: "base", key: "z" } }).model3d).toBeNull();
+    expect(parseAvatar({ model3d: { source: "base", key: "nope" } }).model3d).toBeNull();
   });
 });
