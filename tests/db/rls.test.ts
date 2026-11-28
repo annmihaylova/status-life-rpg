@@ -233,6 +233,28 @@ describe("RLS", () => {
     }
   });
 
+  it("хранилище своих 3D-моделей: только своя папка", async () => {
+    const mine = `${A}/rls-test.vrm`;
+    const ins = (uid: string, name: string) =>
+      asRole("authenticated", uid, (tx) => tx`insert into storage.objects (bucket_id, name) values ('vrm-user', ${name}) returning id`);
+    await expect(ins(B, mine)).rejects.toThrow(/row-level security|permission denied/);
+    expect(await ins(A, mine)).toHaveLength(1);
+    // чтение: в одной транзакции (с откатом) кладём файл от имени A и смотрим глазами B и A
+    const claims = (uid: string) => JSON.stringify({ sub: uid, role: "authenticated" });
+    const seen = await asRole("authenticated", A, async (tx) => {
+      await tx`insert into storage.objects (bucket_id, name) values ('vrm-user', ${mine})`;
+      await tx`select set_config('request.jwt.claims', ${claims(B)}, true)`;
+      const byB = await tx`select 1 from storage.objects where bucket_id = 'vrm-user' and name = ${mine}`;
+      await tx`select set_config('request.jwt.claims', ${claims(A)}, true)`;
+      const byA = await tx`select 1 from storage.objects where bucket_id = 'vrm-user' and name = ${mine}`;
+      return { byB: byB.length, byA: byA.length };
+    });
+    expect(seen).toEqual({ byB: 0, byA: 1 });
+    const [bucket] = await sql`select public, file_size_limit from storage.buckets where id = 'vrm-user'`;
+    expect(bucket.public).toBe(false);
+    expect(Number(bucket.file_size_limit)).toBe(31457280);
+  });
+
   it("справочники читаются всеми", async () => {
     const r = await asRole("anon", null, (tx) => tx`select count(*)::int as n from attributes`);
     expect(r[0].n).toBe(12);

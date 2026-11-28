@@ -71,6 +71,13 @@
       "when": 1795750141178,
       "tag": "20261127032901_measurements_device",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1795823581750,
+      "tag": "20261127235301_vrm_storage",
+      "breakpoints": true
     }
   ]
 }

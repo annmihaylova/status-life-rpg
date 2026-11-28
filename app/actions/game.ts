@@ -239,6 +239,10 @@ const characterSchema = z.object({
 export async function saveCharacter(input: z.input<typeof characterSchema>): Promise<ActionResult> {
   const userId = await requireUserId();
   const v = characterSchema.parse(input);
+  // своя 3D-модель — только из своей папки в хранилище
+  if (v.avatar.model3d?.source === "custom" && !v.avatar.model3d.path.startsWith(`${userId}/`)) {
+    return { messages: [], error: "model_not_found" };
+  }
   await withUser(userId, async (tx) => {
     await tx
       .update(characters)
